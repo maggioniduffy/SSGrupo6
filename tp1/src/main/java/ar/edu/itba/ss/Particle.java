@@ -1,3 +1,4 @@
+package ar.edu.itba.ss;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -8,11 +9,10 @@ public class Particle implements Comparable<Particle>{
     private double y;
     private double r;
     private Set<Particle> neighbours;
+    private Cell cell;
 
-    public Particle(Integer id, double x, double y, double r) {
+    public Particle(Integer id, double r) {
         this.id = id;
-        this.x = x;
-        this.y = y;
         this.r = r;
         this.neighbours = new TreeSet<Particle>();
     }
@@ -32,6 +32,10 @@ public class Particle implements Comparable<Particle>{
     public double getR() {
         return r;
     }
+    
+    public Cell getCell() {
+    	return cell;
+    }
 
     public Set<Particle> getNeighbours() {
         return neighbours;
@@ -48,15 +52,32 @@ public class Particle implements Comparable<Particle>{
     public void setR(double r) {
         this.r = r;
     }
+    
+    public void setCell(Cell cell) {
+        this.cell = cell;
+    }
 
     public void addNeighbour(Particle neighbour){
         this.neighbours.add(neighbour);
     }
 
-    public double getDistanceTo(Particle particle){
+    public double distanceTo(Particle particle){
         return Math.sqrt(Math.pow(x - particle.getX(), 2) +
                 Math.pow(y - particle.getY(), 2))
                 - r - particle.getR();
+    }
+    
+    public double periodicDistanceTo(Particle particle){
+
+        double dx = Math.abs(this.x - particle.x);
+        if (dx > Parser.L / 2)
+            dx = Parser.L - dx;
+
+        double dy = Math.abs(this.y - particle.y);
+        if (dy > Parser.L / 2)
+            dy = Parser.L - dy;
+
+        return Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
     }
 
     public int compareTo(Particle particle){
