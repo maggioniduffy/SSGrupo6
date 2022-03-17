@@ -1,16 +1,23 @@
+package ar.edu.itba.ss;
 import java.util.Set;
 import java.util.TreeSet;
 
 public class Cell {
 
+	private Integer id;
     private double x;
     private double y;
     private Set<Particle> particles;
 
-    public Cell(double x, double y) {
+    public Cell(Integer id, double x, double y) {
+    	this.id = id;
         this.x = x;
         this.y = y;
         this.particles = new TreeSet<Particle>();
+    }
+    
+    public Integer getId() {
+        return id;
     }
 
     public double getX() {

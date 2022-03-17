@@ -1,6 +1,10 @@
 {
-  "sideSize": "20",
-  "cellsPerLine": "4",
-  "numberOfParticles": "30",
-  "rc": "5"
+  "L": "100",
+  "M": "5",
+  "N": "100",
+  "rc": "6.0",
+  "staticFile": "./examples/Static100.txt",
+  "dynamicFile": "./examples/Dynamic100.txt",
+  "periodicContour": true,
+  "method": "1"
 }
