@@ -2,10 +2,28 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import (AutoMinorLocator, MultipleLocator)
 
+import os
+import sys
+
+dynamic = sys.argv[1]
+output = sys.argv[2]
+element = sys.argv[3]
+
+if not os.path.exists(dynamic):
+    exit
+    # file exists
+if not os.path.exists(output):
+    exit
+    # file exists
+if not element:
+    exit
+else:
+    element = int(element)
+
 # Fixing random state for reproducibility
 # np.random.seed(19680801)
-f = open('Dynamic100.txt','r')
-g = open('AlgunosVecinos_100_rc6.txt', 'r')
+f = open(dynamic,'r')
+g = open(output, 'r')
 
 lines = f.readlines() # read all the lines of the text file and return them as a list of strings.
 f.close()
@@ -29,7 +47,7 @@ for i in range(len(lines)):
     x_arr.append(float(numbers[0]))
     y_arr.append(float(numbers[3]))
 
-    if (i == 91):
+    if (i == element):
         colors.append('#FF0000')
         area.append(60)
         neighbors = (g_lines[i-1].strip().split(','))[1:]
@@ -45,10 +63,15 @@ for neigh in neighbors:
 
 x = np.array(x_arr)
 y = np.array(y_arr)
+n = np.array(range(len(lines)))
 
 N = len(x)
 
 fig, ax = plt.subplots(figsize=(10, 8))
+ax.scatter(x, y)
+
+for i, txt in enumerate(n):
+    ax.annotate(txt, (x[i], y[i]))
 
 # Set axis ranges; by default this will put major ticks every 25.
 ax.set_xlim(0, N)

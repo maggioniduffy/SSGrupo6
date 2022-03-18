@@ -1,5 +1,7 @@
 package ar.edu.itba.ss;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import org.json.simple.parser.ParseException;
@@ -19,14 +21,17 @@ public class Main {
 			long stop = System.currentTimeMillis();
 			long time = stop - start;
 			System.out.println("Elapsed time: " + time + "ms");
-			
+			File out = new File("output.txt");
+			out.createNewFile();
+			FileWriter writer = new FileWriter("output.txt");
 			for (Particle p : Parser.particles){
-	            System.out.print(p.getId());
+	            writer.write(p.getId().toString());
 	            for (Particle neighbour : p.getNeighbours()){
-	                System.out.print(" " + neighbour.getId());
+	                writer.write("," + neighbour.getId().toString());
 	            }
-	            System.out.print("\n");
+	            writer.write("\n");
 	        }
+			writer.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
