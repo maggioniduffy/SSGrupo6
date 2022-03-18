@@ -22,10 +22,10 @@ public class Board {
     }
 
     private void createCells() {
-        Integer n = 1;
+        Integer n = 0;
         for(int i = 0 ; i < this.M ; i++) {
             for(int j = 0 ; j < this.M  ; j++) {
-                this.cells.add(new Cell(n, i * this.L/this.M, j * this.L/this.M));
+                this.cells.add(new Cell(n, i, j));
                 n++;
             }
         }
@@ -86,6 +86,7 @@ public class Board {
 
         for (Cell c : cells){
             for (Particle p : c.getParticles()){
+                System.out.println("cell: " + c.getId() + " p: " + p.getId());
             	checkNeighbourCells(p, c.getX(), c.getY());
                 checkNeighbourCells(p, c.getX(), c.getY() + 1);
                 checkNeighbourCells(p, c.getX() + 1, c.getY() + 1);
@@ -118,11 +119,14 @@ public class Board {
 
         }else {
             if (cellX >= this.M || cellX < 0 || cellY >= this.M || cellY < 0) {
+                System.out.println(cellX + " " + cellY);
                 return;
             }
         }
 
         int neighbourCellNumber = (int) (cellY * this.M + cellX);
+
+        System.out.println("neighbourCellNumber: " + neighbourCellNumber);
 
         Set<Particle> cellParticles = cells.get(neighbourCellNumber).getParticles();
 

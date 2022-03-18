@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 import org.json.simple.parser.ParseException;
 
@@ -32,6 +33,22 @@ public class Main {
 	            writer.write("\n");
 	        }
 			writer.close();
+
+			/*
+			ProcessBuilder processBuilder = new ProcessBuilder("python", resolvePythonScriptPath("hello.py"));
+			processBuilder.redirectErrorStream(true);
+
+			Process process = processBuilder.start();
+			List<String> results = readProcessOutput(process.getInputStream());
+
+			assertThat("Results should not be empty", results, is(not(empty())));
+			assertThat("Results should contain output of script: ", results, hasItem(
+					containsString("Hello Baeldung Readers!!")));
+
+			int exitCode = process.waitFor();
+			assertEquals("No errors should be detected", 0, exitCode);
+
+			 */
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

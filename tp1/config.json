@@ -2,9 +2,9 @@
   "L": "100",
   "M": "5",
   "N": "100",
-  "rc": "6.0",
+  "rc": "9.0",
   "staticFile": "./examples/Static100.txt",
   "dynamicFile": "./examples/Dynamic100.txt",
-  "periodicContour": true,
-  "method": "1"
+  "periodicContour": false,
+  "method": "2"
 }
