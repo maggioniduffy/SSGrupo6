@@ -50,7 +50,7 @@ for i in range(len(lines)):
     if (i == element):
         colors.append('#FF0000')
         area.append(60)
-        neighbors = (g_lines[i-1].strip().split(','))[1:]
+        neighbors = (g_lines[i].strip().split(','))[1:]
         print(neighbors)
     else:
         colors.append('#000')
