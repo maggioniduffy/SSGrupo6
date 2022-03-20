@@ -25,6 +25,7 @@ public class Board {
         Integer n = 0;
         for(int i = 0 ; i < this.M ; i++) {
             for(int j = 0 ; j < this.M  ; j++) {
+                System.out.println("celula: " + n + " x: "+ i + "y: " + j);
                 this.cells.add(new Cell(n, i, j));
                 n++;
             }
@@ -74,38 +75,47 @@ public class Board {
     }
     
     public void cellIndexMethod(){
+        int cellX = 0;
+        int cellY = 0;
 
         for (Particle p : particles){
-            double cellX = Math.floor(p.getX() / (this.L/this.M));
-            double cellY = Math.floor(p.getY() / (this.L/this.M));
+            System.out.println("Particle: " + p.getId());
+            System.out.println("X: " + p.getX() + " Y: " + p.getY());
+            cellX = (int) Math.floor(p.getX() / (this.L/this.M));
+            System.out.println("cellX: " + cellX);
+            cellY = (int) Math.floor(p.getY() / (this.L/this.M));
+            System.out.println("cellY: " + cellY);
             int cellNumber = (int) (cellY * this.M + cellX);
+            System.out.println("Cellnumber: " + cellNumber);
             Cell cell = cells.get(cellNumber);
             p.setCell(cell);
+            p.setCellX(cellX);
+            p.setCellY(cellY);
             cell.addParticle(p);
         }
 
         for (Cell c : cells){
+            System.out.println("c" + c.getId());
             for (Particle p : c.getParticles()){
-                System.out.println("cell: " + c.getId() + " p: " + p.getId());
-            	checkNeighbourCells(p, c.getX(), c.getY());
-                checkNeighbourCells(p, c.getX(), c.getY() + 1);
-                checkNeighbourCells(p, c.getX() + 1, c.getY() + 1);
-                checkNeighbourCells(p, c.getX() + 1, c.getY());
-                checkNeighbourCells(p, c.getX() + 1, c.getY() - 1);
+            	checkNeighbourCells(p, p.getCellX(), p.getCellY());
+                checkNeighbourCells(p, p.getCellX(), p.getCellY() + 1);
+                checkNeighbourCells(p, p.getCellX() + 1, p.getCellY() + 1);
+                checkNeighbourCells(p, p.getCellX() + 1, p.getCellY());
+                checkNeighbourCells(p, p.getCellX() + 1, p.getCellY() - 1);
             }
         }
 
     }
 
-    private void checkNeighbourCells(Particle particle, double cellX, double cellY) {
+    private void checkNeighbourCells(Particle particle, int cellX, int cellY) {
 
         if (periodicContour) {
 
-            if (cellX >= this.M){
+            if (cellX >= this.M ){
                 cellX = 0;
             }
 
-            if (cellY >= this.M){
+            if (cellY >= this.M ){
                 cellY = 0;
             }
 
@@ -118,16 +128,15 @@ public class Board {
             }
 
         }else {
-            if (cellX >= this.M || cellX < 0 || cellY >= this.M || cellY < 0) {
-                System.out.println(cellX + " " + cellY);
+            System.out.println("cellX: " + cellX + "M: " + this.M);
+            if (cellX >= this.M  || cellX < 0 || cellY >= this.M || cellY < 0) {
+                System.out.println("PARTICULA NUMERO: " + particle.getId() + " SALIO ");
                 return;
             }
         }
 
-        int neighbourCellNumber = (int) (cellY * this.M + cellX);
-
-        System.out.println("neighbourCellNumber: " + neighbourCellNumber);
-
+        int neighbourCellNumber = (int) (cellY * this.M  + cellX);
+        System.out.println("Particle: " + particle + ", neighbor cell X: " + cellX + ", " + cellY + "cell index: " + neighbourCellNumber);
         Set<Particle> cellParticles = cells.get(neighbourCellNumber).getParticles();
 
         for (Particle neighbourParticle : cellParticles){

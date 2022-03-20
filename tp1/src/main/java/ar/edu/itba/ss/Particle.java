@@ -8,6 +8,8 @@ public class Particle implements Comparable<Particle>{
     private double x;
     private double y;
     private double r;
+    private int cellX;
+    private int cellY;
     private Set<Particle> neighbours;
     private Cell cell;
 
@@ -27,6 +29,22 @@ public class Particle implements Comparable<Particle>{
 
     public double getY() {
         return y;
+    }
+
+    public int getCellX() {
+        return cellX;
+    }
+
+    public void setCellX(int cellX) {
+        this.cellX = cellX;
+    }
+
+    public int getCellY() {
+        return cellY;
+    }
+
+    public void setCellY(int cellY) {
+        this.cellY = cellY;
     }
 
     public double getR() {
@@ -78,6 +96,10 @@ public class Particle implements Comparable<Particle>{
             dy = Parser.L - dy;
 
         return Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2));
+    }
+
+    public String toString() {
+        return this.id.toString();
     }
 
     public int compareTo(Particle particle){
