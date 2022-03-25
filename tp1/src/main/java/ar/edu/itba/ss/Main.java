@@ -4,10 +4,9 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-
 import org.json.simple.parser.ParseException;
-
 import ar.edu.itba.ss.Parser;
+
 public class Main {
 	public static void main(String[] args) {
 		try {
@@ -59,8 +58,5 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		
 	}
 }
