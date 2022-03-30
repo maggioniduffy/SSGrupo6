@@ -23,13 +23,14 @@ gameState = np.zeros((nxC, nyC))
 gameState[5, 3] = 1
 gameState[5, 4] = 1
 gameState[5, 5] = 1
+gameState[4, 5] = 1
+gameState[4, 6] = 1
 
 #Automata 2
-gameState[21, 21] = 1
 gameState[22, 22] = 1
-gameState[22, 23] = 1
 gameState[21, 23] = 1
 gameState[20, 23] = 1
+gameState[23, 23] = 1
 
 while True:
 
