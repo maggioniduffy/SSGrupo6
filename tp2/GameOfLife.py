@@ -44,6 +44,7 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
     alive_cells = p_cells
     alive_cells_ev = [alive_cells]
     go = True
+
     while go:
         newGameState = np.copy(gameState)
         
@@ -91,6 +92,9 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
         pygame.display.flip()
     
     print(alive_cells_ev)
+    
+    while True:
+        print(".")
 
 def og_gameOfLife():
     gameOfLife(3,2)
@@ -98,4 +102,8 @@ def og_gameOfLife():
 def new_gameOfLife():
     gameOfLife(9,1)
 
-og_gameOfLife()
+if sys.argv[2] == '1':
+    print('og')
+    og_gameOfLife()
+else:
+    new_gameOfLife()
