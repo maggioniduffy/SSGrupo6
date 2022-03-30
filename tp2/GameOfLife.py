@@ -20,6 +20,9 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
     screen.fill(bg)
 
     nxC, nyC = 50, 50
+    centerX = nxC/2
+    centerY = nyC/2
+    center = np.array((centerX,centerY))
 
     factorx = nxC/5 * 4 - nxC/5
     factory = nyC/5 * 4 - nyC/5
@@ -44,6 +47,9 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
     alive_cells = p_cells
     alive_cells_ev = [alive_cells]
     go = True
+
+    distances = []
+    maxDistance = 0
 
     while go:
         newGameState = np.copy(gameState)
@@ -81,20 +87,27 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
                 if newGameState[x, y] == 0:
                     pygame.draw.polygon(screen, (128, 128, 128), poly, 1)
                 else:
+                    point = np.array((x,y))
+                    dist = np.linalg.norm(center-point)
+                    if dist > maxDistance:
+                        maxDistance = dist
+                    
                     pygame.draw.polygon(screen, (255, 255, 255), poly, 0)
 
                 if alive_cells == 0 or ((x == 0 or x == (nxC - 1)) or (y == 0 or y == (nyC - 1))) and newGameState[x, y] == 1:
                     go = False
         
         alive_cells_ev.append(alive_cells)
+        distances.append(maxDistance)
+        maxDistance = 0
         gameState = np.copy(newGameState)
 
         pygame.display.flip()
     
     print(alive_cells_ev)
-    
+    print(distances)
     while True:
-        print(".")
+        pass
 
 def og_gameOfLife():
     gameOfLife(3,2)
