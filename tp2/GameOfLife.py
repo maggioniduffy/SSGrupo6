@@ -52,6 +52,8 @@ for _ in range(0, p_cells):
 # gameState[21, 23] = 1
 # gameState[20, 23] = 1
 
+stop = False
+
 while True:
 
     newGameState = np.copy(gameState)
@@ -61,23 +63,23 @@ while True:
     
     for y in range(0, nxC):
         for x in range(0, nyC):
+            if not stop:
+                n_neigh = gameState[(x-1), (y-1)] if (x-1) > 0 and (y-1) > 0 else 0
+                n_neigh += gameState[(x), (y-1)] if (y-1) > 0 else 0
+                n_neigh += gameState[(x+1), (y-1)] if (x+1) < nxC and (y-1) > 0 else 0
+                n_neigh += gameState[(x-1), (y)] if (x-1) > 0 else 0
+                n_neigh += gameState[(x+1), (y)] if (x+1) < nxC else 0
+                n_neigh += gameState[(x-1), (y+1)] if (x-1) > 0 and (y+1) < nyC else 0
+                n_neigh += gameState[(x), (y+1)] if (y+1) < nyC else 0
+                n_neigh += gameState[(x+1), (y+1)] if (x+1) < nxC and (y+1) < nyC else 0
 
-            n_neigh = gameState[(x-1), (y-1)] if (x-1) > 0 and (y-1) > 0 else 0
-            n_neigh += gameState[(x), (y-1)] if (y-1) > 0 else 0
-            n_neigh += gameState[(x+1), (y-1)] if (x+1) < nxC and (y-1) > 0 else 0
-            n_neigh += gameState[(x-1), (y)] if (x-1) > 0 else 0
-            n_neigh += gameState[(x+1), (y)] if (x+1) < nxC else 0
-            n_neigh += gameState[(x-1), (y+1)] if (x-1) > 0 and (y+1) < nyC else 0
-            n_neigh += gameState[(x), (y+1)] if (y+1) < nyC else 0
-            n_neigh += gameState[(x+1), (y+1)] if (x+1) < nxC and (y+1) < nyC else 0
-
-            #Regla 1
-            if gameState[x, y] == 0 and n_neigh == 3:
-                newGameState[x, y] = 1
-            
-            #Regla 2
-            elif gameState[x, y] == 1 and (n_neigh < 2 or n_neigh > 3):
-                newGameState[x, y] = 0
+                #Regla 1
+                if gameState[x, y] == 0 and n_neigh == 3:
+                    newGameState[x, y] = 1
+                
+                #Regla 2
+                elif gameState[x, y] == 1 and (n_neigh < 2 or n_neigh > 3):
+                    newGameState[x, y] = 0
 
             poly = [((x) * dimCW, y * dimCH),
                     ((x+1) * dimCW, y * dimCH),
@@ -88,6 +90,10 @@ while True:
                 pygame.draw.polygon(screen, (128, 128, 128), poly, 1)
             else:
                 pygame.draw.polygon(screen, (255, 255, 255), poly, 0)
+            
+            if ((x == 0 or x == (nxC - 1)) or (y == 0 or y == (nyC - 1))) and newGameState[x, y] == 1:
+                
+                stop = True
     
     gameState = np.copy(newGameState)
 
