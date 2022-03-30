@@ -5,109 +5,97 @@ import time
 import sys
 from math import floor
 
-if len(sys.argv) > 1:
-    percentage = int(sys.argv[1])
-else:
-    percentage = 0
+def gameOfLife(maxNeighs = 3, minNeighs = 2):
+    if len(sys.argv) > 1:
+        percentage = int(sys.argv[1])
+    else:
+        percentage = 0
 
-pygame.init()
+    pygame.init()
 
-width, height = 1000, 1000
-screen = pygame.display.set_mode((height, width))
+    width, height = 1000, 1000
+    screen = pygame.display.set_mode((height, width))
 
-bg = 25, 25, 25
-screen.fill(bg)
+    bg = 25, 25, 25
+    screen.fill(bg)
 
-nxC, nyC = 50, 50
+    nxC, nyC = 50, 50
 
-factorx = nxC/5 * 4 - nxC/5
-factory = nyC/5 * 4 - nyC/5
+    factorx = nxC/5 * 4 - nxC/5
+    factory = nyC/5 * 4 - nyC/5
 
-p_cells = floor(percentage * factorx * factory / 100)
+    p_cells = floor(percentage * factorx * factory / 100)
 
-dimCW = width / nxC
-dimCH = height / nyC
+    dimCW = width / nxC
+    dimCH = height / nyC
 
-gameState = np.zeros((nxC, nyC))
+    gameState = np.zeros((nxC, nyC))
 
-for _ in range(0, p_cells):
-    x = randint(floor(nxC/5), floor(nxC/5)*4)
-    y = randint(floor(nyC/5), floor(nyC/5)*4)
-    while gameState[x, y] == 1:
+    for _ in range(0, p_cells):
         x = randint(floor(nxC/5), floor(nxC/5)*4)
         y = randint(floor(nyC/5), floor(nyC/5)*4)
-    gameState[x, y] = 1
+        while gameState[x, y] == 1:
+            x = randint(floor(nxC/5), floor(nxC/5)*4)
+            y = randint(floor(nyC/5), floor(nyC/5)*4)
+        gameState[x, y] = 1
 
+    stop = False
+     
+    alive_cells = p_cells
+    alive_cells_ev = [alive_cells]
+    go = True
+    while go:
+        newGameState = np.copy(gameState)
+        
+        screen.fill(bg)
+        time.sleep(0.1)
+        
+        for y in range(0, nxC):
+            for x in range(0, nyC):
+                if not stop:
+                    n_neigh = gameState[(x-1), (y-1)] if (x-1) > 0 and (y-1) > 0 else 0
+                    n_neigh += gameState[(x), (y-1)] if (y-1) > 0 else 0
+                    n_neigh += gameState[(x+1), (y-1)] if (x+1) < nxC and (y-1) > 0 else 0
+                    n_neigh += gameState[(x-1), (y)] if (x-1) > 0 else 0
+                    n_neigh += gameState[(x+1), (y)] if (x+1) < nxC else 0
+                    n_neigh += gameState[(x-1), (y+1)] if (x-1) > 0 and (y+1) < nyC else 0
+                    n_neigh += gameState[(x), (y+1)] if (y+1) < nyC else 0
+                    n_neigh += gameState[(x+1), (y+1)] if (x+1) < nxC and (y+1) < nyC else 0
 
-#Defino los automatas, despues se puede hacer que se tomen de algun archivo o random
-#Automata 1
-# gameState[5, 3] = 1
-# gameState[5, 4] = 1
-# gameState[5, 5] = 1
+                    #Regla 1
+                    if gameState[x, y] == 0 and n_neigh == maxNeighs:
+                        newGameState[x, y] = 1
+                        alive_cells += 1
+                    
+                    #Regla 2
+                    elif gameState[x, y] == 1 and (n_neigh <= minNeighs or n_neigh > maxNeighs):
+                        newGameState[x, y] = 0
+                        alive_cells -= 1
 
-#Automata 2
-# gameState[21, 21] = 1
-# gameState[22, 22] = 1
-# gameState[22, 23] = 1
-# gameState[21, 23] = 1
-# gameState[20, 23] = 1
+                poly = [((x) * dimCW, y * dimCH),
+                        ((x+1) * dimCW, y * dimCH),
+                        ((x+1) * dimCW, (y+1) * dimCH),
+                        ((x) * dimCW, (y+1) * dimCH)]
 
-stop = False
+                if newGameState[x, y] == 0:
+                    pygame.draw.polygon(screen, (128, 128, 128), poly, 1)
+                else:
+                    pygame.draw.polygon(screen, (255, 255, 255), poly, 0)
 
-while True:
+                if alive_cells == 0 or ((x == 0 or x == (nxC - 1)) or (y == 0 or y == (nyC - 1))) and newGameState[x, y] == 1:
+                    go = False
+        
+        alive_cells_ev.append(alive_cells)
+        gameState = np.copy(newGameState)
 
-    newGameState = np.copy(gameState)
+        pygame.display.flip()
     
-    screen.fill(bg)
-    time.sleep(0.1)
-    
-    for y in range(0, nxC):
-        for x in range(0, nyC):
-            if not stop:
-                n_neigh = gameState[(x-1), (y-1)] if (x-1) > 0 and (y-1) > 0 else 0
-                n_neigh += gameState[(x), (y-1)] if (y-1) > 0 else 0
-                n_neigh += gameState[(x+1), (y-1)] if (x+1) < nxC and (y-1) > 0 else 0
-                n_neigh += gameState[(x-1), (y)] if (x-1) > 0 else 0
-                n_neigh += gameState[(x+1), (y)] if (x+1) < nxC else 0
-                n_neigh += gameState[(x-1), (y+1)] if (x-1) > 0 and (y+1) < nyC else 0
-                n_neigh += gameState[(x), (y+1)] if (y+1) < nyC else 0
-                n_neigh += gameState[(x+1), (y+1)] if (x+1) < nxC and (y+1) < nyC else 0
+    print(alive_cells_ev)
 
-                #Regla 1
-                if gameState[x, y] == 0 and n_neigh == 3:
-                    newGameState[x, y] = 1
-                
-                #Regla 2
-                elif gameState[x, y] == 1 and (n_neigh < 2 or n_neigh > 3):
-                    newGameState[x, y] = 0
+def og_gameOfLife():
+    gameOfLife(3,2)
 
-            poly = [((x) * dimCW, y * dimCH),
-                    ((x+1) * dimCW, y * dimCH),
-                    ((x+1) * dimCW, (y+1) * dimCH),
-                    ((x) * dimCW, (y+1) * dimCH)]
+def new_gameOfLife():
+    gameOfLife(9,1)
 
-            if newGameState[x, y] == 0:
-                pygame.draw.polygon(screen, (128, 128, 128), poly, 1)
-            else:
-                pygame.draw.polygon(screen, (255, 255, 255), poly, 0)
-            
-            if ((x == 0 or x == (nxC - 1)) or (y == 0 or y == (nyC - 1))) and newGameState[x, y] == 1:
-                
-                stop = True
-    
-    gameState = np.copy(newGameState)
-
-    pygame.display.flip()
-
-#Defino los automatas, despues se puede hacer que se tomen de algun archivo o random
-#Automata 1
-# gameState[5, 3] = 1
-# gameState[5, 4] = 1
-# gameState[5, 5] = 1
-
-#Automata 2
-# gameState[21, 21] = 1
-# gameState[22, 22] = 1
-# gameState[22, 23] = 1
-# gameState[21, 23] = 1
-# gameState[20, 23] = 1
+og_gameOfLife()
