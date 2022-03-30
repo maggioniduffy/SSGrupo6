@@ -12,7 +12,9 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
         percentage = 0
 
     pygame.init()
-
+    r = 255
+    g = 255
+    b = 255
     width, height = 1000, 1000
     screen = pygame.display.set_mode((height, width))
 
@@ -91,8 +93,11 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
                     dist = np.linalg.norm(center-point)
                     if dist > maxDistance:
                         maxDistance = dist
-                    
-                    pygame.draw.polygon(screen, (255, 255, 255), poly, 0)
+                    difX = abs(x-centerX)
+                    difY = abs(y-centerY)
+                    dif = difX if difX > difY else difY
+                    dif = dif * 10 if dif >= 0 else 0
+                    pygame.draw.polygon(screen, (r, g-dif, b-dif), poly, 0)
 
                 if alive_cells == 0 or ((x == 0 or x == (nxC - 1)) or (y == 0 or y == (nyC - 1))) and newGameState[x, y] == 1:
                     go = False
