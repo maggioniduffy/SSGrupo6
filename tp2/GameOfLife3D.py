@@ -30,7 +30,7 @@ class GameOfLife:
     maxNeighs = 3
     minNeighs = 2
 
-    def __init__(self):
+    def set(self):
         self._id = 0
         self.stop = False
         self.gameState = np.zeros((GameOfLife.nxC, GameOfLife.nyC))
@@ -95,10 +95,10 @@ class GameOfLife:
         self.window.set_on_menu_item_activated(GameOfLife.MENU_QUIT,
                                                self._on_menu_quit)
 
+    def __init__(self):
+        self.set()
+
     def add_sphere(self, x,y,t):
-        r = 0.0
-        g = 0
-        b = 0
         difX = abs(x-self.centerX)
         difY = abs(y-self.centerY)
         dif = difX if difX > difY else difY
@@ -106,9 +106,9 @@ class GameOfLife:
         self._id += 1
         mat = rendering.Material()
         mat.base_color = [
-            r * uniform(0.0, 1.0),
-            g * uniform(0.0, 1.0),
-            (b + dif) * uniform(0.0, 1.0), 1.0
+            0.1,
+            0.1,
+            (255 - dif) * 0.1, 1.0
         ]
         mat.shader = "defaultLit"
         sphere = o3d.geometry.TriangleMesh.create_sphere(1.0)
@@ -162,12 +162,12 @@ class GameOfLife:
                 # need to post the function to call to the main thread.
                 gui.Application.instance.post_to_main_thread(
                     self.window, self.get_alives)
-                time.sleep(0.5)
+                time.sleep(3.5)
 
         threading.Thread(target=thread_main).start()
 
     def _on_menu_quit(self):
-        gui.Application.instance.quit()
+        self.set()
 
 def main():
     gui.Application.instance.initialize()
