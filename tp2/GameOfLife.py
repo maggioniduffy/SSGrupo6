@@ -57,7 +57,7 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
         newGameState = np.copy(gameState)
         
         screen.fill(bg)
-        time.sleep(0.1)
+        time.sleep(0.7)
         
         for y in range(0, nxC):
             for x in range(0, nyC):
@@ -96,8 +96,8 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
                     difX = abs(x-centerX)
                     difY = abs(y-centerY)
                     dif = difX if difX > difY else difY
-                    dif = dif * 10 if dif >= 0 else 0
-                    pygame.draw.polygon(screen, (r, g-dif, b-dif), poly, 0)
+                    dif = dif * 5 if dif >= 0 else 0
+                    pygame.draw.polygon(screen, (r, g-dif, b), poly, 0)
 
                 if alive_cells == 0 or ((x == 0 or x == (nxC - 1)) or (y == 0 or y == (nyC - 1))) and newGameState[x, y] == 1:
                     go = False
@@ -118,7 +118,7 @@ def og_gameOfLife():
     gameOfLife(3,2)
 
 def new_gameOfLife():
-    gameOfLife(9,1)
+    gameOfLife(1,9)
 
 if sys.argv[2] == '1':
     print('og')
