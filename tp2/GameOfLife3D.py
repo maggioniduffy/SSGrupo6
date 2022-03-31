@@ -8,6 +8,7 @@ import numpy as np
 import time
 import sys
 from math import floor
+
 isMacOS = (platform.system() == "Darwin")
 
 class GameOfLife:
@@ -31,6 +32,7 @@ class GameOfLife:
     minNeighs = 2
 
     def set(self):
+        self.initial_time = time.time()
         self._id = 0
         self.stop = False
         self.gameState = np.zeros((GameOfLife.nxC, GameOfLife.nyC))
@@ -106,20 +108,18 @@ class GameOfLife:
         self._id += 1
         mat = rendering.Material()
         mat.base_color = [
-            0.1,
-            0.1,
+            0.9,
+            0.9,
             (255 - dif) * 0.1, 1.0
         ]
         mat.shader = "defaultLit"
-        sphere = o3d.geometry.TriangleMesh.create_sphere(1.0)
+        sphere = o3d.geometry.TriangleMesh.create_sphere(0.5)
         sphere.compute_vertex_normals()
         sphere.translate([
-            x * uniform(0.0, 1.0), y * uniform(0.0, 1.0),
-            self.t * uniform(0.0, 1.0)
+            x * 0.9, y * 0.9,
+            t * 0.1
         ])
-        print(np.asarray(sphere.vertices))
         self.scene.scene.add_geometry("sphere" + str(self._id), sphere, mat)
-        self.t += 1
 
     def get_alives(self):
         for y in range(0, GameOfLife.nxC):
@@ -143,8 +143,8 @@ class GameOfLife:
                     elif self.gameState[x, y] == 1 and (n_neigh <= GameOfLife.minNeighs or n_neigh > GameOfLife.maxNeighs):
                         self.newGameState[x, y] = 0
                         self.alive_cells -= 1
-            
                 if self.newGameState[x, y] == 1:
+                    print(x,y)
                     point = np.array((x,y))
                     dist = np.linalg.norm(GameOfLife.center-point)
                     if dist > self.maxDistance:
@@ -152,17 +152,17 @@ class GameOfLife:
                     self.add_sphere(x,y,self.t)
                 if self.alive_cells == 0 or ((x == 0 or x == (GameOfLife.nxC - 1)) or (y == 0 or y == (GameOfLife.nyC - 1))) and self.newGameState[x, y] == 1:
                     self.stop = True
+                    print('stop')
+                self.t += 1
     
     def _on_menu_random(self):
         # This adds spheres asynchronously. This pattern is useful if you have
         # data coming in from another source than user interaction.
         def thread_main():
             while not self.stop:
-                # We can only modify GUI objects on the main thread, so we
-                # need to post the function to call to the main thread.
                 gui.Application.instance.post_to_main_thread(
                     self.window, self.get_alives)
-                time.sleep(3.5)
+                time.sleep(1)
 
         threading.Thread(target=thread_main).start()
 
