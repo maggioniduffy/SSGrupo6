@@ -19,14 +19,17 @@ class GameOfLife:
     else:
         percentage = 0
     
-    nxC, nyC = 50, 50
+    nxC, nyC, nzC = 50, 50, 50
     centerX = nxC/2
     centerY = nyC/2
-    center = np.array((centerX,centerY))
+    centerZ = nzC/2
+
+    center = np.array((centerX,centerY,centerZ))
     factorx = nxC/5 * 4 - nxC/5
     factory = nyC/5 * 4 - nyC/5
+    factorz = nzC/5 * 4 - nzC/5
 
-    p_cells = floor(percentage * factorx * factory / 100)
+    p_cells = floor(percentage * factorx * factory * factorz / 100)
 
     maxNeighs = 3
     minNeighs = 2
@@ -34,19 +37,21 @@ class GameOfLife:
     def set(self):
         self.x = 0
         self.y = 0
+        self.z = 0
         self.initial_time = time.time()
         self._id = 0
         self.stop = False
-        self.gameState = np.zeros((GameOfLife.nxC, GameOfLife.nyC))
+        self.gameState = np.zeros((GameOfLife.nxC, GameOfLife.nyC, GameOfLife.nzC))
         for _ in range(0, GameOfLife.p_cells):
             x = randint(floor(GameOfLife.nxC/5), floor(GameOfLife.nxC/5)*4)
             y = randint(floor(GameOfLife.nyC/5), floor(GameOfLife.nyC/5)*4)
-            while self.gameState[x, y] == 1:
+            z = randint(floor(GameOfLife.nzC/5), floor(GameOfLife.nzC/5)*4)
+            while [x, y] == 1:
                 x = randint(floor(GameOfLife.nxC/5), floor(GameOfLife.nxC/5)*4)
                 y = randint(floor(GameOfLife.nyC/5), floor(GameOfLife.nyC/5)*4)
-            self.gameState[x, y] = 1
+                z = randint(floor(GameOfLife.nzC/5), floor(GameOfLife.nzC/5)*4)
+            self.gameState[x, y, z] = 1
         self.newGameState = np.copy(self.gameState)
-        self.t = 0
         self.distances = []
         self.maxDistance = 0
         self.alive_cells = GameOfLife.p_cells
@@ -94,11 +99,18 @@ class GameOfLife:
         self.set()
 
     def add_sphere(self):
-        x, y, t = self.x, self.y, self.t
-        print(x,y,t)
+        x, y, z = self.x, self.y, self.z
+        print(x,y,z)
         difX = abs(x-self.centerX)
         difY = abs(y-self.centerY)
-        dif = difX if difX > difY else difY
+        difZ = abs(z-self.centerZ)
+        dif = 0
+        if difX >= difY and difX >= difY:
+            dif = difX
+        elif difY >= difX and difY >= difZ:
+            dif = difY
+        else:
+            dif = difZ
         dif = dif * 5 if dif >= 0 else 0
         self._id += 1
         mat = rendering.Material()
@@ -112,14 +124,14 @@ class GameOfLife:
         sphere.compute_vertex_normals()
         sphere.translate([
             x * 0.5, y * 0.5,
-            t * 0.5
+            z * 0.5
         ])
         self.scene.scene.add_geometry("sphere" + str(self._id), sphere, mat)
 
     def get_alives(self):
-        while not self.stop:
-            for y in range(0, GameOfLife.nxC):
-                for x in range(0, GameOfLife.nyC):
+        for y in range(0, GameOfLife.nxC):
+            for x in range(0, GameOfLife.nyC):
+                for z in range(0, GameOfLife.nzC):
                     if not self.stop:
                         n_neigh = self.gameState[(x-1), (y-1)] if (x-1) > 0 and (y-1) > 0 else 0
                         n_neigh += self.gameState[(x), (y-1)] if (y-1) > 0 else 0
@@ -147,11 +159,11 @@ class GameOfLife:
                             self.maxDistance = dist
                         self.x = x
                         self.y = y
+                        self.z = z
                         self.add_sphere()
                     if self.alive_cells == 0 or ((x == 0 or x == (GameOfLife.nxC - 1)) or (y == 0 or y == (GameOfLife.nyC - 1))) and self.newGameState[x, y] == 1:
                         self.stop = True
                         print('stop')
-                    self.t += 1
     
     def _on_menu_random(self):
         def thread_main():
