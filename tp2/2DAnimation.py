@@ -44,8 +44,8 @@ def animate():
                     difX = abs(x-centerX)
                     difY = abs(y-centerY)
                     dif = difX if difX > difY else difY
-                    dif = dif * 0.2 if dif >= 0 else 0
-                    pygame.draw.polygon(screen, (r, 0, 0), poly, 0)
+                    dif = dif * 7 if dif >= 0 else 0
+                    pygame.draw.polygon(screen, (r, 0, 0 + dif), poly, 0)
         pygame.display.flip()
     while True:
         pass
