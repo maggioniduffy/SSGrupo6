@@ -39,13 +39,13 @@ def animate():
                 poly = [((x) * dimCW, y * dimCH), ((x+1) * dimCW, y * dimCH), ((x+1) * dimCW, (y+1) * dimCH), ((x) * dimCW, (y+1) * dimCH)]
                 if c == '0':
                     print('CERO')
-                    pygame.draw.polygon(screen, (128, 128, 128), poly, 0)
+                    pygame.draw.polygon(screen, (5, 5, 5), poly, 0)
                 elif c == '1':
                     difX = abs(x-centerX)
                     difY = abs(y-centerY)
                     dif = difX if difX > difY else difY
-                    dif = dif * 5 if dif >= 0 else 0
-                    pygame.draw.polygon(screen, (r, g, b), poly, 0)
+                    dif = dif * 0.2 if dif >= 0 else 0
+                    pygame.draw.polygon(screen, (r, 0, 0), poly, 0)
         pygame.display.flip()
     while True:
         pass
