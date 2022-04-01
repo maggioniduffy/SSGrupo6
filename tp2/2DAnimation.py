@@ -16,6 +16,7 @@ def animate():
     screen = pygame.display.set_mode((height, width))
 
     bg = 25, 25, 25
+
     screen.fill(bg)
 
     dimCW = width / nxC
@@ -30,6 +31,7 @@ def animate():
         lines = gens[g].split('\n')
         time.sleep(0.5)
         y = 0
+        screen.fill(bg)
         for line in lines:
             y += 1
             print(y)
@@ -39,7 +41,7 @@ def animate():
                 poly = [((x) * dimCW, y * dimCH), ((x+1) * dimCW, y * dimCH), ((x+1) * dimCW, (y+1) * dimCH), ((x) * dimCW, (y+1) * dimCH)]
                 if c == '0':
                     print('CERO')
-                    pygame.draw.polygon(screen, (128, 128, 128), poly, 0)
+                    pygame.draw.polygon(screen, (128, 128, 128), poly, 1)
                 elif c == '1':
                     difX = abs(x-centerX)
                     difY = abs(y-centerY)
