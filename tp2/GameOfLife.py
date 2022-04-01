@@ -1,38 +1,25 @@
 from random import randint
-import pygame
 import numpy as np
-import time
 import sys
 from math import floor
 
+nxC, nyC = 50, 50
+centerX = nxC/2
+centerY = nyC/2
+
 def gameOfLife(maxNeighs = 3, minNeighs = 2):
+    f = open('./output.txt', 'w')
     if len(sys.argv) > 1:
         percentage = int(sys.argv[1])
     else:
         percentage = 0
 
-    pygame.init()
-    r = 255
-    g = 255
-    b = 255
-    width, height = 1000, 1000
-    screen = pygame.display.set_mode((height, width))
-
-    bg = 25, 25, 25
-    screen.fill(bg)
-
-    nxC, nyC = 50, 50
-    centerX = nxC/2
-    centerY = nyC/2
     center = np.array((centerX,centerY))
 
     factorx = nxC/5 * 4 - nxC/5
     factory = nyC/5 * 4 - nyC/5
 
     p_cells = floor(percentage * factorx * factory / 100)
-
-    dimCW = width / nxC
-    dimCH = height / nyC
 
     gameState = np.zeros((nxC, nyC))
 
@@ -55,12 +42,10 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
 
     while go:
         newGameState = np.copy(gameState)
-        
-        screen.fill(bg)
-        time.sleep(0.7)
-        
-        for y in range(0, nxC):
-            for x in range(0, nyC):
+        f.write('new gen\n')
+        for x in range(0, nxC):
+            line = ""
+            for y in range(0, nyC):
                 if not stop:
                     n_neigh = gameState[(x-1), (y-1)] if (x-1) > 0 and (y-1) > 0 else 0
                     n_neigh += gameState[(x), (y-1)] if (y-1) > 0 else 0
@@ -81,38 +66,26 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
                         newGameState[x, y] = 0
                         alive_cells -= 1
 
-                poly = [((x) * dimCW, y * dimCH),
-                        ((x+1) * dimCW, y * dimCH),
-                        ((x+1) * dimCW, (y+1) * dimCH),
-                        ((x) * dimCW, (y+1) * dimCH)]
-
                 if newGameState[x, y] == 0:
-                    pygame.draw.polygon(screen, (128, 128, 128), poly, 1)
+                    line = line + '0'
                 else:
                     point = np.array((x,y))
                     dist = np.linalg.norm(center-point)
                     if dist > maxDistance:
                         maxDistance = dist
-                    difX = abs(x-centerX)
-                    difY = abs(y-centerY)
-                    dif = difX if difX > difY else difY
-                    dif = dif * 5 if dif >= 0 else 0
-                    pygame.draw.polygon(screen, (r, g-dif, b), poly, 0)
+                    line = line + '1'
 
                 if alive_cells == 0 or ((x == 0 or x == (nxC - 1)) or (y == 0 or y == (nyC - 1))) and newGameState[x, y] == 1:
                     go = False
-        
+            f.write(line + '\n')
         alive_cells_ev.append(alive_cells)
         distances.append(maxDistance)
         maxDistance = 0
         gameState = np.copy(newGameState)
 
-        pygame.display.flip()
-    
+    f.close()
     print(alive_cells_ev)
     print(distances)
-    while True:
-        pass
 
 def og_gameOfLife():
     gameOfLife(3,2)

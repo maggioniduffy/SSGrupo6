@@ -18,7 +18,7 @@ class GameOfLife:
         percentage = int(sys.argv[1])
     else:
         percentage = 0
-    
+    sys.setrecursionlimit(99999999)
     nxC, nyC = 50, 50
     centerX = nxC/2
     centerY = nyC/2
@@ -34,7 +34,7 @@ class GameOfLife:
     def set(self):
         self.x = 0
         self.y = 0
-        self.initial_time = time.time()
+        self.initial_t = time.time()
         self._id = 0
         self.stop = False
         self.gameState = np.zeros((GameOfLife.nxC, GameOfLife.nyC))
@@ -89,35 +89,49 @@ class GameOfLife:
                                                self._on_menu_random)
         self.window.set_on_menu_item_activated(GameOfLife.MENU_QUIT,
                                                self._on_menu_quit)
-                                               
-    def __init__(self):
-        self.set()
-
-    def add_sphere(self):
-        x, y, t = self.x, self.y, self.t
-        print(x,y,t)
-        difX = abs(x-self.centerX)
-        difY = abs(y-self.centerY)
-        dif = difX if difX > difY else difY
-        dif = dif * 5 if dif >= 0 else 0
         self._id += 1
         mat = rendering.Material()
         mat.base_color = [
             0.9,
             0.9,
-            (255 - dif) * 0.1, 1.0
+            0.9, 1.0
         ]
         mat.shader = "defaultLit"
-        sphere = o3d.geometry.TriangleMesh.create_sphere(10)
+        sphere = o3d.geometry.TriangleMesh.create_sphere(5)
         sphere.compute_vertex_normals()
         sphere.translate([
-            x * 0.5, y * 0.5,
-            t * 0.5
+            self.centerX * 1.0, self.centerY* 1.0,
+            0.0
+        ])
+        self.scene.scene.add_geometry("sphere" + str(self._id), sphere, mat)            
+    def __init__(self):
+        self.set()
+
+    def add_sphere(self):
+        x, y, t = self.x, self.y, round(time.time() - self.initial_t)
+        difX = abs(x-self.centerX)
+        difY = abs(y-self.centerY)
+        dif = difX if difX > difY else difY
+        dif = dif * 0.05 if dif >= 0 else 0.9
+        self._id += 1
+        mat = rendering.Material()
+        mat.base_color = [
+            0.9,
+            0.1,
+            0.9-dif, 1.0
+        ]
+        mat.shader = "defaultLit"
+        sphere = o3d.geometry.TriangleMesh.create_sphere(0.5)
+        sphere.compute_vertex_normals()
+        sphere.translate([
+            x * 1.0, y * 1.0,
+            t * 10.0
         ])
         self.scene.scene.add_geometry("sphere" + str(self._id), sphere, mat)
 
     def get_alives(self):
         while not self.stop:
+            time.sleep(1)
             for y in range(0, GameOfLife.nxC):
                 for x in range(0, GameOfLife.nyC):
                     if not self.stop:
@@ -132,15 +146,18 @@ class GameOfLife:
 
                         #Regla 1
                         if self.gameState[x, y] == 0 and n_neigh == GameOfLife.maxNeighs:
+                            print('vive')
                             self.newGameState[x, y] = 1
                             self.alive_cells += 1
                         
                         #Regla 2
                         elif self.gameState[x, y] == 1 and (n_neigh <= GameOfLife.minNeighs or n_neigh > GameOfLife.maxNeighs):
+                            print('muere')
                             self.newGameState[x, y] = 0
                             self.alive_cells -= 1
+                    
                     if self.newGameState[x, y] == 1:
-                        print(x,y)
+                        print('add')
                         point = np.array((x,y))
                         dist = np.linalg.norm(GameOfLife.center-point)
                         if dist > self.maxDistance:
@@ -150,13 +167,11 @@ class GameOfLife:
                         self.add_sphere()
                     if self.alive_cells == 0 or ((x == 0 or x == (GameOfLife.nxC - 1)) or (y == 0 or y == (GameOfLife.nyC - 1))) and self.newGameState[x, y] == 1:
                         self.stop = True
-                        print('stop')
-                    self.t += 1
     
     def _on_menu_random(self):
         def thread_main():
-            while True:
-                time.sleep(1)
+            time.sleep(1)
+            if not self.stop:
                 gui.Application.instance.post_to_main_thread(self.window, self.get_alives)
 
         threading.Thread(target=thread_main).start()
