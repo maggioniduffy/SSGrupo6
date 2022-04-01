@@ -26,8 +26,10 @@ def animate():
     f.close()
     y = 0
     for g in range(1, len(gens)):
+        print('G: ', g)
         lines = gens[g].split('\n')
-        time.sleep(0.1)
+        time.sleep(0.5)
+        y = 0
         for line in lines:
             y += 1
             print(y)
@@ -36,6 +38,7 @@ def animate():
                 x += 1
                 poly = [((x) * dimCW, y * dimCH), ((x+1) * dimCW, y * dimCH), ((x+1) * dimCW, (y+1) * dimCH), ((x) * dimCW, (y+1) * dimCH)]
                 if c == '0':
+                    print('CERO')
                     pygame.draw.polygon(screen, (128, 128, 128), poly, 1)
                 elif c == '1':
                     difX = abs(x-centerX)
