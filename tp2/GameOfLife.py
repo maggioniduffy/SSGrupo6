@@ -84,7 +84,15 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
         gameState = np.copy(newGameState)
 
     f.close()
-    print(alive_cells_ev)
+    g = open('./results.txt', 'w')
+    g.write('Celulas vivas en generacion: \n')
+    for i in range(1, len(alive_cells_ev)):
+        g.write(str(i) + ": " + str(alive_cells_ev[i]) + '\n')
+
+    g.write('Rango maximo en generacion: \n')
+    for i in range(1, len(distances)):
+        g.write(str(i) + ": " + str(distances[i]) + '\n')
+    g.close()
     print(distances)
 
 def og_gameOfLife():
