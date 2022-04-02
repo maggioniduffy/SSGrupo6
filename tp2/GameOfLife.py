@@ -2,10 +2,7 @@ from random import randint
 import numpy as np
 import sys
 from math import floor
-
-nxC, nyC = 50, 50
-centerX = nxC/2
-centerY = nyC/2
+from constants import nxC, nyC, centerX, centerY
 
 def gameOfLife(maxNeighs = 3, minNeighs = 2):
     f = open('./output.txt', 'w')
@@ -23,6 +20,7 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
 
     gameState = np.zeros((nxC, nyC))
 
+    maxDistance = 0
     for _ in range(0, p_cells):
         x = randint(floor(nxC/5), floor(nxC/5)*4)
         y = randint(floor(nyC/5), floor(nyC/5)*4)
@@ -30,15 +28,18 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
             x = randint(floor(nxC/5), floor(nxC/5)*4)
             y = randint(floor(nyC/5), floor(nyC/5)*4)
         gameState[x, y] = 1
+        point = np.array((x,y))
+        dist = np.linalg.norm(center-point)
+        if dist > maxDistance:
+            maxDistance = dist
 
+    distances = [maxDistance]
     stop = False
-     
+    
+    maxDistance = 0
     alive_cells = p_cells
     alive_cells_ev = [alive_cells]
     go = True
-
-    distances = []
-    maxDistance = 0
 
     while go:
         newGameState = np.copy(gameState)
@@ -99,7 +100,7 @@ def og_gameOfLife():
     gameOfLife(3,2)
 
 def new_gameOfLife():
-    gameOfLife(1,9)
+    gameOfLife(2,1)
 
 if sys.argv[2] == '1':
     print('og')

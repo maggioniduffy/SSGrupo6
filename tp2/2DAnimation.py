@@ -1,10 +1,7 @@
 import pygame
 import time
 from GameOfLife import nxC, nyC, centerX, centerY
-
-nxC, nyC = 50, 50
-centerX = nxC/2
-centerY = nyC/2
+from constants import centerX, centerY, nxC, nyC
 
 def animate():
     pygame.init()
@@ -21,10 +18,12 @@ def animate():
 
     dimCW = width / nxC
     dimCH = height / nyC
+    
     f = open('./output.txt', 'r')
     matrix = f.read()
-    gens = matrix.split('new gen\n')
     f.close()
+    gens = matrix.split('new gen\n')
+
     y = 0
     for g in range(1, len(gens)):
         print('G: ', g)
