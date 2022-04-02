@@ -108,8 +108,8 @@ class GameOfLife:
             gui.Application.instance.post_to_main_thread(self.window, self.update_geometry)
         time.sleep(1)
     def _on_menu_random(self):
-        while True:
-            def thread_main():
+        def thread_main():
+            while True:
                 gui.Application.instance.post_to_main_thread(self.window, self.animate)
 
         threading.Thread(target=thread_main).start()
