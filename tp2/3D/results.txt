@@ -1,19 +1,17 @@
-Cantidad de celulas iniciales: 100
+Cantidad de celulas iniciales: 400
 Celulas vivas en generacion: 
-0: 100
-1: 197
-2: 222
-3: 321
-4: 412
-5: 553
-6: 598
-7: 847
-8: 905
-9: 1261
-10: 1229
-11: 1747
+0: 400
+1: 322
+2: 486
+3: 642
+4: 885
+5: 941
+6: 1211
+7: 1363
+8: 1655
+9: 1865
 Rango maximo en generacion: 
-0: 8.12403840463596
+0: 8.660254037844387
 1: 0
 2: 0
 3: 0
@@ -23,6 +21,4 @@ Rango maximo en generacion:
 7: 0
 8: 0
 9: 0
-10: 0
-11: 0
-Tiempo transcurrido en segundos: 0.004422092676162719
+Tiempo transcurrido en segundos: 0.002231757640838623

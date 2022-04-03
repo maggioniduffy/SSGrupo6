@@ -125,13 +125,13 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
     
     g.write('Tiempo transcurrido en segundos: ' + str(t_final / 1000))
     g.close()
-    draw(gens, alive_cells_ev, p_cells)
+    draw(gens, alive_cells_ev, p_cells, t_final)
 
 def og_gameOfLife():
     gameOfLife(3,2)
 
 def new_gameOfLife():
-    gameOfLife(1,9)
+    gameOfLife(6,3)
 
 if sys.argv[2] == '1':
     print('og')
