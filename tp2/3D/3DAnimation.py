@@ -31,6 +31,11 @@ class GameOfLife:
                                     [10, 10, 10])
         self.scene.setup_camera(60, bbox, [centerX, centerY, centerZ])
         self.window.add_child(self.scene)
+        f = open('./output.txt')
+        data = f.read()
+        f.close()
+        self.gens = data.split('new gen\n')
+        self.iteration = 0
 
         if gui.Application.instance.menubar is None:
             if isMacOS:
@@ -59,7 +64,8 @@ class GameOfLife:
         self.window.set_on_menu_item_activated(GameOfLife.MENU_QUIT,
                                 self._on_menu_quit)  
     def update_geometry(self):
-        self.widget.scene.clear_geometry()
+        #self.scene.update_geometry()
+        self.animate()
         #widget.scene.add_geometry('frame', frame, mat)
         #widget.scene.add_geometry('mesh', mesh, mat)   
 
@@ -92,26 +98,24 @@ class GameOfLife:
         self.scene.scene.add_geometry("sphere" + str(self._id), sphere, mat)
 
     def animate(self):
-        f = open('./output.txt')
-        data = f.read()
-        f.close()
-        gens = data.split('new gen\n')
-        for g in range(1, len(gens)):
-            print(g)
-            lines = gens[g].split('\n')
-            for line in lines:
-                cell = line.split(',')
-                if cell[0] != '':
-                    x,y,z,state= float(cell[0]),float(cell[1]),float(cell[2]),float(cell[3])
-                    if state == 1:
-                        self.add_sphere(x,y,z)
-            gui.Application.instance.post_to_main_thread(self.window, self.update_geometry)
-        time.sleep(1)
+        print(self.iteration)
+        lines = self.gens[self.iteration].split('\n')
+        for line in lines:
+            cell = line.split(',')
+            if cell[0] != '':
+                x,y,z,state= float(cell[0]),float(cell[1]),float(cell[2]),float(cell[3])
+                if state == 1:
+                    self.add_sphere(x,y,z)
+            
     def _on_menu_random(self):
         def thread_main():
+            for g in self.gens:
+                print(g)
+                time.sleep(2)
+                gui.Application.instance.post_to_main_thread(self.window, self.update_geometry)
+                self.iteration += 1
             while True:
-                gui.Application.instance.post_to_main_thread(self.window, self.animate)
-
+                pass
         threading.Thread(target=thread_main).start()
 
     def _on_menu_quit(self):
