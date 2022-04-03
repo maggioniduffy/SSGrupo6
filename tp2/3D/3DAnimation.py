@@ -115,7 +115,7 @@ class GameOfLife:
                 #print(g)
                 gui.Application.instance.post_to_main_thread(self.window, self.update_geometry)
                 self.iteration += 1
-                time.sleep(0.5)
+                time.sleep(0.1)
             time.sleep(15)
             
         threading.Thread(target=thread_main).start()

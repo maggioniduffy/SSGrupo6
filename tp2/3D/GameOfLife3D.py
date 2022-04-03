@@ -4,7 +4,7 @@ import sys
 import time
 from math import floor
 from constants import centerX, centerY, centerZ, nxC, nyC, nzC
-from graphic import draw
+# from graphic import draw
 
 def gameOfLife(maxNeighs = 3, minNeighs = 2):
     t_inicial = time.time()
@@ -12,6 +12,11 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
         percentage = int(sys.argv[1])
     else:
         percentage = 0
+
+    if len(sys.argv) > 3:
+        gen_limit = sys.argv[3]
+    else:
+        gen_limit = 200
 
     center = np.array((centerX,centerY,centerZ))
 
@@ -90,7 +95,7 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
                             alive_cells += 1
                         
                         #Regla 2
-                        elif gameState[x,y,z] == 1 and (n_neigh <= minNeighs or n_neigh > maxNeighs):
+                        elif gameState[x,y,z] == 1 and (n_neigh < minNeighs or n_neigh > maxNeighs):
                             newGameState[x,y,z] = 0
                             alive_cells -= 1
 
@@ -103,7 +108,7 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
                             maxDistance = dist
                         line = "{x},{y},{z},1".format(x = x,y = y,z = z)
             
-                    if alive_cells == 0 or ((x == 0 or x == (nxC - 1)) or (y == 0 or y == (nyC - 1)) or (z == 0 or z == (nzC - 1))) and newGameState[x,y,z] == 1:
+                    if gens == gen_limit or alive_cells == 0 or ((x == 0 or x == (nxC - 1)) or (y == 0 or y == (nyC - 1)) or (z == 0 or z == (nzC - 1))) and newGameState[x,y,z] == 1:
                         go = False
                     f.write(line + '\n')
         maxDistance = 0
@@ -125,7 +130,7 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
     
     g.write('Tiempo transcurrido en segundos: ' + str(t_final / 1000))
     g.close()
-    draw(gens, alive_cells_ev, p_cells, t_final)
+    # draw(gens, alive_cells_ev, p_cells, t_final)
 
 def og_gameOfLife():
     gameOfLife(3,2)
