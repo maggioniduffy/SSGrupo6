@@ -4,6 +4,7 @@ import sys
 import time
 from math import floor
 from constants import centerX, centerY, centerZ, nxC, nyC, nzC
+from graphic import draw
 
 def gameOfLife(maxNeighs = 3, minNeighs = 2):
     t_inicial = time.time()
@@ -46,9 +47,11 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
     go = True
 
     f = open('./output.txt', 'w')
+    gens = 1
     while go:
         newGameState = np.copy(gameState)
         f.write('new gen\n')
+        gens += 1
         for x in range(0, nxC):
             for y in range(0, nyC):
                 for z in range(0, nzC):
@@ -103,14 +106,15 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
                     if alive_cells == 0 or ((x == 0 or x == (nxC - 1)) or (y == 0 or y == (nyC - 1)) or (z == 0 or z == (nzC - 1))) and newGameState[x,y,z] == 1:
                         go = False
                     f.write(line + '\n')
-        alive_cells_ev.append(alive_cells)
-        distances.append(maxDistance)
         maxDistance = 0
         gameState = np.copy(newGameState)
+        alive_cells_ev.append(alive_cells)
+        distances.append(maxDistance)
 
     t_final = time.time() - t_inicial
     f.close()
     g = open('./results.txt', 'w')
+    g.write('Cantidad de celulas iniciales: ' + str(p_cells) + '\n')
     g.write('Celulas vivas en generacion: \n')
     for i in range(0, len(alive_cells_ev)):
         g.write(str(i) + ": " + str(alive_cells_ev[i]) + '\n')
@@ -119,8 +123,9 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
     for i in range(0, len(distances)):
         g.write(str(i) + ": " + str(distances[i]) + '\n')
     
-    g.write('Tiempo transcurrido en segundos: ', t_final / 1000)
+    g.write('Tiempo transcurrido en segundos: ' + str(t_final / 1000))
     g.close()
+    draw(gens, alive_cells_ev, p_cells)
 
 def og_gameOfLife():
     gameOfLife(3,2)

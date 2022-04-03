@@ -1,6 +1,5 @@
 import pygame
 import time
-from GameOfLife import nxC, nyC, centerX, centerY
 from constants import centerX, centerY, nxC, nyC
 
 def animate():
