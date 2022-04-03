@@ -1,11 +1,12 @@
 from random import randint
 import numpy as np
 import sys
+import time
 from math import floor
 from constants import centerX, centerY, centerZ, nxC, nyC, nzC
 
 def gameOfLife(maxNeighs = 3, minNeighs = 2):
-    f = open('./output.txt', 'w')
+    t_inicial = time.time()
     if len(sys.argv) > 1:
         percentage = int(sys.argv[1])
     else:
@@ -44,6 +45,7 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
     alive_cells_ev = [alive_cells]
     go = True
 
+    f = open('./output.txt', 'w')
     while go:
         newGameState = np.copy(gameState)
         f.write('new gen\n')
@@ -106,6 +108,7 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
         maxDistance = 0
         gameState = np.copy(newGameState)
 
+    t_final = time.time() - t_inicial
     f.close()
     g = open('./results.txt', 'w')
     g.write('Celulas vivas en generacion: \n')
@@ -115,8 +118,9 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
     g.write('Rango maximo en generacion: \n')
     for i in range(0, len(distances)):
         g.write(str(i) + ": " + str(distances[i]) + '\n')
+    
+    g.write('Tiempo transcurrido en segundos: ', t_final / 1000)
     g.close()
-    print(distances)
 
 def og_gameOfLife():
     gameOfLife(3,2)
