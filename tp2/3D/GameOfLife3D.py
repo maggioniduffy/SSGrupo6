@@ -13,9 +13,9 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
 
     center = np.array((centerX,centerY,centerZ))
 
-    factorx = nxC/5 * 4 - nxC/5
-    factory = nyC/5 * 4 - nyC/5
-    factorz = nzC/5 * 4 - nzC/5
+    factorx = nxC/3 * 2 - nxC/3
+    factory = nyC/3 * 2 - nyC/3
+    factorz = nzC/3 * 2 - nzC/3
 
     p_cells = floor(percentage * factorx * factory * factorz / 100)
 
@@ -23,13 +23,13 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
 
     maxDistance = 0
     for _ in range(0, p_cells):
-        x = randint(floor(nxC/5), floor(nxC/5)*4)
-        y = randint(floor(nyC/5), floor(nyC/5)*4)
-        z = randint(floor(nzC/5), floor(nzC/5)*4)
+        x = randint(floor(nxC/3), floor(nxC/3)*2)
+        y = randint(floor(nyC/3), floor(nyC/3)*2)
+        z = randint(floor(nzC/3), floor(nzC/3)*2)
         while gameState[x, y, z] == 1:
-            x = randint(floor(nxC/5), floor(nxC/5)*4)
-            y = randint(floor(nyC/5), floor(nyC/5)*4)
-            z = randint(floor(nzC/5), floor(nzC/5)*4)
+            x = randint(floor(nxC/3), floor(nxC/3)*2)
+            y = randint(floor(nyC/3), floor(nyC/3)*2)
+            z = randint(floor(nzC/3), floor(nzC/3)*2)
         gameState[x, y, z] = 1
         point = np.array((x,y,z))
         dist = np.linalg.norm(center-point)

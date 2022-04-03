@@ -5,6 +5,7 @@ import platform
 import threading
 import time
 import sys
+from constants import nxC, nyC, nzC
 
 from constants import centerX, centerY, centerZ
 
@@ -27,8 +28,8 @@ class GameOfLife:
         [1, 1, 1],
         100000)
         self.scene.scene.scene.enable_sun_light(True)
-        bbox = o3d.geometry.AxisAlignedBoundingBox([-10, -10, -10],
-                                    [10, 10, 10])
+        bbox = o3d.geometry.AxisAlignedBoundingBox([0, 0, 0],
+                                    [nxC, nyC, nzC])
         self.scene.setup_camera(60, bbox, [centerX, centerY, centerZ])
         self.window.add_child(self.scene)
 
@@ -65,7 +66,7 @@ class GameOfLife:
         self.window.set_on_menu_item_activated(GameOfLife.MENU_QUIT,
                                 self._on_menu_quit)  
     def update_geometry(self):
-        self.scene.scene.update_geometry()
+        self.scene.scene.clear_geometry()
         self.animate()
         #widget.scene.add_geometry('frame', frame, mat)
         #widget.scene.add_geometry('mesh', mesh, mat)   
@@ -81,7 +82,7 @@ class GameOfLife:
         else:
             dif = difZ
 
-        dif = dif * 0.05 if dif >= 0 else 0.9
+        dif = dif * 0.1 if dif >= 0 else 0.9
         self._id += 1
         mat = rendering.MaterialRecord()
         mat.base_color = [
@@ -90,7 +91,7 @@ class GameOfLife:
             0.9-dif, 1.0
         ]
         mat.shader = "defaultLit"
-        sphere = o3d.geometry.TriangleMesh.create_sphere(0.2)
+        sphere = o3d.geometry.TriangleMesh.create_sphere(0.4)
         sphere.compute_vertex_normals()
         sphere.translate([
             x * 1.0, y * 1.0,
@@ -110,13 +111,13 @@ class GameOfLife:
             
     def _on_menu_random(self):
         def thread_main():
-            for g in range(0,len(self.gens)):
-                print(g)
-                time.sleep(2)
+            for g in range(0,len(self.gens)-1):
+                #print(g)
                 gui.Application.instance.post_to_main_thread(self.window, self.update_geometry)
                 self.iteration += 1
-            while True:
-                pass
+                time.sleep(0.5)
+            time.sleep(15)
+            
         threading.Thread(target=thread_main).start()
 
     def _on_menu_quit(self):

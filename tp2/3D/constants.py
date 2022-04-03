@@ -1,4 +1,4 @@
-nxC, nyC, nzC = 20, 20, 20
+nxC, nyC, nzC = 30, 30, 30
 
 centerX = nxC/2
 centerY = nyC/2
