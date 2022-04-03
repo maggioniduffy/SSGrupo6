@@ -31,6 +31,7 @@ class GameOfLife:
                                     [10, 10, 10])
         self.scene.setup_camera(60, bbox, [centerX, centerY, centerZ])
         self.window.add_child(self.scene)
+
         f = open('./output.txt')
         data = f.read()
         f.close()
@@ -64,7 +65,7 @@ class GameOfLife:
         self.window.set_on_menu_item_activated(GameOfLife.MENU_QUIT,
                                 self._on_menu_quit)  
     def update_geometry(self):
-        #self.scene.update_geometry()
+        self.scene.scene.update_geometry()
         self.animate()
         #widget.scene.add_geometry('frame', frame, mat)
         #widget.scene.add_geometry('mesh', mesh, mat)   
@@ -82,7 +83,7 @@ class GameOfLife:
 
         dif = dif * 0.05 if dif >= 0 else 0.9
         self._id += 1
-        mat = rendering.Material()
+        mat = rendering.MaterialRecord()
         mat.base_color = [
             0.9,
             0.1,
@@ -98,7 +99,7 @@ class GameOfLife:
         self.scene.scene.add_geometry("sphere" + str(self._id), sphere, mat)
 
     def animate(self):
-        print(self.iteration)
+        print(self.iteration, len(self.gens))
         lines = self.gens[self.iteration].split('\n')
         for line in lines:
             cell = line.split(',')
@@ -109,7 +110,7 @@ class GameOfLife:
             
     def _on_menu_random(self):
         def thread_main():
-            for g in self.gens:
+            for g in range(0,len(self.gens)):
                 print(g)
                 time.sleep(2)
                 gui.Application.instance.post_to_main_thread(self.window, self.update_geometry)
