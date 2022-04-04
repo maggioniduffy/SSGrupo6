@@ -27,7 +27,6 @@ def animate():
     for g in range(1, len(gens)):
         print('G: ', g)
         lines = gens[g].split('\n')
-        time.sleep(0.5)
         y = 0
         screen.fill(bg)
         for line in lines:
@@ -47,6 +46,7 @@ def animate():
                     dif = dif * 7 if dif >= 0 else 0
                     pygame.draw.polygon(screen, (r, 0, 0 + dif), poly, 0)
         pygame.display.flip()
+        time.sleep(0.5)
     while True:
         pass
 

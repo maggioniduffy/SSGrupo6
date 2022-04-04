@@ -83,6 +83,7 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
 
                 if alive_cells == 0 or ((x == 0 or x == (nxC - 1)) or (y == 0 or y == (nyC - 1))) and newGameState[x, y] == 1:
                     go = False
+                    stop = True
             f.write(line + '\n')
         maxDistance = 0
         gameState = np.copy(newGameState)
@@ -103,13 +104,13 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
 
     g.write('Tiempo transcurrido en segundos: ' + str(t_final / 1000))
     g.close()
-    draw(gens, alive_cells_ev, p_cells)
+    draw(gens, alive_cells_ev, p_cells, t_final)
 
 def og_gameOfLife():
     gameOfLife(3,2)
 
 def new_gameOfLife():
-    gameOfLife(7,1)
+    gameOfLife(6,3)
 
 if sys.argv[2] == '1':
     print('og')
