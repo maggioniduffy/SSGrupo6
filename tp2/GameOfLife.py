@@ -14,6 +14,11 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
     else:
         percentage = 0
 
+    if len(sys.argv) > 3:
+        gen_limit = sys.argv[3]
+    else:
+        gen_limit = 200
+        
     center = np.array((centerX,centerY))
 
     factorx = nxC/5 * 4 - nxC/5
@@ -68,7 +73,7 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
                         alive_cells += 1
                     
                     #Regla 2
-                    elif gameState[x, y] == 1 and (n_neigh <= minNeighs or n_neigh > maxNeighs):
+                    elif gameState[x, y] == 1 and (n_neigh < minNeighs or n_neigh > maxNeighs):
                         newGameState[x, y] = 0
                         alive_cells -= 1
 
@@ -81,7 +86,7 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
                         maxDistance = dist
                     line = line + '1'
 
-                if alive_cells == 0 or ((x == 0 or x == (nxC - 1)) or (y == 0 or y == (nyC - 1))) and newGameState[x, y] == 1:
+                if gens == gen_limit or alive_cells == 0 or ((x == 0 or x == (nxC - 1)) or (y == 0 or y == (nyC - 1))) and newGameState[x, y] == 1:
                     go = False
                     stop = True
             f.write(line + '\n')
@@ -104,7 +109,7 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
 
     g.write('Tiempo transcurrido en segundos: ' + str(t_final / 1000))
     g.close()
-    draw(gens, alive_cells_ev, p_cells, t_final)
+    draw(gens, alive_cells_ev, p_cells)
 
 def og_gameOfLife():
     gameOfLife(3,2)
