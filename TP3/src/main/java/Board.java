@@ -2,15 +2,14 @@ import java.util.*;
 import static java.lang.Math.*;
 
 public class Board {
-    static int SIDE_SIZE = 6;
-    static int MIN_PARTICLES = 100;
-    static int MAX_PARTICLES = 150;
-    static double SMALL_RADIUS = 0.2;
-    static double SMALL_MASS = 0.9;
-    static double BIG_RADIUS = 0.7;
-    static double BIG_MASS = 2;
-    private static int MAX_ITERATIONS = 20000;
-    private static int MAX_ATTEMPS = 20000;
+    final int SIDE_SIZE = 6;
+    final int MIN_PARTICLES = 100;
+    final int MAX_PARTICLES = 150;
+    final double SMALL_RADIUS = 0.2;
+    final double SMALL_MASS = 0.9;
+    final double BIG_RADIUS = 0.7;
+    final double BIG_MASS = 2;
+    private static int MAX_ATTEMPS = 2000;
 
     private double maxVelocity;
     private double bigParticleX = 0;
@@ -18,14 +17,15 @@ public class Board {
     private double center = SIDE_SIZE/2;
 
     private List<Particle> particles = new ArrayList<Particle>();
-    public SortedMap<Float, List<Particle>> states = new TreeMap<>();
-    float time = 0;
-
-    int iterations = 0;
-
+    List<Collision> collisions;
+    
     public Board(double maxVelocity) {
         this.maxVelocity = maxVelocity;
-        createParticles();
+        this.createParticles();
+    }
+
+    public ArrayList<Particle> getParticles() {
+        return (ArrayList<Particle>) particles;
     }
 
     private void createParticles() {
@@ -46,19 +46,18 @@ public class Board {
 
         while (particlesNumber != quantity && attempt != MAX_ATTEMPS) {
 
-            double x = (random.nextDouble() * (SMALL_RADIUS*2) - SMALL_RADIUS);
-            double y = (random.nextDouble() * (SMALL_RADIUS*2) - SMALL_RADIUS);
-
-            if (appendParticle(x, y, SMALL_RADIUS, SMALL_MASS)) {
+            double aux = SIDE_SIZE-SMALL_RADIUS;
+            float x = (float) (SMALL_RADIUS + (aux - SMALL_RADIUS) * random.nextDouble());
+            float y = (float) (SMALL_RADIUS + (aux - SMALL_RADIUS) * random.nextDouble());
+            if (appendParticle(x, y)) {
                 particlesNumber += 1;
             }
             attempt += 1;
         }
     }
 
-    private boolean appendParticle(double xPos, double yPos, double radius, double mass) {
+    private boolean appendParticle(double xPos, double yPos) {
         for (Particle p : particles) {
-
             float distance = (float) (sqrt((yPos - p.getPosY()) * (yPos - p.getPosY()) + (xPos - p.getPosX()) * (xPos - p.getPosX())) - (p.getRad() + SMALL_RADIUS));
             if (distance < 0)
                 return false;
