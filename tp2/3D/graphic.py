@@ -5,7 +5,7 @@ plt.style.use('default')
 
 def draw(gens, y: list, p_cells, time):
     fig, ax = plt.subplots()
-    plt.title('Juego de la vida 2D, ' + 'Celulas iniciales: ' + str(p_cells) + '\n Tiempo de ejecucion: \n' + str(time) + ' segundos')
+    plt.title('Juego de la vida 2D, ' + 'Celulas iniciales: ' + str(p_cells) + '\n Tiempo de ejecucion: \n' + str(time) + ' segundos\n Ultima cantidad de celdas: ' +str(y[-1]))
     plt.xlabel('Generaciones')
     plt.ylabel('Celulas vivas')
 

@@ -136,7 +136,7 @@ def og_gameOfLife():
     gameOfLife(3,2)
 
 def new_gameOfLife():
-    gameOfLife(6,3)
+    gameOfLife(6,5)
 
 if sys.argv[2] == '1':
     print('og')
