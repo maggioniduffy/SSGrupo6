@@ -10,15 +10,15 @@ class Collision{
     CollisionType type;
     Particle p1;
     Particle p2;
-    float time;
+    double time;
 
-    public Collision(float time, CollisionType collisionType, Particle p1){
-        this.type = collisionType;
+    public Collision(double time, CollisionType type, Particle p1){
+        this.type = type;
         this.p1 = p1;
         this.time = time;
     }
-    public Collision(float time, CollisionType collisionType, Particle p1, Particle p2){
-        this.type = collisionType;
+    public Collision(double time, CollisionType type, Particle p1, Particle p2){
+        this.type = type;
         this.p1 = p1;
         this.p2 = p2;
         this.time = time;

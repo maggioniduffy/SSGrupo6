@@ -1,5 +1,4 @@
 import java.util.*;
-import static java.lang.Math.*;
 
 public class Board {
     final int SIDE_SIZE = 6;
@@ -16,8 +15,7 @@ public class Board {
     private double bigParticleY = 0;
     private double center = SIDE_SIZE/2;
 
-    private List<Particle> particles = new ArrayList<Particle>();
-    List<Collision> collisions;
+    private ArrayList<Particle> particles = new ArrayList<Particle>();
     
     public Board(double maxVelocity) {
         this.maxVelocity = maxVelocity;
@@ -25,7 +23,7 @@ public class Board {
     }
 
     public ArrayList<Particle> getParticles() {
-        return (ArrayList<Particle>) particles;
+        return particles;
     }
 
     private void createParticles() {
@@ -47,8 +45,8 @@ public class Board {
         while (particlesNumber != quantity && attempt != MAX_ATTEMPS) {
 
             double aux = SIDE_SIZE-SMALL_RADIUS;
-            float x = (float) (SMALL_RADIUS + (aux - SMALL_RADIUS) * random.nextDouble());
-            float y = (float) (SMALL_RADIUS + (aux - SMALL_RADIUS) * random.nextDouble());
+            double x = (SMALL_RADIUS + (aux - SMALL_RADIUS) * random.nextDouble());
+            double y = (SMALL_RADIUS + (aux - SMALL_RADIUS) * random.nextDouble());
             if (appendParticle(x, y)) {
                 particlesNumber += 1;
             }
@@ -58,16 +56,16 @@ public class Board {
 
     private boolean appendParticle(double xPos, double yPos) {
         for (Particle p : particles) {
-            float distance = (float) (sqrt((yPos - p.getPosY()) * (yPos - p.getPosY()) + (xPos - p.getPosX()) * (xPos - p.getPosX())) - (p.getRad() + SMALL_RADIUS));
+            double distance = (Math.sqrt((yPos - p.getPosY()) * (yPos - p.getPosY()) + (xPos - p.getPosX()) * (xPos - p.getPosX())) - (p.getRad() + SMALL_RADIUS));
             if (distance < 0)
                 return false;
         }
         Random r = new Random();
-        float velocity = (float) (maxVelocity * r.nextDouble());
-        float angle = (float) Math.toRadians(Math.random() * 360);
+        double velocity = (maxVelocity * r.nextDouble());
+        double angle = Math.toRadians(Math.random() * 360);
 
-        float xVel = (float) (velocity * Math.cos(angle));
-        float yVel = (float) (velocity * Math.sin(angle));
+        double xVel = (velocity * Math.cos(angle));
+        double yVel = (velocity * Math.sin(angle));
 
         particles.add(new Particle(xPos, yPos, xVel, yVel, SMALL_RADIUS, SMALL_MASS));
 

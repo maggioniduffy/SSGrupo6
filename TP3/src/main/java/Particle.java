@@ -1,4 +1,5 @@
 public class Particle {
+
     private double posX, posY, velX, velY, rad, mass, collTime;
 
     public Particle(double posX, double posY, double velX, double velY, double rad, double mass) {
@@ -66,57 +67,59 @@ public class Particle {
         this.collTime = collTime;
     }
 
-    public void updatePosition(float time) {
-        this.posX = this.posX + (this.velX * time); //Habria que usar la velocidad inicial en vez de this.posX en el primer termino?
-        this.posY = this.posY + (this.velY * time); //Igual que con X
+    public void updatePosition(double collTime) {
+        this.posX = this.posX + (this.velX * collTime); //Habria que usar la velocidad inicial en vez de this.posX en el primer termino?
+        this.posY = this.posY + (this.velY * collTime); //Igual que con X
     }
 
-    public float timeToParticleCollision(Particle particle){
+    public double timeToParticleCollision(Particle particle){
 
-        double deltaR[] = {this.posX - particle.getPosX(), this.posY - particle.getPosY()};
-        double deltaV[] = {this.velX - particle.getVelX(), this.velY - particle.getVelY()};
-        double deltas = deltaV[0] * deltaR[0] + deltaV[1] * deltaR[1];
+        double deltaPosX = this.posX - particle.getPosX();
+        double deltaPosY = this.posY - particle.getPosY();
+        double deltaVelX = this.velX - particle.getVelX();
+        double deltaVelY = this.velY - particle.getVelY();
+        double deltas = deltaPosX * deltaVelX + deltaPosY * deltaVelY;
+
         if (deltas >= 0){
-            return Float.MAX_VALUE;
+            return Double.MAX_VALUE;
         }
+
         double sigma = this.rad + particle.getRad();
-        float escDeltaV = (float) (Math.pow(deltaV[0], 2) + Math.pow(deltaV[1], 2));
-        float escDeltaR = (float) (Math.pow(deltaR[0], 2) + Math.pow(deltaR[1], 2));
+        double escDeltaR = (Math.pow(deltaPosX, 2) + Math.pow(deltaPosY, 2));
+        double escDeltaV = (Math.pow(deltaVelX, 2) + Math.pow(deltaVelY, 2));
 
-        float d = (float) (Math.pow(deltas, 2) - escDeltaV * ( escDeltaR - Math.pow(sigma, 2)));
+        double d = (Math.pow(deltas, 2) - escDeltaV * ( escDeltaR - Math.pow(sigma, 2)));
         if (d < 0){
-            return Float.MAX_VALUE;
+            return Double.MAX_VALUE;
         }
-        float collisionTime = (float) -((deltas + Math.sqrt(d)) / escDeltaV);
+        double collTime = - ((deltas + Math.sqrt(d)) / escDeltaV);
 
-        return  collisionTime;
+        return  collTime;
     }
 
-    public float timeToVerticalWallCollision(float size){
-        float collisionTime;
-        float collisionTimeXver = Float.MAX_VALUE;
+    public double timeToVerticalWallCollision(double size){
 
-        if (this.velX > 0.0f){
-            collisionTimeXver =  (float) ((size - this.rad - this.posX) / this.velX);
-        } else if (this.velX < 0.0f) {
-            collisionTimeXver = (float) ((this.rad - this.posX) / this.velX);
+        double collTime = Double.MAX_VALUE;
+
+        if (this.velX > 0.0){
+            collTime = ((size - this.rad - this.posX) / this.velX);
+        } else if (this.velX < 0.0) {
+            collTime = ((this.rad - this.posX) / this.velX);
         }
 
-        collisionTime = collisionTimeXver ;
-        return collisionTime;
+        return collTime;
     }
 
-    public Float timeToHorizontalWallCollision(float size){
-        Float collisionTime;
-        Float collisionTimeYhor=Float.MAX_VALUE;
+    public double timeToHorizontalWallCollision(double size){
 
-        if (this.velY > 0.0f){
-            collisionTimeYhor =  (float) ((size - this.rad - this.posY) / this.velY);
-        } else if (this.velY < 0.0f){
-            collisionTimeYhor = (float) ((this.rad - this.posY) / this.velY);
+        double collTime = Double.MAX_VALUE;
+
+        if (this.velY > 0.0){
+            collTime = ((size - this.rad - this.posY) / this.velY);
+        } else if (this.velY < 0.0){
+            collTime = ((this.rad - this.posY) / this.velY);
         }
-        collisionTime = collisionTimeYhor;
 
-        return collisionTime;
+        return collTime;
     }
 }
