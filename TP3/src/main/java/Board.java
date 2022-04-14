@@ -2,8 +2,6 @@ import java.util.*;
 
 public class Board {
     final int SIDE_SIZE = 6;
-    final int MIN_PARTICLES = 100;
-    final int MAX_PARTICLES = 150;
     final double SMALL_RADIUS = 0.2;
     final double SMALL_MASS = 0.9;
     final double BIG_RADIUS = 0.7;
@@ -11,14 +9,16 @@ public class Board {
     private static int MAX_ATTEMPS = 2000;
 
     private double maxVelocity;
+    private int particlesQuantity;
     private double bigParticleX = 0;
     private double bigParticleY = 0;
     private double center = SIDE_SIZE/2;
 
     private ArrayList<Particle> particles = new ArrayList<Particle>();
     
-    public Board(double maxVelocity) {
+    public Board(double maxVelocity, int particlesQuantity) {
         this.maxVelocity = maxVelocity;
+        this.particlesQuantity = particlesQuantity;
         this.createParticles();
     }
 
@@ -27,8 +27,7 @@ public class Board {
     }
 
     private void createParticles() {
-        particles.add(
-                new Particle(
+        particles.add(new Particle(
                 center,
                 center,
                 bigParticleX,
@@ -40,9 +39,8 @@ public class Board {
         int attempt = 0;
 
         Random random = new Random();
-        int quantity = random.nextInt(MAX_PARTICLES-MIN_PARTICLES) + MIN_PARTICLES;
 
-        while (particlesNumber != quantity && attempt != MAX_ATTEMPS) {
+        while (particlesNumber != this.particlesQuantity && attempt != MAX_ATTEMPS) {
 
             double aux = SIDE_SIZE-SMALL_RADIUS;
             double x = (SMALL_RADIUS + (aux - SMALL_RADIUS) * random.nextDouble());

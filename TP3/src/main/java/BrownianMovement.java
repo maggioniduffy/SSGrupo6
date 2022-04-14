@@ -1,29 +1,35 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class BrownianMovement {
-    private static int MAX_ITERATIONS = 20000;
-    private static double MAX_SIMULATED_TIME = 20000;
+    private static int MAX_ITERATIONS = 80000;
+    private static double MAX_SIMULATED_TIME = 200000;
     private double time = 0;
     private int iterations = 0;
     private Board board;
     private ArrayList<Particle> particles;
     public SortedMap<Double, List<Particle>> states = new TreeMap<>();
     private List<Collision> colls;
-
-    public BrownianMovement(Board board){
+    private FileWriter writer;
+    private int collisionNumber = 0;
+    public BrownianMovement(Board board, FileWriter writer){
         this.board = board;
         this.particles = board.getParticles();
+        this.writer = writer;
     }
 
-    public void start(){
+    public void start() throws IOException {
         List<Particle> clone = (List<Particle>) this.particles.clone();
-        states.put(time, clone);
-
+        //states.put(time, clone);
+        this.firstOutput();
         while(!stop()){
             double next = getNextCollisionTime();
+            collisionNumber++;
             updateStatus(next);
             updateSpeeds();
             iterations ++;
@@ -36,7 +42,7 @@ public class BrownianMovement {
         double x = this.particles.get(0).getPosX();
         double y =  this.particles.get(0).getPosY();
 
-        double aux = board.SIDE_SIZE - board.SMALL_RADIUS;
+        double aux = board.SIDE_SIZE - board.BIG_RADIUS;
         if( x <= board.BIG_RADIUS || y<= board.BIG_RADIUS || y >= aux || x >= aux){
             System.out.println("flag " + iterations);
             res = true;
@@ -91,16 +97,38 @@ public class BrownianMovement {
         return nextEventTime;
     }
 
-    private void updateStatus(double collTime){
-
+    private void updateStatus(double collTime) throws IOException {
+        writer.write("Collision");
+        writer.write("\n");
+        writer.write("Time " + collTime);
+        writer.write("\n");
+        int i = 0;
         for (Particle p : particles){
             p.updatePosition(collTime);
+            writer.write(i + ":" + p.getPosX() + "," + p.getPosY());
+            writer.write("\n");
+            i++;
         }
 
         time += collTime;
         List<Particle> clone = (List<Particle>) this.particles.clone();;
         states.put(time, clone);
     }
+
+    private void firstOutput() throws IOException {
+        writer.write("Collision");
+        writer.write("\n");
+        writer.write("Time 0");
+        writer.write("\n");
+        int i = 0;
+        for (Particle p : particles) {
+            writer.write(i + ":" + p.getPosX() + "," + p.getPosY());
+            writer.write("\n");
+            i++;
+        }
+    }
+
+
 
     private void updateSpeeds(){
 
