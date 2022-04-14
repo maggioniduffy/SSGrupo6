@@ -22,27 +22,27 @@ public class BrownianMovement {
         List<Particle> clone = (List<Particle>) this.particles.clone();
         states.put(time, clone);
 
-        while(!finish()){
+        while(!stop()){
             double next = getNextCollisionTime();
             updateStatus(next);
             updateSpeeds();
-            iterations +=1;
+            iterations ++;
         }
     }
 
-    private boolean finish(){
+    private boolean stop(){
 
         boolean res = false;
         double x = this.particles.get(0).getPosX();
         double y =  this.particles.get(0).getPosY();
 
         double aux = board.SIDE_SIZE - board.SMALL_RADIUS;
-        if( x<= board.BIG_RADIUS || y<= board.BIG_RADIUS || y >= aux || x >= aux){
+        if( x <= board.BIG_RADIUS || y<= board.BIG_RADIUS || y >= aux || x >= aux){
             System.out.println("flag " + iterations);
             res = true;
         }
-
-        return res && (iterations < MAX_ITERATIONS)  && (time < MAX_SIMULATED_TIME) ;
+        System.out.println(res || (this.iterations >= MAX_ITERATIONS)  || (this.time >= MAX_SIMULATED_TIME));
+        return res || (this.iterations >= MAX_ITERATIONS)  || (this.time >= MAX_SIMULATED_TIME) ;
     }
 
     private double getNextCollisionTime(){
