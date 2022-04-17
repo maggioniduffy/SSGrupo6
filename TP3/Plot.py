@@ -1,16 +1,15 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def plot(x,y):
-    print(x,y)
+def plot(x,y,side):
     plt.style.use('default')
+    plt.xlabel('X')
+    plt.ylabel('Y')
     # plot
     fig, ax = plt.subplots()
-
+    print(x[-1], y[-1])
     ax.plot(x, y, linewidth=2.0)
-    xmax, ymax = int(np.amax(x)) + 1, int(np.amax(y)) + 1
-
-    ax.set(xlim=(0, xmax), xticks=np.arange(1, xmax),
-        ylim=(0, ymax), yticks=np.arange(1, ymax))
-
+    ax.set(xlim=(0, side), xticks=np.arange(1, side, 50),
+        ylim=(0, side), yticks=np.arange(1, side, 50))
+    plt.savefig('plot.png')
     plt.show()

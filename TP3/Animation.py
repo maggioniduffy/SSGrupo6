@@ -21,6 +21,7 @@ def animate():
     f.close()
     collisions = matrix.split('Collision\n')
     side = SIDE_SIZE * 100
+    print(side)
     y = 0
     for g in range(1, len(collisions)):
         lines = collisions[g].split('\n')
@@ -32,12 +33,14 @@ def animate():
             x,y = float(coordinates[0]) * 100, float(coordinates[1]) * 100
             if (index[0] == '0'): #GRANDE
                 pygame.draw.circle(screen, (255,0,0), (x, y), BIG_RADIUS * 100)
+                print(coordinates[0], '-----')
+                print(x,y)
                 big_particle_x.append(x)
                 big_particle_y.append(y)
             else: #CHICAS
                 pygame.draw.circle(screen, (255,255,255), (x, y), SMALL_RADIUS * 100)
         pygame.display.flip()
     sleep(2)
-    plot(big_particle_x,big_particle_y)
+    plot(big_particle_x,big_particle_y,side)
 
 animate()

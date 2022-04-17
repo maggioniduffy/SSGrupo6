@@ -4,6 +4,7 @@
 .project
 .settings/
 *.txt
+*.png
 
 # Default ignored files
 /shelf/
