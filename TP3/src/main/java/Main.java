@@ -7,7 +7,7 @@ public class Main {
         File out = new File("output.txt");
         out.createNewFile();
         FileWriter writer = new FileWriter("output.txt");
-        Board board = new Board(2, 100);
+        Board board = new Board(5, 40);
         BrownianMovement bm = new BrownianMovement(board, writer);
         bm.start();
         writer.close();

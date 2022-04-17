@@ -1,6 +1,7 @@
 import pygame
 from time import sleep
 from Plot import plot
+
 SIDE_SIZE = 6;
 SMALL_RADIUS = 0.2;
 BIG_RADIUS = 0.7;
@@ -33,8 +34,6 @@ def animate():
             x,y = float(coordinates[0]) * 100, float(coordinates[1]) * 100
             if (index[0] == '0'): #GRANDE
                 pygame.draw.circle(screen, (255,0,0), (x, y), BIG_RADIUS * 100)
-                print(coordinates[0], '-----')
-                print(x,y)
                 big_particle_x.append(x)
                 big_particle_y.append(y)
             else: #CHICAS
