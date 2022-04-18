@@ -67,6 +67,13 @@ def animate():
     g.close()
     sleep(2)
     #big_sphere_journey(big_particle_x,big_particle_y,side)
-    #collision_times_distribution(bins)
+    used_bins = []
+    i = 0
+    b = bins[i]
+    while b > 0:
+        used_bins.append(b)
+        i+=1
+        b = bins[i]
+    collision_times_distribution(used_bins)
 
 animate()

@@ -20,8 +20,17 @@ def big_sphere_journey(x,y,side):
         ylim=(0, side), yticks=np.arange(0, side, 50))
     ax.plot(x[0], y[0], marker="o", markersize=5, markeredgecolor="red", markerfacecolor="white")
     ax.plot(x[-1], y[-1], marker="o", markersize=5, markeredgecolor="red", markerfacecolor="red")
-    plt.savefig('plot.png')
+    plt.savefig('bigspherejourney.png')
     plt.show()
 
-def collision_times_distribution(bins):
-    pass
+def collision_times_distribution(y):
+    plt.style.use('default')
+    fig, ax = plt.subplots()
+    x = np.arange(0,len(y))
+    ymax = np.amax(y)
+    ax.bar(x, y, width=1, edgecolor="white", linewidth=0.7)
+
+    ax.set(xlim=(-0.5, len(x)), xticks=np.arange(0, len(x)),
+        ylim=(0, ymax+100), yticks=np.arange(1, ymax+100, 1000))
+    plt.savefig('colltimedistribution.png')
+    plt.show()
