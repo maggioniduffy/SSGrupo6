@@ -8,7 +8,7 @@ config = json.load(f)
 v = config['max_speed']
 n = config['quantity']
 
-def plot(x,y,side):
+def big_sphere_journey(x,y,side):
     plt.style.use('default')
     # plot
     fig, ax = plt.subplots()
@@ -22,3 +22,6 @@ def plot(x,y,side):
     ax.plot(x[-1], y[-1], marker="o", markersize=5, markeredgecolor="red", markerfacecolor="red")
     plt.savefig('plot.png')
     plt.show()
+
+def collision_times_distribution(bins):
+    pass

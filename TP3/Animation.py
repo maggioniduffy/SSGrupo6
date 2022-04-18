@@ -1,7 +1,7 @@
 import pygame
 import numpy as np
 from time import sleep
-from Plot import plot
+from Plot import *
 
 SIDE_SIZE = 6;
 SMALL_RADIUS = 0.2;
@@ -62,17 +62,11 @@ def animate():
                 stop = True
             else:
                 n += 1  
-    b = bins[0]
-    i = 0
-    while b > 0:
-        print(b)
-        i += 1
-        b = bins[i]
-
     g = open('frecuenciasv2n115.txt', 'a')
     g.write("\n" + str(frec) + "+")
     g.close()
     sleep(2)
-    #plot(big_particle_x,big_particle_y,side)
+    #big_sphere_journey(big_particle_x,big_particle_y,side)
+    #collision_times_distribution(bins)
 
 animate()
