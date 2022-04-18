@@ -68,8 +68,8 @@ public class Particle {
     }
 
     public void updatePosition(double collTime) {
-        this.posX = this.posX + (this.velX * collTime); //Habria que usar la velocidad inicial en vez de this.posX en el primer termino?
-        this.posY = this.posY + (this.velY * collTime); //Igual que con X
+        this.posX = this.posX + (this.velX * collTime);
+        this.posY = this.posY + (this.velY * collTime);
     }
 
     public double timeToParticleCollision(Particle particle){
@@ -93,7 +93,6 @@ public class Particle {
             return Double.MAX_VALUE;
         }
         double collTime = - ((deltas + Math.sqrt(d)) / escDeltaV);
-
         return  collTime;
     }
 
@@ -106,7 +105,6 @@ public class Particle {
         } else if (this.velX < 0.0) {
             collTime = ((this.rad - this.posX) / this.velX);
         }
-
         return collTime;
     }
 
@@ -119,7 +117,6 @@ public class Particle {
         } else if (this.velY < 0.0){
             collTime = ((this.rad - this.posY) / this.velY);
         }
-
         return collTime;
     }
 }

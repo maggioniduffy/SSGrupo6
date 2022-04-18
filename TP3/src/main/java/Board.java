@@ -36,11 +36,11 @@ public class Board {
                 BIG_MASS));
 
         int particlesNumber = 1;
-        int attempt = 0;
+        //int attempt = 0;
 
         Random random = new Random();
 
-        while (particlesNumber != this.particlesQuantity && attempt != MAX_ATTEMPS) {
+        while (particlesNumber != this.particlesQuantity) {
 
             double aux = SIDE_SIZE-SMALL_RADIUS;
             double x = (SMALL_RADIUS + (aux - SMALL_RADIUS) * random.nextDouble());
@@ -48,7 +48,7 @@ public class Board {
             if (appendParticle(x, y)) {
                 particlesNumber += 1;
             }
-            attempt += 1;
+            //attempt += 1;
         }
     }
 

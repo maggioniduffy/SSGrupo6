@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
-
+import java.math.BigDecimal;
 public class BrownianMovement {
     private static int MAX_ITERATIONS = 80000;
     private static double MAX_SIMULATED_TIME = 200000;
@@ -47,7 +47,7 @@ public class BrownianMovement {
             System.out.println("flag " + iterations);
             res = true;
         }
-        System.out.println(res || (this.iterations >= MAX_ITERATIONS)  || (this.time >= MAX_SIMULATED_TIME));
+        //System.out.println(res || (this.iterations >= MAX_ITERATIONS)  || (this.time >= MAX_SIMULATED_TIME));
         return res || (this.iterations >= MAX_ITERATIONS)  || (this.time >= MAX_SIMULATED_TIME) ;
     }
 
@@ -98,10 +98,6 @@ public class BrownianMovement {
     }
 
     private void updateStatus(double collTime) throws IOException {
-        writer.write("Collision");
-        writer.write("\n");
-        writer.write("Time " + collTime);
-        writer.write("\n");
         int i = 0;
         for (Particle p : particles){
             p.updatePosition(collTime);
@@ -109,10 +105,12 @@ public class BrownianMovement {
             writer.write("\n");
             i++;
         }
-
         time += collTime;
-        List<Particle> clone = (List<Particle>) this.particles.clone();;
-        states.put(time, clone);
+        writer.write("Collision");
+        writer.write("\n");
+        double aux_time = (double)Math.round(time * 1000000d) / 1000000d;
+        writer.write("Time " + aux_time);
+        writer.write("\n");
     }
 
     private void firstOutput() throws IOException {
