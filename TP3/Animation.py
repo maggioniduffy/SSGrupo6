@@ -73,7 +73,9 @@ def animate():
     i = 0
     b = bins[i]
     while b > 0:
-        used_bins.append(b/(interval_size*len(bins)))
+        #print(interval_size*len(bins))
+        used_bins.append(b/(len(bins))) #ELEGIR
+        print(b/(interval_size))
         i+=1
         b = bins[i]
     collision_times_distribution(used_bins, interval_size)
