@@ -1,12 +1,7 @@
 from pyexpat.model import XML_CTYPE_EMPTY
+from config_loader import v,n
 import matplotlib.pyplot as plt
 import numpy as np
-import json
-
-f = open('config.json')
-config = json.load(f)
-v = config['max_speed']
-n = config['quantity']
 
 def big_sphere_journey(x,y,side):
     plt.style.use('default')
@@ -20,17 +15,21 @@ def big_sphere_journey(x,y,side):
         ylim=(0, side), yticks=np.arange(0, side, 50))
     ax.plot(x[0], y[0], marker="o", markersize=5, markeredgecolor="red", markerfacecolor="white")
     ax.plot(x[-1], y[-1], marker="o", markersize=5, markeredgecolor="red", markerfacecolor="red")
-    plt.savefig('bigspherejourney.png')
+    name = 'bigspherejourney_v{v}n{n}.png'.format(v=v, n=n)
+    plt.savefig(name)
     plt.show()
 
-def collision_times_distribution(y):
+def collision_times_distribution(y,size):
     plt.style.use('default')
     fig, ax = plt.subplots()
-    x = np.arange(0,len(y))
+    plt.title('DFC v={v}, N={n}'.format(v=v, n=n))
+    plt.xlabel('Segundos')
+    plt.ylabel('')
+    x = np.arange(0,len(y)*size,step=size)
     ymax = np.amax(y)
-    ax.bar(x, y, width=1, edgecolor="white", linewidth=0.7)
-
-    ax.set(xlim=(-0.5, len(x)), xticks=np.arange(0, len(x)),
-        ylim=(0, ymax+100), yticks=np.arange(1, ymax+100, 1000))
-    plt.savefig('colltimedistribution.png')
+    ax.bar(x, y, width=size, edgecolor="white", linewidth=0.7)
+    ax.set(xlim=(0-(size/2), len(x)*size), xticks=x,
+        ylim=(0, ymax+100), yticks=np.arange(0, ymax+0.001, step=ymax/10))
+    name = 'colltimedistribution_v{v}n{n}.png'.format(v=v, n=n)
+    plt.savefig(name)
     plt.show()

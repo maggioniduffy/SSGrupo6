@@ -1,4 +1,5 @@
 import pygame
+from config_loader import v,n as N
 import numpy as np
 from time import sleep
 from Plot import *
@@ -48,7 +49,7 @@ def animate():
     frec = len(collisions) / time
     collision_time_media = time / (len(collisions)-1)
     print("Media: ", collision_time_media)
-    interval_size = 0.002
+    interval_size = 0.0015
     intervals = int(np.ceil(time / interval_size))
     print("Intervals: ", intervals)
     bins = np.zeros(intervals)
@@ -62,7 +63,8 @@ def animate():
                 stop = True
             else:
                 n += 1  
-    g = open('frecuenciasv2n115.txt', 'a')
+    title = 'frecuenciasv{v}n{n}.txt'.format(v=v,n=N)
+    g = open(title, 'a')
     g.write("\n" + str(frec) + "+")
     g.close()
     sleep(2)
@@ -71,9 +73,9 @@ def animate():
     i = 0
     b = bins[i]
     while b > 0:
-        used_bins.append(b)
+        used_bins.append(b/(interval_size*len(bins)))
         i+=1
         b = bins[i]
-    collision_times_distribution(used_bins)
+    collision_times_distribution(used_bins, interval_size)
 
 animate()
