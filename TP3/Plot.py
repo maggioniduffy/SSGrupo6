@@ -4,19 +4,25 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def big_sphere_journey(x,y,side):
+    #y.reverse()
+    aux_y = []
+    for yi in y:
+        dif = yi - 300
+        aux_y.append(300-dif)
     plt.style.use('default')
     # plot
     fig, ax = plt.subplots()
     plt.xlabel('Eje X')
     plt.ylabel('Eje Y')
     plt.title('Recorrido del centro de la esfera mayor con V: {v} y {n} esferas chicas'.format(v=v, n=n))
-    ax.plot(x, y, linewidth=2.0)
+    ax.plot(x, aux_y, linewidth=2.0)
     ax.set(xlim=(0, side), xticks=np.arange(0, side, 50),
         ylim=(0, side), yticks=np.arange(0, side, 50))
-    ax.plot(x[0], y[0], marker="o", markersize=5, markeredgecolor="red", markerfacecolor="white")
-    ax.plot(x[-1], y[-1], marker="o", markersize=5, markeredgecolor="red", markerfacecolor="red")
+    ax.plot(x[0], aux_y[0], marker="o", markersize=5, markeredgecolor="red", markerfacecolor="white")
+    ax.plot(x[-1], aux_y[-1], marker="o", markersize=5, markeredgecolor="red", markerfacecolor="red")
     name = 'bigspherejourney_v{v}n{n}.png'.format(v=v, n=n)
     plt.savefig(name)
+    plt.grid()
     plt.show()
 
 def collision_times_distribution(y,size):
