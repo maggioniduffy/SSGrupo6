@@ -16,11 +16,14 @@ public class BrownianMovement {
     public SortedMap<Double, List<Particle>> states = new TreeMap<>();
     private List<Collision> colls;
     private FileWriter writer;
+    private FileWriter speedWriter;
     private int collisionNumber = 0;
-    public BrownianMovement(Board board, FileWriter writer){
+
+    public BrownianMovement(Board board, FileWriter writer, FileWriter speedWriter){
         this.board = board;
         this.particles = board.getParticles();
         this.writer = writer;
+        this.speedWriter = speedWriter;
     }
 
     public void start() throws IOException {
@@ -96,21 +99,47 @@ public class BrownianMovement {
 
         return nextEventTime;
     }
-
+    int s = 1;
     private void updateStatus(double collTime) throws IOException {
+        if (s == 1) {
+            System.out.println(collTime);
+        }
+        time += collTime;
+        if (s == 1) {
+            System.out.println(time);
+        }
+        double aux_time = (double)Math.round(time * 1000000d) / 1000000d;
+        if (s == 1) {
+            System.out.println(aux_time);
+        }
+        this.s++;
+        //System.out.println(aux_time);
+        writer.write("Collision");
+        writer.write("\n");
+        writer.write("Time " + aux_time);
+        writer.write("\n");
+
+        speedWriter.write("Collision");
+        speedWriter.write("\n");
+        speedWriter.write("Time " + aux_time);
+        speedWriter.write("\n");
+        this.writeParticles(collTime);
+    }
+
+    private void writeParticles(double collTime) throws IOException {
         int i = 0;
         for (Particle p : particles){
             p.updatePosition(collTime);
             writer.write(i + ":" + p.getPosX() + "," + p.getPosY());
             writer.write("\n");
+            double aux_x_speed  = (double)Math.round(Math.abs(p.getVelX()) * 1000000d) / 1000000d;
+            double aux_y_speed = (double)Math.round(Math.abs(p.getVelY()) * 1000000d) / 1000000d;
+            double speed = Math.sqrt(aux_x_speed*aux_x_speed + aux_y_speed*aux_y_speed);
+            speed = (double)Math.round(speed * 1000000d) / 1000000d;
+            speedWriter.write(i + ":" + speed);
+            speedWriter.write("\n");
             i++;
         }
-        time += collTime;
-        writer.write("Collision");
-        writer.write("\n");
-        double aux_time = (double)Math.round(time * 1000000d) / 1000000d;
-        writer.write("Time " + aux_time);
-        writer.write("\n");
     }
 
     private void firstOutput() throws IOException {
@@ -118,10 +147,21 @@ public class BrownianMovement {
         writer.write("\n");
         writer.write("Time 0");
         writer.write("\n");
+
+        speedWriter.write("Collision");
+        speedWriter.write("\n");
+        speedWriter.write("Time 0");
+        speedWriter.write("\n");
         int i = 0;
         for (Particle p : particles) {
             writer.write(i + ":" + p.getPosX() + "," + p.getPosY());
             writer.write("\n");
+            double aux_x_speed  = (double)Math.round(Math.abs(p.getVelX()) * 1000000d) / 1000000d;
+            double aux_y_speed = (double)Math.round(Math.abs(p.getVelY()) * 1000000d) / 1000000d;
+            double speed = Math.sqrt(aux_x_speed*aux_x_speed + aux_y_speed*aux_y_speed);
+            speed = (double)Math.round(speed * 1000000d) / 1000000d;
+            speedWriter.write(i + ":" + speed);
+            speedWriter.write("\n");
             i++;
         }
     }

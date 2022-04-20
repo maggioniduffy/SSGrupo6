@@ -1,4 +1,5 @@
 import pygame
+from speedDistributions import *
 from config_loader import v,n as N
 import numpy as np
 from time import sleep
@@ -7,14 +8,15 @@ from Plot import *
 SIDE_SIZE = 6;
 SMALL_RADIUS = 0.2;
 BIG_RADIUS = 0.7;
-
+# 0 a v, [0.5,1,1.5,2]
+# Hallar la distribución de probabilidades (o
+# alternativamente, PDF) del módulo de las velocidades solo de las partículas pequeñas
 def animate():
     big_particle_x = []
     big_particle_y = []
     pygame.init()
     width, height = SIDE_SIZE * 100, SIDE_SIZE * 100
     screen = pygame.display.set_mode((height, width))
-
     bg = 25, 25, 25
 
     screen.fill(bg)
@@ -48,11 +50,11 @@ def animate():
         pygame.display.flip()
     frec = len(collisions) / time
     collision_time_media = time / (len(collisions)-1)
-    print("Media: ", collision_time_media)
     interval_size = 0.0015
     intervals = int(np.ceil(time / interval_size))
-    print("Intervals: ", intervals)
     bins = np.zeros(intervals)
+
+    v_initial_bins = initialSpeedDistrib()
 
     for ct in collision_times:
         stop = False
@@ -73,8 +75,7 @@ def animate():
     i = 0
     b = bins[i]
     while b > 0:
-        #print(interval_size*len(bins))
-        used_bins.append(b/(len(bins))) #ELEGIR   
+        used_bins.append(b/(len(bins))) #ELEGIR PFD o Distribucion comun
         print(b/(interval_size))
         i+=1
         b = bins[i]
