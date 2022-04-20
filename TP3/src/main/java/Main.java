@@ -17,5 +17,6 @@ public class Main {
         BrownianMovement bm = new BrownianMovement(board, writer, velWriter);
         bm.start();
         writer.close();
+        velWriter.close();
     }
 }

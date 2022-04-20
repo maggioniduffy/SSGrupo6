@@ -101,18 +101,8 @@ public class BrownianMovement {
     }
     int s = 1;
     private void updateStatus(double collTime) throws IOException {
-        if (s == 1) {
-            System.out.println(collTime);
-        }
         time += collTime;
-        if (s == 1) {
-            System.out.println(time);
-        }
         double aux_time = (double)Math.round(time * 1000000d) / 1000000d;
-        if (s == 1) {
-            System.out.println(aux_time);
-        }
-        this.s++;
         //System.out.println(aux_time);
         writer.write("Collision");
         writer.write("\n");
@@ -130,14 +120,17 @@ public class BrownianMovement {
         int i = 0;
         for (Particle p : particles){
             p.updatePosition(collTime);
-            writer.write(i + ":" + p.getPosX() + "," + p.getPosY());
-            writer.write("\n");
+
             double aux_x_speed  = (double)Math.round(Math.abs(p.getVelX()) * 1000000d) / 1000000d;
             double aux_y_speed = (double)Math.round(Math.abs(p.getVelY()) * 1000000d) / 1000000d;
             double speed = Math.sqrt(aux_x_speed*aux_x_speed + aux_y_speed*aux_y_speed);
             speed = (double)Math.round(speed * 1000000d) / 1000000d;
             speedWriter.write(i + ":" + speed);
             speedWriter.write("\n");
+
+            writer.write(i + ":" + p.getPosX() + "," + p.getPosY());
+            writer.write("\n");
+
             i++;
         }
     }

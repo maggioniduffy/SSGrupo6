@@ -25,17 +25,16 @@ def big_sphere_journey(x,y,side):
     plt.grid()
     plt.show()
 
-def collision_times_distribution(y,size):
+def graphic(y,size, ylabel = 'Distribucion', xlabel = 'Tiempo entre colisiones (s)'):
     plt.style.use('default')
     fig, ax = plt.subplots()
-    plt.title('DFC v={v}, N={n}'.format(v=v, n=n))
-    plt.xlabel('Segundos')
-    plt.ylabel('Probabilidad')
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
     x = np.arange(0,len(y)*size,step=size)
     ymax = np.amax(y)
     ax.bar(x, y, width=size, edgecolor="white", linewidth=0.7)
     ax.set(xlim=(0-(size/2), len(x)*size), xticks=x,
         ylim=(0, ymax+0.001), yticks=np.arange(0, ymax, step=ymax/10))
-    name = 'colltimedistribution_v{v}n{n}.png'.format(v=v, n=n)
+    name = 'graphic_{ylabel},{v}n{n}.png'.format(ylabel=ylabel, v=v, n=n)
     plt.savefig(name)
     plt.show()

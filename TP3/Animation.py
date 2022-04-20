@@ -54,8 +54,6 @@ def animate():
     intervals = int(np.ceil(time / interval_size))
     bins = np.zeros(intervals)
 
-    v_initial_bins = initialSpeedDistrib()
-
     for ct in collision_times:
         stop = False
         n = 1
@@ -79,6 +77,6 @@ def animate():
         print(b/(interval_size))
         i+=1
         b = bins[i]
-    collision_times_distribution(used_bins, interval_size)
+    graphic(used_bins, interval_size)
 
 animate()
