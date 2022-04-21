@@ -3,8 +3,9 @@ from config_loader import v,n as N
 from Plot import *
 
 interval_size = 0.25
-v_intervals_initial = int(v/interval_size)
-v_intervals = int(4/interval_size)
+v_intervals_initial = int(v*4/interval_size)
+print(v_intervals_initial)
+v_intervals = int((v*4)/interval_size)
 
 s = open('./speeds.txt', 'r')
 speeds = s.read()
@@ -12,6 +13,7 @@ s.close()
 
 def place_in_bins(value, bins):
     stop = False
+    bins = np.array(bins)
     aux = bins.copy()
     n = 1
     while not stop:
@@ -29,7 +31,6 @@ def initialSpeedDistrib():
 
     for pair in lines:
         speed = float(pair.split(':')[1])
-        print(speed)
         v_bins_initial = place_in_bins(speed,v_bins_initial)
     return v_bins_initial
 
@@ -53,7 +54,6 @@ def lastThirdSpeedDistrib():
     return v_bins_last_third, last_third_collisions
 
 last_third, size = lastThirdSpeedDistrib()
-print(init_bins)
 init_bins = init_bins/N
 last_third = last_third/size
 graphic(last_third, interval_size, xlabel='Velocidad particulas chicas (m/s)')
