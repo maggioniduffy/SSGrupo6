@@ -1,4 +1,3 @@
-// No se si hace falta esto:
 enum CollisionType {
     VERTICALWALL,
     HORIZONTALWALL,

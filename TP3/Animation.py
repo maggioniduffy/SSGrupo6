@@ -22,8 +22,8 @@ def read_output():
 
     return collisions
 
-def set_collisions_per_secs(time, collision_times):
-    interval_size = 0.0015
+def set_collisions_per_secs(time, collision_times, total_collisions):
+    interval_size = ct_interval_size
     intervals = int(np.ceil(time / interval_size))
     bins = np.zeros(intervals)
 
@@ -36,15 +36,16 @@ def set_collisions_per_secs(time, collision_times):
                 stop = True
             else:
                 n += 1  
-    used_bins = []
+    y = []
     i = 0
     b = bins[i]
     while b > 0:
-        used_bins.append(b/(len(bins))) #ELEGIR PDF o Distribucion comun
+        #used_bins.append(b/(len(bins))) #ELEGIR PDF o Distribucion comun
+        #print(b/total_collisions)/interval_size
+        y.append((b)/(total_collisions*interval_size))
         i+=1
         b = bins[i]
-        
-    return used_bins
+    set_pdf(y,N)
 
 def animate():
     big_particle_x = []
@@ -66,7 +67,7 @@ def animate():
              coordinates = index[1].split(',')
              x,y = float(coordinates[0]) * 100, float(coordinates[1]) * 100
              if (index[0] == '0'): #GRANDE
-                 pygame.draw.circle(screen, (255,0,0), (x, y), BIG_RADIUS * 100)
+                 pygame.draw.circle(screen, (159, 0, 255), (x, y), BIG_RADIUS * 100)
                  if save_journey and N == 130 and time <= tc_big_sphere:
                     big_particle_x.append(x)
                     big_particle_y.append(y)
@@ -84,7 +85,7 @@ def animate():
         save_big_sphere_journey(big_particle_x,big_particle_y)
     
     collision_time_media = time / (len(collisions)-1)
-    used_bins = set_collisions_per_secs(time,collision_times)
-    graphic(used_bins, interval_size)
+    set_collisions_per_secs(time,collision_times, len(collisions))
+    #pdf(used_bins, interval_size)
 
 animate()

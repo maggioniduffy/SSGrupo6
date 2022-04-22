@@ -6,6 +6,7 @@ v = config['max_speed']
 n = config['quantity']
 tc_big_sphere = config['max_time_big_sphere_graphic']
 save_journey = config['save_journey']
+ct_interval_size = config['ct_interval_size']
 SIDE_SIZE = 6;
 SMALL_RADIUS = 0.2;
 BIG_RADIUS = 0.7;
