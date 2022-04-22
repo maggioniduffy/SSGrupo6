@@ -3,7 +3,7 @@ from config_loader import v,n as N
 from Plot import *
 
 interval_size = 0.25
-v_intervals_initial = int(v*4/interval_size)
+v_intervals_initial = int(v*4/(interval_size))
 print(v_intervals_initial)
 v_intervals = int((v*4)/interval_size)
 
@@ -32,9 +32,7 @@ def initialSpeedDistrib():
     for pair in lines:
         speed = float(pair.split(':')[1])
         v_bins_initial = place_in_bins(speed,v_bins_initial)
-    return v_bins_initial
-
-init_bins = initialSpeedDistrib()
+    return v_bins_initial/N
 
 def lastThirdSpeedDistrib():
     v_bins_last_third = np.zeros(v_intervals)
@@ -51,9 +49,10 @@ def lastThirdSpeedDistrib():
             v_bins_last_third = place_in_bins(speed, v_bins_last_third)
         #print(lines)
     last_third_collisions = len(s_colls) * N
-    return v_bins_last_third, last_third_collisions
-
-last_third, size = lastThirdSpeedDistrib()
-init_bins = init_bins/N
-last_third = last_third/size
-graphic(last_third, interval_size, xlabel='Velocidad particulas chicas (m/s)')
+    return v_bins_last_third / last_third_collisions
+    
+init_bins = initialSpeedDistrib()
+last_third = lastThirdSpeedDistrib()
+set_pdf(last_third,'Ultimo 1/3', './pdf_speeds.txt')
+set_pdf(init_bins,'Inicial','./pdf_speeds.txt')
+pdf(interval_size,'./pdf_speeds.txt', xlabel='Velocidad particulas chicas (m/s)', isInitial = True)

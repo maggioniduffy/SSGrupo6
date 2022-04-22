@@ -41,24 +41,23 @@ def graphic(y,size, ylabel = 'Distribucion', xlabel = 'Tiempo entre colisiones (
     plt.savefig(name)
     plt.show()
 
-def set_pdf(y, n):
-    f = open('./pdf.txt', 'a')
+def set_pdf(y, var, file):
+    f = open(file, 'a')
     f.write('run\n')
-    f.write('n={n}\n'.format(n=n))
+    f.write(var+'\n')
     for yi in y:
         print(yi)
         f.write(str(yi)+'\n')
     f.close()
 
-def pdf(xlabel = 'Tiempo entre colisiones (s)'):
-    interval_size = round(ct_interval_size,3)
+def pdf(interval_size,file,xlabel = 'Tiempo entre colisiones (s)', isInitial=False):
     ylabel = 'PDF'
     plt.style.use('default')
     fig, ax = plt.subplots()
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.legend(loc="upper left")
-    f = open('./pdf.txt','r')
+    f = open(file,'r')
     data = f.read()
     ymax = 0
     f.close()
@@ -66,12 +65,14 @@ def pdf(xlabel = 'Tiempo entre colisiones (s)'):
     for run in runs:
         lines = run.split('\n')
         n = lines[0].split('=')[-1]
+        print(n)
         y = lines[1:][:-1]
         print(y)
         y = list(map(lambda y : float(y), y))
         n_max = np.amax(y)
         ymax = n_max if n_max > ymax else ymax
-        x_i = np.arange(0,len(y)*interval_size,step=interval_size)
+        step = interval_size if not isInitial else interval_size * 6
+        x_i = np.arange(0,len(y)*step,step=step)
         ax.plot(x_i, y, label=str(n))
         ax.legend()
         for i in range(0,len(x_i)):
@@ -79,7 +80,10 @@ def pdf(xlabel = 'Tiempo entre colisiones (s)'):
         name = 'pdf:{v}n{n}.png'.format(ylabel=ylabel, v=v, n=n)
     
     x = np.arange(0,20*interval_size,step=interval_size*3)
-    ax.set(xlim=(-interval_size/2, len(x)*interval_size), xticks=x,
-        ylim=(-interval_size/2, ymax+0.0015), yticks=np.arange(0, ymax, step=ymax/10))
+    ax.set(xlim=(0, len(x)*interval_size), xticks=x,
+        ylim=(0, ymax+0.0015), yticks=np.arange(0, ymax, step=ymax/10))
+    ax.grid()
     plt.savefig(name)
     plt.show()
+
+pdf(ct_interval_size,'./pdf.txt')

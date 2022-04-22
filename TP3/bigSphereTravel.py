@@ -26,6 +26,7 @@ def plot_big_sphere_journey():
     for r in runs:
         x = []
         y = []
+        v = r.split('\n')[0]
         positions = r.split('\n')[1:][:-1]
         for line in positions:
             coordinates = line.split(',')
@@ -33,7 +34,8 @@ def plot_big_sphere_journey():
             x.append(xi)
             dif = yi - 300
             y.append(300-dif)
-        ax.plot(x,y)
+        ax.plot(x,y,label=v)
+        ax.legend()
         ax.plot(x[0], y[0], marker="o", markersize=5, markeredgecolor="red", markerfacecolor="white")
         ax.plot(x[-1], y[-1], marker="o", markersize=5, markeredgecolor="red", markerfacecolor="red")
 
