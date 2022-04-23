@@ -43,4 +43,4 @@ def plot_big_sphere_journey():
     plt.savefig(name)
     plt.show()
 
-plot_big_sphere_journey()
+#plot_big_sphere_journey()

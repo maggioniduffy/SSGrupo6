@@ -86,4 +86,4 @@ def pdf(interval_size,file,xlabel = 'Tiempo entre colisiones (s)', isInitial=Fal
     plt.savefig(name)
     plt.show()
 
-pdf(ct_interval_size,'./pdf.txt')
+#pdf(ct_interval_size,'./pdf.txt')

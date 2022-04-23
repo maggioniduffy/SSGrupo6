@@ -45,7 +45,7 @@ def set_collisions_per_secs(time, collision_times, total_collisions):
         y.append((b)/(total_collisions*interval_size))
         i+=1
         b = bins[i]
-    set_pdf(y,N)
+    #set_pdf(y,N)
 
 def animate():
     big_particle_x = []
@@ -56,6 +56,10 @@ def animate():
     y = 0
     collision_times = []
     prev_time = 0
+    clock = 0
+    pos_center = np.sqrt((3.0)**2 + (3.0)**2)
+    pos_g = open('./posGrande.txt', 'a')
+    pos_g.write("\n Simulacion")
     for g in range(1, len(collisions)):
         lines = collisions[g].split('\n')
         time = float(lines[0].split(' ')[1])
@@ -67,6 +71,9 @@ def animate():
              coordinates = index[1].split(',')
              x,y = float(coordinates[0]) * 100, float(coordinates[1]) * 100
              if (index[0] == '0'): #GRANDE
+                 if (float(time) >= float(clock)):
+                     pos_g.write("\n" + str((pos_center - (np.sqrt((x/100)**2 + (y/100)**2)))**2))
+                     clock = float(clock + 5)
                  pygame.draw.circle(screen, (159, 0, 255), (x, y), BIG_RADIUS * 100)
                  if save_journey and N == 130 and time <= tc_big_sphere:
                     big_particle_x.append(x)
@@ -75,6 +82,7 @@ def animate():
                 pygame.draw.circle(screen, (255,255,255), (x, y), SMALL_RADIUS * 100)
         pygame.display.flip()
 
+    pos_g.close()
     frec = len(collisions) / time
     title = 'frecuenciasv{v}n{n}.txt'.format(v=v,n=N)
     g = open(title, 'a')
