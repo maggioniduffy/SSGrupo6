@@ -3,9 +3,9 @@ from speedDistributions import *
 from config_loader import *
 import numpy as np
 from time import sleep
-from utils import set_pdf
+from utils import set_pdf, save_big_sphere_journey
 #from Plot import *
-from bigSphereTravel import save_big_sphere_journey
+#from bigSphereTravel import save_big_sphere_journey
 
 def pygame_set():
     pygame.init()
@@ -133,11 +133,11 @@ def animate():
     g.write("\n" + str(frec) + "+")
     g.close()
     sleep(2)
+
     if save_journey and N == 130: 
         save_big_sphere_journey(big_particle_x,big_particle_y)
     
-    collision_time_media = time / (len(collisions)-1)
+    #collision_time_media = time / (len(collisions)-1)
     set_collisions_per_secs(time,collision_times, len(collisions))
-    #pdf(used_bins, interval_size)
 
 animate()

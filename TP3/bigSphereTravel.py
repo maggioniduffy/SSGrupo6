@@ -2,14 +2,6 @@ from config_loader import side,v,n
 import matplotlib.pyplot as plt
 import numpy as np
 
-def save_big_sphere_journey(x,y):
-    f = open('./bigsphere.txt','a')
-    f.write('run\n')
-    f.write('v:{v}\n'.format(v=v))
-    for i in range(0,len(x)):
-        f.write('{x},{y}\n'.format(x=x[i],y=y[i]))
-    f.close()
-
 def plot_big_sphere_journey():
     plt.style.use('default')
     # plot
@@ -43,4 +35,4 @@ def plot_big_sphere_journey():
     plt.savefig(name)
     plt.show()
 
-#plot_big_sphere_journey()
+plot_big_sphere_journey()
