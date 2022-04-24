@@ -7,7 +7,7 @@
 Implementado usando:
 * Java, para la simulacion
 * Python, en la animacion
-** Librerias: Pygame, Matplotlib, Numpy
+#### Librerias: Pygame, Matplotlib, Numpy
 
 ## Como ejecutarlo
 1. Correr Main.java
