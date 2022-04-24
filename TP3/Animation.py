@@ -67,7 +67,7 @@ def animate():
     pos_center = np.sqrt((3.0)**2 + (3.0)**2)
 
     pos_g = open('./posGrande.txt', 'a')
-    #pos_g.write("\nSimulacion")
+    pos_g.write("\nSimulacion")
 
     pos_ch = open('./dcmChicas.txt', 'w')
 
@@ -91,9 +91,10 @@ def animate():
              coordinates = index[1].split(',')
              x,y = float(coordinates[0]) * 100, float(coordinates[1]) * 100
              if (index[0] == '0'): #GRANDE
-                 #if (float(time) >= float(clock)):
-                  #  pos_g.write("\n" + str((pos_center - (np.sqrt((x/100)**2 + (y/100)**2)))**2))
-                  #  clock = float(clock + 5)
+                 if (save):
+                    print('entra')
+                    pos_g.write("\n" + str((pos_center - (np.sqrt((x/100)**2 + (y/100)**2)))**2))
+                  # clock = float(clock + 5)
                  #pygame.draw.circle(screen, (159, 0, 255), (x, y), BIG_RADIUS * 100)
                  if save_journey and N == 130 and time <= tc_big_sphere:
                     big_particle_x.append(x)
@@ -114,7 +115,7 @@ def animate():
                     if len(place) > 0:
                         place = place[0]
                         center = center_particles[place][1]
-                        pos_ch.write("\n" + str((pos_center - (np.sqrt((x/100)**2 + (y/100)**2)))**2))
+                        pos_ch.write("\n" + str((center - (np.sqrt((x/100)**2 + (y/100)**2)))**2))
                         #clock = float(clock + 5)
                     if x == 3.0 or y == 3.0:
                         print('BORDE')
