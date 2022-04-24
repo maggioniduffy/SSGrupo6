@@ -1,4 +1,4 @@
-from config_loader import side,v,n
+from config_loader import side,v as V,n
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -31,7 +31,7 @@ def plot_big_sphere_journey():
         ax.plot(x[0], y[0], marker="o", markersize=5, markeredgecolor="red", markerfacecolor="white")
         ax.plot(x[-1], y[-1], marker="o", markersize=5, markeredgecolor="red", markerfacecolor="red")
 
-    name = 'bigspherejourney_.png'.format(v=v, n=n)
+    name = 'bigspherejourney_.png'.format(v=V, n=n)
     plt.savefig(name)
     plt.show()
 
