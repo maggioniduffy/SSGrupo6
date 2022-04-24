@@ -47,41 +47,83 @@ def set_collisions_per_secs(time, collision_times, total_collisions):
         b = bins[i]
     #set_pdf(y,N)
 
+def getDist(particle):
+    return particle[2]
+
 def animate():
+    clock = 0
     big_particle_x = []
     big_particle_y = []
-    screen = pygame_set()
+    center_particles = []
+    center_particles_open = True
+    save = False
+    #screen = pygame_set()
     collisions = read_output()
-
     y = 0
     collision_times = []
     prev_time = 0
-    clock = 0
     pos_center = np.sqrt((3.0)**2 + (3.0)**2)
+
     pos_g = open('./posGrande.txt', 'a')
-    pos_g.write("\n Simulacion")
+    #pos_g.write("\nSimulacion")
+
+    pos_ch = open('./dcmChicas.txt', 'w')
+
     for g in range(1, len(collisions)):
+        if g == 2:
+            center_particles.sort(key=getDist)
+            center_particles = center_particles[:10]
         lines = collisions[g].split('\n')
         time = float(lines[0].split(' ')[1])
         collision_times.append(time-prev_time)
         prev_time = time
-        screen.fill(bg)
+
+        if (float(time) >= float(clock)):
+            clock = float(clock + 10)
+            save = True
+        else:
+            save = False
+        #screen.fill(bg)
         for line in range(1,len(lines)-1):
              index = lines[line].split(':')
              coordinates = index[1].split(',')
              x,y = float(coordinates[0]) * 100, float(coordinates[1]) * 100
              if (index[0] == '0'): #GRANDE
-                 if (float(time) >= float(clock)):
-                     pos_g.write("\n" + str((pos_center - (np.sqrt((x/100)**2 + (y/100)**2)))**2))
-                     clock = float(clock + 5)
-                 pygame.draw.circle(screen, (159, 0, 255), (x, y), BIG_RADIUS * 100)
+                 #if (float(time) >= float(clock)):
+                  #  pos_g.write("\n" + str((pos_center - (np.sqrt((x/100)**2 + (y/100)**2)))**2))
+                  #  clock = float(clock + 5)
+                 #pygame.draw.circle(screen, (159, 0, 255), (x, y), BIG_RADIUS * 100)
                  if save_journey and N == 130 and time <= tc_big_sphere:
                     big_particle_x.append(x)
                     big_particle_y.append(y)
              else: #CHICAS
-                pygame.draw.circle(screen, (255,255,255), (x, y), SMALL_RADIUS * 100)
-        pygame.display.flip()
-
+                 ind = int(index[0])
+                 if g == 1:
+                    dist = (pos_center - (np.sqrt((x/100)**2 + (y/100)**2)))**2
+                    pos_initial = np.sqrt((x/100)**2 + (y/100)**2)
+                    aux = [ind,pos_initial,dist]
+                    #print(aux)
+                    center_particles.append(aux)
+                 elif save and center_particles_open:
+                    indexes = np.array([row[0] for row in center_particles])
+                    #print(indexes)
+                    place = np.where(indexes == ind)[0]
+                    #print(place[0])
+                    if len(place) > 0:
+                        place = place[0]
+                        center = center_particles[place][1]
+                        pos_ch.write("\n" + str((pos_center - (np.sqrt((x/100)**2 + (y/100)**2)))**2))
+                        #clock = float(clock + 5)
+                    if x == 3.0 or y == 3.0:
+                        print('BORDE')
+                        pos_ch.close()
+                        center_particles_open = False
+                #pygame.draw.circle(screen, (255,255,255), (x, y), SMALL_RADIUS * 100)
+        #pygame.display.flip()
+        if save:
+            pos_ch.write('\ndt')
+    if center_particles_open:
+        pos_ch.close()
     pos_g.close()
     frec = len(collisions) / time
     title = 'frecuenciasv{v}n{n}.txt'.format(v=v,n=N)
