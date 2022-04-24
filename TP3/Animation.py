@@ -81,7 +81,6 @@ def animate():
         prev_time = time
 
         if (float(time) >= float(clock)):
-            clock = float(clock + 10)
             save = True
         else:
             save = False
@@ -124,6 +123,7 @@ def animate():
                 #pygame.draw.circle(screen, (255,255,255), (x, y), SMALL_RADIUS * 100)
         #pygame.display.flip()
         if save:
+            clock = float(clock + 10)
             pos_ch.write('\ndt')
     if center_particles_open:
         pos_ch.close()
