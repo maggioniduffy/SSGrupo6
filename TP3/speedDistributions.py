@@ -3,7 +3,7 @@ from config_loader import v,n as N
 from Plot import *
 
 interval_size = 0.25
-v_intervals_initial = int(v*4/(interval_size))
+v_intervals_initial = int(v*2/(interval_size))
 print(v_intervals_initial)
 v_intervals = int((v*4)/interval_size)
 
@@ -55,4 +55,4 @@ init_bins = initialSpeedDistrib()
 last_third = lastThirdSpeedDistrib()
 set_pdf(last_third,'Ultimo 1/3', './pdf_speeds.txt', operation='w')
 set_pdf(init_bins,'Inicial','./pdf_speeds.txt',operation='a')
-pdf_speeds([interval_size, interval_size*4],['red','blue'],'./pdf_speeds.txt', xlabel='Velocidad particulas chicas (m/s)', isInitial = True)
+pdf_speeds([interval_size, interval_size],['red','blue'],'./pdf_speeds.txt', xlabel='Velocidad particulas chicas (m/s)', isInitial = True)

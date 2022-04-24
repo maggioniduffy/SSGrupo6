@@ -101,18 +101,21 @@ def pdf_speeds(interval_sizes,colors,file,xlabel = 'Tiempo entre colisiones (s)'
     f.close()
     runs = data.split('run\n')[1:]
     j = 0
+    x = []
     for run in runs:
         lines = run.split('\n')
         n = lines[0].split('=')[-1]
         print(n)
         y = lines[1:][:-1]
         print(y)
-        y = list(map(lambda y : float(y), y))
+        y = list(map(lambda y : round(float(y),2), y))
         n_max = np.amax(y)
         ymax = n_max if n_max > ymax else ymax
         print(j)
         step = interval_sizes[j]
-        x_i = np.arange(0,len(y)*step,step=step)
+        x_i = np.arange(0,len(y)*step,step=interval_sizes[j])
+        if j == 0:
+            x = x_i
         ax.plot(x_i, y, label=str(n))
         ax.legend()
         for i in range(0,len(x_i)):
@@ -120,8 +123,7 @@ def pdf_speeds(interval_sizes,colors,file,xlabel = 'Tiempo entre colisiones (s)'
         j += 1
         name = 'pdf:{v}n{n}.png'.format(ylabel=ylabel, v=v, n=n)
     
-    x = np.arange(0,10*interval_sizes[0],step=interval_sizes[0])
-    ax.set(xlim=(0, 10*interval_sizes[0]), xticks=x,
+    ax.set(xlim=(0,v), xticks=np.arange(0,v, step=interval_sizes[0]),
         ylim=(0, ymax+0.0015), yticks=np.arange(0, ymax, step=ymax/10))
     ax.grid()
     plt.savefig(name)
