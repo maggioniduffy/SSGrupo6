@@ -3,7 +3,8 @@ from speedDistributions import *
 from config_loader import *
 import numpy as np
 from time import sleep
-from Plot import *
+from utils import set_pdf
+#from Plot import *
 from bigSphereTravel import save_big_sphere_journey
 
 def pygame_set():
@@ -45,7 +46,8 @@ def set_collisions_per_secs(time, collision_times, total_collisions):
         y.append((b)/(total_collisions*interval_size))
         i+=1
         b = bins[i]
-    #set_pdf(y,N)
+    #def set_pdf(y, var, file, operation='a'):
+    set_pdf(y,var='N={n}'.format(n=N), file='./pdf.txt')
 
 def getDist(particle):
     return particle[2]
