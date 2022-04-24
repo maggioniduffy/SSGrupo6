@@ -41,8 +41,8 @@ def graphic(y,size, ylabel = 'Distribucion', xlabel = 'Tiempo entre colisiones (
     plt.savefig(name)
     plt.show()
 
-def set_pdf(y, var, file):
-    f = open(file, 'a')
+def set_pdf(y, var, file, operation='a'):
+    f = open(file, operation)
     f.write('run\n')
     f.write(var+'\n')
     for yi in y:
@@ -87,3 +87,42 @@ def pdf(interval_size,file,xlabel = 'Tiempo entre colisiones (s)', isInitial=Fal
     plt.show()
 
 #pdf(ct_interval_size,'./pdf.txt')
+
+def pdf_speeds(interval_sizes,colors,file,xlabel = 'Tiempo entre colisiones (s)', isInitial=False):
+    ylabel = 'PDF'
+    plt.style.use('default')
+    fig, ax = plt.subplots()
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.legend(loc="upper left")
+    f = open(file,'r')
+    data = f.read()
+    ymax = 0
+    f.close()
+    runs = data.split('run\n')[1:]
+    j = 0
+    for run in runs:
+        lines = run.split('\n')
+        n = lines[0].split('=')[-1]
+        print(n)
+        y = lines[1:][:-1]
+        print(y)
+        y = list(map(lambda y : float(y), y))
+        n_max = np.amax(y)
+        ymax = n_max if n_max > ymax else ymax
+        print(j)
+        step = interval_sizes[j]
+        x_i = np.arange(0,len(y)*step,step=step)
+        ax.plot(x_i, y, label=str(n))
+        ax.legend()
+        for i in range(0,len(x_i)):
+            ax.plot(x_i[i],y[i],'o', color=colors[j])
+        j += 1
+        name = 'pdf:{v}n{n}.png'.format(ylabel=ylabel, v=v, n=n)
+    
+    x = np.arange(0,10*interval_sizes[0],step=interval_sizes[0])
+    ax.set(xlim=(0, 10*interval_sizes[0]), xticks=x,
+        ylim=(0, ymax+0.0015), yticks=np.arange(0, ymax, step=ymax/10))
+    ax.grid()
+    plt.savefig(name)
+    plt.show()

@@ -53,6 +53,6 @@ def lastThirdSpeedDistrib():
     
 init_bins = initialSpeedDistrib()
 last_third = lastThirdSpeedDistrib()
-set_pdf(last_third,'Ultimo 1/3', './pdf_speeds.txt')
-set_pdf(init_bins,'Inicial','./pdf_speeds.txt')
-#pdf(interval_size,'./pdf_speeds.txt', xlabel='Velocidad particulas chicas (m/s)', isInitial = True)
+set_pdf(last_third,'Ultimo 1/3', './pdf_speeds.txt', operation='w')
+set_pdf(init_bins,'Inicial','./pdf_speeds.txt',operation='a')
+pdf_speeds([interval_size, interval_size*4],['red','blue'],'./pdf_speeds.txt', xlabel='Velocidad particulas chicas (m/s)', isInitial = True)
