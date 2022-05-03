@@ -6,7 +6,6 @@ public class Board {
     final double SMALL_MASS = 0.9;
     final double BIG_RADIUS = 0.7;
     final double BIG_MASS = 2;
-    private static int MAX_ATTEMPS = 2000;
 
     private double maxVelocity;
     private int particlesQuantity;

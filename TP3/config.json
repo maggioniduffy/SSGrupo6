@@ -1,6 +1,6 @@
 {
-    "max_speed" : 2,
-    "quantity" : 115,
+    "max_speed" : 3,
+    "quantity" : 130,
     "max_time_big_sphere_graphic" : 120,
     "save_journey" : true,
     "ct_interval_size" : 0.0015

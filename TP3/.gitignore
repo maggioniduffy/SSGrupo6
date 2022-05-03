@@ -6,6 +6,9 @@
 *.txt
 *.png
 
+# Except
+!requirements.txt
+
 # Default ignored files
 /shelf/
 /workspace.xml
