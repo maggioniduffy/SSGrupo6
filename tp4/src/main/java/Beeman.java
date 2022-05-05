@@ -12,10 +12,10 @@ public class Beeman {
     }
 
     public PosVel getBeeman(double currentR, double currentV, double currentForce, double prevForce){
-        double nextR = currentR + currentV * dt + (2/3) * (currentForce/mass) * Math.pow(dt, 2) - (1/6) * (prevForce/mass) * Math.pow(dt, 2);
-        double predV = currentV + (3/2) * (currentForce / mass) * dt - (1/2) * (prevForce / mass) * dt;
+        double nextR = currentR + currentV * dt + (2.0/3) * (currentForce/mass) * Math.pow(dt, 2) - (1.0/6) * (prevForce/mass) * Math.pow(dt, 2);
+        double predV = currentV + (3.0/2) * (currentForce / mass) * dt - (1.0/2) * (prevForce / mass) * dt;
         double nextF = - this.k * nextR - this.gamma * predV;
-        double corrV = currentV + (1/3) * (nextF / mass) * dt + (5/6) * (currentForce/mass) * dt - (1/6) * (prevForce/mass) * dt;
+        double corrV = currentV + (1.0/3) * (nextF / mass) * dt + (5.0/6) * (currentForce/mass) * dt - (1.0/6) * (prevForce/mass) * dt;
 
         return new PosVel(nextR, corrV);
     }

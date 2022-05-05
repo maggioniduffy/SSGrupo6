@@ -50,7 +50,7 @@ public class Oscilator {
             PosVel prevVerlet = this.verlet.get(this.verlet.size()-2);
             PosVel currBeeman = this.beeman.get(this.beeman.size()-1);
             PosVel prevBeeman = this.beeman.get(this.beeman.size()-2);
-            PosVel currGear5 = this.beeman.get(this.gear5.size()-1);
+            PosVel currGear5 = this.gear5.get(this.gear5.size()-1);
             this.analytical.add(this.as.getAnalyticalSolution(t));
             this.verlet.add(this.ver.getVerlet(getForce(currVerlet.getPosition(), currVerlet.getVelocity()), currVerlet.getPosition(), prevVerlet.getPosition()));
             this.beeman.add(this.bee.getBeeman(currBeeman.getPosition(),currBeeman.getVelocity(),getForce(currBeeman.getPosition(),currBeeman.getVelocity()),getForce(prevBeeman.getPosition(),prevBeeman.getVelocity())));
