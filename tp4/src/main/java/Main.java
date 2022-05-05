@@ -14,7 +14,8 @@ public class Main {
         Oscilator oscilator = new Oscilator(Parser.mass, Parser.k, Parser.gamma, Parser.tf, Parser.r0, Parser.dt);
         oscilator.solution();
         writer.write("Analytical:\n");
-        for(Double pos : oscilator.getAnalytical()){
+        ArrayList<Double> analytical = oscilator.getAnalytical();
+        for(Double pos : analytical){
             writer.write(pos.toString() + "\n");
         }
         writer.write("Verlet:\n");
@@ -35,6 +36,32 @@ public class Main {
         for(PosVel pos : gear5){
             writer.write(pos.getPosition() + "\n");
         }
+        writer.close();
+
+        out = new File("ecm.txt");
+        out.createNewFile();
+        writer = new FileWriter("ecm.txt", true);
+
+        double ecmV = 0;
+        double ecmB = 0;
+        double ecmG = 0;
+        int i = 0;
+
+        for (Double pos: analytical) {
+            ecmV += Math.pow(pos - verlet.get(i).getPosition(), 2);
+            ecmB += Math.pow(pos - beeman.get(i).getPosition(), 2);
+            ecmG += Math.pow(pos - gear5.get(i).getPosition(), 2);
+            i++;
+        }
+
+        ecmV = ecmV/analytical.size();
+        ecmB = ecmB/analytical.size();
+        ecmG = ecmG/analytical.size();
+
+        writer.write("dt: " + Parser.dt + "\n");
+        writer.write(ecmV + "\n");
+        writer.write(ecmB + "\n");
+        writer.write(ecmG + "\n");
         writer.close();
     }
 }
