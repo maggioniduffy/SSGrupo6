@@ -8,6 +8,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException, ParseException {
         Parser.parse();
+        //Sistema 1
         File out = new File("output.txt");
         out.createNewFile();
         FileWriter writer = new FileWriter("output.txt");
@@ -63,5 +64,9 @@ public class Main {
         writer.write(ecmB + "\n");
         writer.write(ecmG + "\n");
         writer.close();
+
+        //Sistema 2
+        double L = Parser.D*(Math.sqrt(Parser.N)-1);
+        Board board = new Board(L, Parser.D, Parser.k2, Parser.N, Parser.M, Parser.Q, Parser.V0max, Parser.V0min, Parser.dt);
     }
 }
