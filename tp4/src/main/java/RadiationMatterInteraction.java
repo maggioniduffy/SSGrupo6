@@ -97,10 +97,12 @@ public class RadiationMatterInteraction {
 
     public void simulate() {
         double t = 0;
-        while(particle.getPosX()<=(L+D) && particle.getPosX()>=0 && particle.getPosY()>=0 && particle.getPosY()<=L && distanceToFixedParticle()){
+        int it = 0;
+        while(particle.getPosX()<=(L+D) && particle.getPosX()>=0 && particle.getPosY()>=0 && particle.getPosY()<=L && distanceToFixedParticle() && it<1000000){
             Double[] f = getCoulombForce();
             updateParticle(f);
             saveStates();
+            it++;
         }
     }
 
@@ -139,8 +141,8 @@ public class RadiationMatterInteraction {
         particle.setPosX(rx);
         particle.setPosY(ry);
 
-        particle.setVelX(rx);
-        particle.setVelY(ry);
+        particle.setVelX((rx - prevR[0])/(2*dt));
+        particle.setVelY((ry - prevR[1])/(2*dt));
     }
 
     public ArrayList<Particle> getStates() {

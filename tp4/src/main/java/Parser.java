@@ -11,6 +11,7 @@ public class Parser {
 	public static double tf;
 	public static double r0;
 	public static double dt;
+    public static double dt2;
     public static double k2;
     public static double Q;
     public static double M;
@@ -35,6 +36,7 @@ public class Parser {
 		//Sistema 2
         k2=Double.parseDouble(data.get("k2").toString());
         k2=Math.pow(10, k2);
+        dt2=Double.parseDouble(data.get("dt2").toString());
         Q=Double.parseDouble(data.get("Q").toString());
         Q=Math.pow(10, Q);
         M=Double.parseDouble(data.get("M").toString());
