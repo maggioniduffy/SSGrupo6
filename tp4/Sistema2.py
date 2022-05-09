@@ -9,7 +9,7 @@ def draw_particles(screen):
     particle_count = 0
     stop = False
     line_count = 0
-    colors = [(255,0,0), (0,0,255)]
+    colors = [(0,0,255), (255,0,0)]
     while(not stop):
         if particle_count < 16:
             pygame.draw.circle(screen, colors[(particle_count + line_count)%2] , (posx, posy), particle_size)
