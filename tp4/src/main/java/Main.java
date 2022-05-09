@@ -79,7 +79,7 @@ public class Main {
         for (Particle p : states) {
             writer.write(time + ":\n");
             writer.write(p.getPosX() + " " + p.getPosY() + "\n");
-            time += Parser.dt;
+            time += Parser.dt2;
         }
         writer.close();
     }
