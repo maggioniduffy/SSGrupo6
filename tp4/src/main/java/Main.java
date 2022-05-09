@@ -77,6 +77,7 @@ public class Main {
 
         double time = 0.0;
         for (Particle p : states) {
+            writer.write("dt\n");
             writer.write(time + ":\n");
             writer.write(p.getPosX() + " " + p.getPosY() + "\n");
             time += Parser.dt2;
