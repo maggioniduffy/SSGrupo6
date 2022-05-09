@@ -49,18 +49,15 @@ def animate():
     #print(iterations)
     dts = [dt[0] for dt in  [line.split(":\n") for line in iterations]]
     positions = [pos[1].split("\n")[0] for pos in  [line.split(":\n") for line in iterations]]
-    print(positions)
-    y = 0
-
-    for index, item in enumerate(range(0, len(iterations))):
-        print('step: ', index)
-        y = 0
+    #print(positions)
+    for index, _ in enumerate(range(0, len(iterations))):
+        #print('step: ', index)
         screen.fill(bg)
         draw_particles(screen)
         posx = float(positions[index].split(" ")[0]) * factor + 100
-        print(posx)
+        #print(posx)
         posy = float(positions[index].split(" ")[1]) * factor + 100
-        print(posy)
+        #print(posy)
         pygame.draw.circle(screen, (255,255,255), (posx, posy), particle_size)
         pygame.display.flip()
     while True:
