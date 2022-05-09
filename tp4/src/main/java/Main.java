@@ -67,6 +67,20 @@ public class Main {
 
         //Sistema 2
         double L = Parser.D*(Math.sqrt(Parser.N)-1);
-        Board board = new Board(L, Parser.D, Parser.k2, Parser.N, Parser.M, Parser.Q, Parser.V0max, Parser.V0min, Parser.dt);
+        RadiationMatterInteraction rmi = new RadiationMatterInteraction(L, Parser.D, Parser.k2, Parser.N, Parser.M, Parser.Q, Parser.V0max, Parser.V0min, Parser.dt);
+
+        out = new File("rmi.txt");
+        out.createNewFile();
+        writer = new FileWriter("rmi.txt");
+
+        ArrayList<Particle> states = rmi.getStates();
+
+        double time = 0.0;
+        for (Particle p : states) {
+            writer.write(time + ":\n");
+            writer.write(p.getPosX() + " " + p.getPosY() + "\n");
+            time += Parser.dt;
+        }
+        writer.close();
     }
 }
