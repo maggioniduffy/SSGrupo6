@@ -38,7 +38,7 @@ public class RadiationMatterInteraction {
         Double[] f = getCoulombForce();
         prevR[0] = particle.getPosX() - dt * particle.getVelX() + (Math.pow(dt,2)/(2*M))*f[0];
         prevR[1] = particle.getPosY() - dt * particle.getVelY() + (Math.pow(dt,2)/(2*M))*f[1];
-        saveStates(0);
+        saveStates(0,false);
         simulate();
     }
 
@@ -101,8 +101,11 @@ public class RadiationMatterInteraction {
         while(particle.getPosX()<=(L+D) && particle.getPosX()>=0 && particle.getPosY()>=0 && particle.getPosY()<=L && distanceToFixedParticle() && it<1000000){
             Double[] f = getCoulombForce();
             updateParticle(f);
-            saveStates(it);
+            saveStates(it,false);
             it++;
+        }
+        if(it % 50 != 0) {
+            saveStates(it, true);
         }
     }
 
@@ -119,10 +122,9 @@ public class RadiationMatterInteraction {
         return true;
     }
 
-    private void saveStates(int it) {
-
+    private void saveStates(int it, boolean last_iter) {
         Particle p = new Particle(particle.getPosX(), particle.getPosY(), particle.getVelX(), particle.getVelY(), M, Q);
-        if(it % 50 == 0) { //guardo cada 50 iteraciones
+        if(it % 50 == 0 || last_iter) { //guardo cada 50 iteraciones
             states.add(p);
             double e = e0 - getEnergy();
             if (e < 0) {

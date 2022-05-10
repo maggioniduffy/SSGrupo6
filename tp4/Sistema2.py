@@ -1,25 +1,26 @@
 import pygame
 import time
-particle_size = 3
+particle_radius = 3
+position_delta = 80
 def draw_particles(screen):
-    posx = 100
-    posy = 100
     d = 1e-8
     factor = 3125000000
     particle_count = 0
     stop = False
     line_count = 0
     colors = [(0,0,255), (255,0,0)]
+    posx = position_delta + d*factor
+    posy = position_delta
     while(not stop):
         if particle_count < 16:
-            pygame.draw.circle(screen, colors[(particle_count + line_count)%2] , (posx, posy), particle_size)
+            pygame.draw.circle(screen, colors[(particle_count + line_count)%2] , (posx, posy), particle_radius)
             posx = posx + d*factor
             particle_count += 1
         else:
             line_count += 1
             particle_count = 0
             posy = posy + d*factor
-            posx = 100
+            posx = position_delta + d*factor
 
         if line_count == 16:
             stop = True
@@ -35,7 +36,7 @@ def animate():
     d = 1e-8
     factor = 3125000000
 
-    width, height = 650, 650
+    width, height = 700, 700
     screen = pygame.display.set_mode((height, width))
 
     bg = 25, 25, 25
@@ -55,12 +56,12 @@ def animate():
         time.sleep(0.003)
         screen.fill(bg)
         draw_particles(screen)
-        posx = float(positions[index].split(" ")[0]) * factor + 100
+        posx = float(positions[index].split(" ")[0]) * factor + position_delta
         #print(posx)
-        posy = float(positions[index].split(" ")[1]) * factor + 100
+        posy = float(positions[index].split(" ")[1]) * factor + position_delta
         #print(posy)
-        pygame.draw.circle(screen, (255,255,255), (posx, posy), particle_size)
+        pygame.draw.circle(screen, (255,255,255), (posx, posy), particle_radius)
         pygame.display.flip()
-    time.sleep(5)
+    time.sleep(3)
 
 animate()
