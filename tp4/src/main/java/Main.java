@@ -76,13 +76,39 @@ public class Main {
 
         ArrayList<Particle> states = rmi.getStates();
 
+        double longt = 0.0;
+        //dts: 1e-15, 1e-16, 1e-17
         double time = 0.0;
-        for (Particle p : states) {
-            writer.write("dt\n");
+        for (int j = 0; j < states.size(); j++) {
+            writer.write("t\n");
             writer.write(time + ":\n");
-            writer.write(p.getPosX() + " " + p.getPosY() + "\n");
+            writer.write(states.get(j).getPosX() + " " + states.get(j).getPosY() + "\n");
             time += Parser.dt2;
+            if(j > 0) {
+                longt += Math.abs(Math.sqrt(Math.pow(states.get(j).getPosX(),2)+Math.pow(states.get(j).getPosY(),2)) - Math.sqrt(Math.pow(states.get(j-1).getPosX(),2)+Math.pow(states.get(j-1).getPosY(),2)));
+            }
         }
         writer.close();
+
+        //V0s: 5000, 16250, 27500, 38750, 50000
+//        out = new File("longT50000.txt");
+//        out.createNewFile();
+//        writer = new FileWriter("longT50000.txt", true);
+//
+//        writer.write("V0: 50000" + "\n");
+//        writer.write(longt + "\n");
+//
+//        writer.close();
+
+//        out = new File("energies1e-18.txt");
+//        out.createNewFile();
+//        writer = new FileWriter("energies1e-18.txt", true);
+//
+//        ArrayList<Double> energies = rmi.getEnergies();
+//        writer.write("dt: " + Parser.dt2 + "\n");
+//        for (Double e : energies) {
+//            writer.write(e + "\n");
+//        }
+//        writer.close();
     }
 }

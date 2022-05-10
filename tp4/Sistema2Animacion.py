@@ -46,7 +46,7 @@ def animate():
     f = open('./rmi.txt', 'r')
     lines = f.read()
     f.close()
-    iterations = lines.split("dt\n")[1:]
+    iterations = lines.split("t\n")[1:]
     #print(iterations)
     dts = [dt[0] for dt in  [line.split(":\n") for line in iterations]]
     positions = [pos[1].split("\n")[0] for pos in  [line.split(":\n") for line in iterations]]

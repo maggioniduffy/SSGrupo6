@@ -12,7 +12,7 @@ def pos():
     solutions = data.split(':')[1:]
     analytical = []
     for line in solutions[0].split('\n')[1:][:-1]:
-        analytical.append(float(line))
+            analytical.append(float(line))
     verlet = []
     for line in solutions[1].split('\n')[1:][:-1]:
         verlet.append(float(line))

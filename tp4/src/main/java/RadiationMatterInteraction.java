@@ -92,7 +92,10 @@ public class RadiationMatterInteraction {
         }
         Random r = new Random();
         Random r2 = new Random();
-        particle = new Particle(0,((L/2)-D) + r.nextFloat() * (((L/2)+D) - ((L/2)-D)), V0min + r2.nextFloat() * (V0max - V0min),0, M, Q);
+        //posYs: L/2, (L/2) - D, (L/2) + D, (L/2) - 0.75*D, (L/2) + 0.75*D
+        //(L/2) - 0.8*D, (L/2) + 0.8*D, (L/2) - 0.9*D, (L/2) + 0.9*D, (L/2) - 0.6*D, (L/2) + 0.6*D, (L/2) - 0.5*D, (L/2) + 0.5*D, (L/2) - 0.4*D, (L/2) + 0.4*D
+        //V0s: 5000, 16250, 27500, 38750, 50000
+        particle = new Particle(0,(L/2) + 0.4*D, 50000,0, M, Q);
     }
 
     public void simulate() {
@@ -124,7 +127,7 @@ public class RadiationMatterInteraction {
         Particle p = new Particle(particle.getPosX(), particle.getPosY(), particle.getVelX(), particle.getVelY(), M, Q);
         if(it % 50 == 0 || last_iter) { //guardo cada 50 iteraciones
             states.add(p);
-            double e = e0 - getEnergy();
+            double e = (e0 - getEnergy())/e0;
             if (e < 0) {
                 e = e * (-1);
             }
@@ -149,5 +152,9 @@ public class RadiationMatterInteraction {
 
     public ArrayList<Particle> getStates() {
         return states;
+    }
+
+    public ArrayList<Double> getEnergies() {
+        return energies;
     }
 }
