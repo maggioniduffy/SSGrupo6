@@ -61,7 +61,6 @@ def animate():
         #print(posy)
         pygame.draw.circle(screen, (255,255,255), (posx, posy), particle_size)
         pygame.display.flip()
-    while True:
-        pass
+    time.sleep(5)
 
 animate()

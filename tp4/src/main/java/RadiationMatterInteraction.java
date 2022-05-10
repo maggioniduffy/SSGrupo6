@@ -90,7 +90,6 @@ public class RadiationMatterInteraction {
             }
             s = s * (-1);
         }
-        System.out.println(this.particles.size());
         Random r = new Random();
         Random r2 = new Random();
         particle = new Particle(0,((L/2)-D) + r.nextFloat() * (((L/2)+D) - ((L/2)-D)), V0min + r2.nextFloat() * (V0max - V0min),0, M, Q);
@@ -113,6 +112,7 @@ public class RadiationMatterInteraction {
                     Math.pow(p.getPosY() - particle.getPosY(), 2));
 
             if (distance < 0.01 * D){
+                System.out.println("Absorbed");
                 return false;
             }
         }
@@ -122,7 +122,7 @@ public class RadiationMatterInteraction {
     private void saveStates(int it) {
 
         Particle p = new Particle(particle.getPosX(), particle.getPosY(), particle.getVelX(), particle.getVelY(), M, Q);
-        if(it % 50 == 0) {
+        if(it % 50 == 0) { //guardo cada 50 iteraciones
             states.add(p);
             double e = e0 - getEnergy();
             if (e < 0) {
