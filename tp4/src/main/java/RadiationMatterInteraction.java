@@ -104,9 +104,7 @@ public class RadiationMatterInteraction {
             saveStates(it,false);
             it++;
         }
-        if(it % 50 != 0) {
-            saveStates(it, true);
-        }
+        saveStates(it, true);
     }
 
     public boolean distanceToFixedParticle() {

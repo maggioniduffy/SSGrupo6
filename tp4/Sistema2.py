@@ -39,7 +39,7 @@ def animate():
     width, height = 700, 700
     screen = pygame.display.set_mode((height, width))
 
-    bg = 25, 25, 25
+    bg = 0, 0, 0
 
     screen.fill(bg)
     
