@@ -52,6 +52,7 @@ def animate():
     #print(positions)
     for index, _ in enumerate(range(0, len(iterations))):
         #print('step: ', index)
+        time.sleep(0.003)
         screen.fill(bg)
         draw_particles(screen)
         posx = float(positions[index].split(" ")[0]) * factor + 100

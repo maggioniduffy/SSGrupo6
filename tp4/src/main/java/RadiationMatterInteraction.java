@@ -38,7 +38,7 @@ public class RadiationMatterInteraction {
         Double[] f = getCoulombForce();
         prevR[0] = particle.getPosX() - dt * particle.getVelX() + (Math.pow(dt,2)/(2*M))*f[0];
         prevR[1] = particle.getPosY() - dt * particle.getVelY() + (Math.pow(dt,2)/(2*M))*f[1];
-        saveStates();
+        saveStates(0);
         simulate();
     }
 
@@ -48,10 +48,11 @@ public class RadiationMatterInteraction {
         for (FixedParticle p : this.particles) {
             double rx = particle.getPosX() - p.getPosX();
             double ry = particle.getPosY() - p.getPosY();
-            double faux = p.getQ()/Math.pow(Math.sqrt(Math.pow(rx,2) + Math.pow(ry,2)),2);
+            double module = Math.sqrt(Math.pow(rx,2) + Math.pow(ry,2));
+            double faux = p.getQ()/Math.pow(module,2);
 
-            fx += faux * rx/Math.sqrt(Math.pow(rx,2) + Math.pow(ry,2));
-            fy += faux * ry/Math.sqrt(Math.pow(rx,2) + Math.pow(ry,2));
+            fx += faux * rx/module;
+            fy += faux * ry/module;
         }
 
         fx = fx*k*particle.getQ();
@@ -83,13 +84,13 @@ public class RadiationMatterInteraction {
     public void generateParticles() {
         int s = 1;
         for (int i = 0; i < N; i++) {
-            for (int j = 1; j < N; j++) {
+            for (int j = 1; j <= N; j++) {
                 this.particles.add(new FixedParticle(D * j, D * i, M, s * Q));
                 s = s * (-1);
             }
             s = s * (-1);
         }
-
+        System.out.println(this.particles.size());
         Random r = new Random();
         Random r2 = new Random();
         particle = new Particle(0,((L/2)-D) + r.nextFloat() * (((L/2)+D) - ((L/2)-D)), V0min + r2.nextFloat() * (V0max - V0min),0, M, Q);
@@ -101,7 +102,7 @@ public class RadiationMatterInteraction {
         while(particle.getPosX()<=(L+D) && particle.getPosX()>=0 && particle.getPosY()>=0 && particle.getPosY()<=L && distanceToFixedParticle() && it<1000000){
             Double[] f = getCoulombForce();
             updateParticle(f);
-            saveStates();
+            saveStates(it);
             it++;
         }
     }
@@ -118,16 +119,17 @@ public class RadiationMatterInteraction {
         return true;
     }
 
-    private void saveStates() {
+    private void saveStates(int it) {
 
         Particle p = new Particle(particle.getPosX(), particle.getPosY(), particle.getVelX(), particle.getVelY(), M, Q);
-
-        states.add(p);
-        double e = e0 - getEnergy();
-        if(e < 0) {
-            e = e * (-1);
+        if(it % 50 == 0) {
+            states.add(p);
+            double e = e0 - getEnergy();
+            if (e < 0) {
+                e = e * (-1);
+            }
+            energies.add(e);
         }
-        energies.add(e);
     }
 
     double[] prevR ={0,0};

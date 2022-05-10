@@ -44,7 +44,6 @@ public class Parser {
         D=Double.parseDouble(data.get("D").toString());
         D=Math.pow(10, D);
         N=Double.parseDouble(data.get("N").toString());
-        N=Math.pow(N, 2);
         V0max=Double.parseDouble(data.get("V0max").toString());
         V0min=Double.parseDouble(data.get("V0min").toString());
 

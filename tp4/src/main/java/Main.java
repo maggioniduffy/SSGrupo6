@@ -65,8 +65,9 @@ public class Main {
         writer.write(ecmG + "\n");
         writer.close();
 
+        System.out.println("Starting System 2");
         //Sistema 2
-        double L = Parser.D*(Math.sqrt(Parser.N)-1);
+        double L = Parser.D*(Parser.N-1);
         RadiationMatterInteraction rmi = new RadiationMatterInteraction(L, Parser.D, Parser.k2, Parser.N, Parser.M, Parser.Q, Parser.V0max, Parser.V0min, Parser.dt2);
 
         out = new File("rmi.txt");
