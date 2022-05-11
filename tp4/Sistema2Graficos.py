@@ -1,6 +1,8 @@
+from unittest import skip
 import matplotlib.pyplot as plt
 import numpy as np
 import statistics
+import os
 
 def energies():
     file = open('./energies1e-15.txt', 'r')
@@ -206,5 +208,78 @@ def longT():
     plt.legend()
     plt.show()
 
+def countprop():
+    files = [f for f in os.listdir("./") if f.startswith('rmi') and os.path.isfile(os.path.join("./", f))]
+    sim_count = len(files)
+    cut_cond_count = {5000: [], 16250: [], 27500: [], 38750: [], 50000: []}
+    for f in files:
+        file = open(f, 'r')
+        speed = int(f.split("_")[2].split(".")[0])
+        data = file.read()
+        data = data.split("\n")
+        cut_cond = data[-1]
+        cut_cond_count[speed].append(cut_cond)
+    absorbed = []
+    left = []
+    right = []
+    bottom = []
+    top = []
+    for key in cut_cond_count:
+        results = cut_cond_count[key]
+        absorbed.append(results.count("Absorbed"))
+        left.append(results.count("Left"))
+        right.append(results.count("Right"))
+        bottom.append(results.count("Bottom"))
+        top.append(results.count("Top"))
+        
+    plt.plot(cut_cond_count.keys, [(number/15)*100 for number in absorbed], marker='o', label="Absorbed")
+    plt.plot(cut_cond_count.keys, [(number/15)*100 for number in left], marker='o', label='Left')
+    plt.plot(cut_cond_count.keys, [(number/15)*100 for number in right], marker='o', label='Right')
+    plt.plot(cut_cond_count.keys, [(number/15)*100 for number in bottom], marker='o', label='Bottom')
+    plt.plot(cut_cond_count.keys, [(number/15)*100 for number in top], marker='o', label='Top')
+    plt.xlabel('Velocidad (m/s)')
+    plt.ylabel('Porcentaje (%)')
+    plt.legend()
+    plt.ylim([-5,100])
+    plt.ticklabel_format(style='sci', axis='x', scilimits=(0,0))
+    plt.show()
+
+def place_in_bins(value, bins, interval_size):
+    stop = False
+    bins = np.array(bins)
+    aux = bins.copy()
+    n = 1
+    while not stop:
+        if value <= interval_size * n:
+            aux[n-1] = aux[n-1] + 1
+            stop = True
+        else:
+            n += 1 
+    return aux
+
+def prob_dist():
+    files = [f for f in os.listdir("./") if f.startswith('absorbed') and os.path.isfile(os.path.join("./", f))]
+    trayectories = {5000: [], 16250: [], 27500: [], 38750: [], 50000: []}
+    aux = []
+    for f in files:
+        file = open(f, 'r')
+        speed = int(f.split("_")[2].split(".")[0])
+        data = float(file.read())
+        aux.append(data)
+        trayectories[speed].append(data)
+
+    for speed in trayectories.keys():
+        bin_size = sum(trayectories[speed])/len(trayectories[speed])
+        bin_ammount = len(trayectories[speed])
+        bins = np.zeros(bin_ammount) #ver cuantos bins poner por cada speed (nose si es asi tampoco)
+        for tr in trayectories[speed]:
+            bins = place_in_bins(tr, bins, bin_size)
+        plt.plot(trayectories[speed], bins/len(bins), label=str(speed)+" m/s")
+        print(bins)
+    plt.xlabel('Trayectoria (m)')
+    plt.ylabel('Probabilidad')
+    plt.show()
 #energies()
-longT()
+#longT()
+#countprop()
+prob_dist()

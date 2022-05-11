@@ -12,14 +12,20 @@ public class RadiationMatterInteraction {
     private double V0max;
     private double V0min;
     private double dt;
+    private double particle_l;
+    private double particle_v;
+    private String cut_condition;
     private ArrayList<FixedParticle> particles;
     private Particle particle;
     private ArrayList<Particle> states;
     private ArrayList<Double> energies;
     private double e0;
 
+    public String getCut_condition() {
+        return cut_condition;
+    }
 
-    public RadiationMatterInteraction(double L, double D, double k, double N, double M, double Q, double V0max, double V0min, double dt) {
+    public RadiationMatterInteraction(double L, double D, double k, double N, double M, double Q, double V0max, double V0min, double dt, double particle_l, double particle_v) {
         this.L = L;
         this.D = D;
         this.k = k;
@@ -32,6 +38,9 @@ public class RadiationMatterInteraction {
         this.particles = new ArrayList<FixedParticle>();
         this.states = new ArrayList<Particle>();
         this.energies = new ArrayList<Double>();
+        this.particle_l = particle_l;
+        this.particle_v = particle_v;
+        this.cut_condition = "Iterations";
 
         generateParticles();
         this.e0 = getEnergy();
@@ -92,16 +101,30 @@ public class RadiationMatterInteraction {
         }
         Random r = new Random();
         Random r2 = new Random();
-        //posYs: L/2, (L/2) - D, (L/2) + D, (L/2) - 0.75*D, (L/2) + 0.75*D
-        //(L/2) - 0.8*D, (L/2) + 0.8*D, (L/2) - 0.9*D, (L/2) + 0.9*D, (L/2) - 0.6*D, (L/2) + 0.6*D, (L/2) - 0.5*D, (L/2) + 0.5*D, (L/2) - 0.4*D, (L/2) + 0.4*D
-        //V0s: 5000, 16250, 27500, 38750, 50000
-        particle = new Particle(0,(L/2) + 0.4*D, 50000,0, M, Q);
+        particle = new Particle(0,this.particle_l, this.particle_v,0, M, Q);
+    }
+
+    public boolean checkBounds(){
+        if(particle.getPosX() > (L+D)){
+            this.cut_condition = "Right";
+            return false;
+        } else if (particle.getPosX() < 0) {
+            this.cut_condition = "Left";
+            return false;
+        } else if (particle.getPosY() < 0) {
+            this.cut_condition = "Bottom";
+            return false;
+        } else if (particle.getPosY() > L) {
+            this.cut_condition = "Top";
+            return false;
+        }
+        return true;
     }
 
     public void simulate() {
         double t = 0;
         int it = 0;
-        while(particle.getPosX()<=(L+D) && particle.getPosX()>=0 && particle.getPosY()>=0 && particle.getPosY()<=L && distanceToFixedParticle() && it<1000000){
+        while(checkBounds() && distanceToFixedParticle() && it<2000000){
             Double[] f = getCoulombForce();
             updateParticle(f);
             saveStates(it,false);
@@ -116,7 +139,7 @@ public class RadiationMatterInteraction {
                     Math.pow(p.getPosY() - particle.getPosY(), 2));
 
             if (distance < 0.01 * D){
-                System.out.println("Absorbed");
+                this.cut_condition = "Absorbed";
                 return false;
             }
         }

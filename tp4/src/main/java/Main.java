@@ -68,27 +68,46 @@ public class Main {
         System.out.println("Starting System 2");
         //Sistema 2
         double L = Parser.D*(Parser.N-1);
-        RadiationMatterInteraction rmi = new RadiationMatterInteraction(L, Parser.D, Parser.k2, Parser.N, Parser.M, Parser.Q, Parser.V0max, Parser.V0min, Parser.dt2);
+        //posYs: L/2, (L/2) - D, (L/2) + D, (L/2) - 0.75*D, (L/2) + 0.75*D
+        //(L/2) - 0.8*D, (L/2) + 0.8*D, (L/2) - 0.9*D, (L/2) + 0.9*D, (L/2) - 0.6*D, (L/2) + 0.6*D, (L/2) - 0.5*D, (L/2) + 0.5*D, (L/2) - 0.4*D, (L/2) + 0.4*D
+        //V0s: 5000, 16250, 27500, 38750, 50000
+        double posYs[] = {L/2, (L/2) - Parser.D, (L/2) + Parser.D, (L/2) - 0.75*Parser.D, (L/2) + 0.75*Parser.D, (L/2) - 0.8*Parser.D, (L/2) + 0.8*Parser.D, (L/2) - 0.9*Parser.D, (L/2) + 0.9*Parser.D, (L/2) - 0.6*Parser.D, (L/2) + 0.6*Parser.D, (L/2) - 0.5*Parser.D, (L/2) + 0.5*Parser.D, (L/2) - 0.4*Parser.D, (L/2) + 0.4*Parser.D};
+        double v0s[] = {5000, 16250, 27500, 38750, 50000};
+        for(double pos : posYs){
+            for(double vel : v0s){
+                RadiationMatterInteraction rmi = new RadiationMatterInteraction(L, Parser.D, Parser.k2, Parser.N, Parser.M, Parser.Q, Parser.V0max, Parser.V0min, Parser.dt2, pos, vel);
+                out = new File("rmi"+ "_"+ pos + "_" + vel +".txt");
+                out.createNewFile();
+                writer = new FileWriter("rmi"+ "_"+ pos + "_" + vel +".txt");
 
-        out = new File("rmi.txt");
-        out.createNewFile();
-        writer = new FileWriter("rmi.txt");
+                ArrayList<Particle> states = rmi.getStates();
 
-        ArrayList<Particle> states = rmi.getStates();
-
-        double longt = 0.0;
-        //dts: 1e-15, 1e-16, 1e-17
-        double time = 0.0;
-        for (int j = 0; j < states.size(); j++) {
-            writer.write("t\n");
-            writer.write(time + ":\n");
-            writer.write(states.get(j).getPosX() + " " + states.get(j).getPosY() + "\n");
-            time += Parser.dt2;
-            if(j > 0) {
-                longt += Math.abs(Math.sqrt(Math.pow(states.get(j).getPosX(),2)+Math.pow(states.get(j).getPosY(),2)) - Math.sqrt(Math.pow(states.get(j-1).getPosX(),2)+Math.pow(states.get(j-1).getPosY(),2)));
+                double longt = 0.0;
+                //dts: 1e-15, 1e-16, 1e-17
+                double time = 0.0;
+                for (int j = 0; j < states.size(); j++) {
+                    writer.write("t\n");
+                    writer.write(time + ":\n");
+                    writer.write(states.get(j).getPosX() + " " + states.get(j).getPosY() + "\n");
+                    time += Parser.dt2;
+                    if(j > 0) {
+                        longt += Math.abs(Math.sqrt(Math.pow(states.get(j).getPosX(),2)+Math.pow(states.get(j).getPosY(),2)) - Math.sqrt(Math.pow(states.get(j-1).getPosX(),2)+Math.pow(states.get(j-1).getPosY(),2)));
+                    }
+                }
+                writer.write(rmi.getCut_condition());
+                writer.close();
+                if(rmi.getCut_condition() == "Absorbed"){
+                    out = new File("absorbed"+ "_"+ pos + "_" + vel +".txt");
+                    out.createNewFile();
+                    writer = new FileWriter("absorbed"+ "_"+ pos + "_" + vel +".txt");
+                    writer.write(Double.toString(longt));
+                    writer.close();
+                }
             }
         }
-        writer.close();
+
+
+
 
         //V0s: 5000, 16250, 27500, 38750, 50000
 //        out = new File("longT50000.txt");
