@@ -1,0 +1,7 @@
+.idea/
+/target/
+.classpath
+.project
+.settings/
+*.txt
+tp5.iml

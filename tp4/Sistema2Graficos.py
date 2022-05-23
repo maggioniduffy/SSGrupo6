@@ -268,22 +268,41 @@ def prob_dist():
         aux.append(data)
         trayectories[speed].append(data)
 
-    for speed in trayectories.keys():
-        bin_size = sum(trayectories[speed])/len(trayectories[speed])
-        bin_ammount = len(trayectories[speed])
-        bins = np.zeros(bin_ammount) #ver cuantos bins poner por cada speed (nose si es asi tampoco)
-        intervals = np.arange(0, bin_size*len(bins), step=bin_size)
-        for tr in trayectories[speed]:
-            bins = place_in_bins(tr, bins, bin_size)
-        plt.plot(intervals, bins/len(bins), label=(str(speed)+" m/s"))
-        print(trayectories[speed])
-        print(bins)
-        print("-------")
-    plt.xlabel('Trayectoria (m)')
-    plt.ylabel('Probabilidad')
+    interval_size = 2e-7/10
+    intervals = np.arange(0, 2e-7, interval_size)
+    d5000 = np.zeros(10)
+    for value in trayectories[5000]:
+        d5000 = place_in_bins(value, d5000, interval_size)
+    d5000 = d5000/4
+    d16250 = np.zeros(10)
+    for value in trayectories[16250]:
+        d16250 = place_in_bins(value, d16250, interval_size)
+    d16250 = d16250/5
+    d27500 = np.zeros(10)
+    for value in trayectories[27500]:
+        d27500 = place_in_bins(value, d27500, interval_size)
+    d27500 = d27500/3
+    d38750 = np.zeros(10)
+    for value in trayectories[38750]:
+        d38750 = place_in_bins(value, d38750, interval_size)
+    d38750 = d38750/2
+    d50000 = np.zeros(10)
+    for value in trayectories[50000]:
+        d50000 = place_in_bins(value, d50000, interval_size)
+    d50000 = d50000/2
+
+    plt.plot(intervals, d5000, marker='o', label='5000')
+    plt.plot(intervals, d16250, marker='o', label='16250')
+    plt.plot(intervals, d27500, marker='o', label='27500')
+    plt.plot(intervals, d38750, marker='o', label='38750')
+    plt.plot(intervals, d50000, marker='o', label='50000')
+    plt.xlabel('Longitud de Trayectoria (m)')
+    plt.ylabel('Distribucion')
     plt.legend()
     plt.show()
-#energies()
+
+
+energies()
 #longT()
 #countprop()
-prob_dist()
+#prob_dist()
