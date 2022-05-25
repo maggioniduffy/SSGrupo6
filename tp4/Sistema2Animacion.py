@@ -43,17 +43,21 @@ def animate():
 
     screen.fill(bg)
     
-    f = open('./rmi.txt', 'r')
+    f = open('./rmi_8.1E-8_5000.0.txt', 'r')
     lines = f.read()
     f.close()
     iterations = lines.split("t\n")[1:]
+    last_iter = iterations[-1]
+    last_iter = last_iter.split("\n")
+    del last_iter[-1]
+    iterations[-1] = "\n".join(last_iter)
     #print(iterations)
     dts = [dt[0] for dt in  [line.split(":\n") for line in iterations]]
     positions = [pos[1].split("\n")[0] for pos in  [line.split(":\n") for line in iterations]]
     #print(positions)
     for index, _ in enumerate(range(0, len(iterations))):
         #print('step: ', index)
-        time.sleep(0.003)
+        
         screen.fill(bg)
         draw_particles(screen)
         posx = float(positions[index].split(" ")[0]) * factor + position_delta

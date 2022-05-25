@@ -1,13 +1,18 @@
 public class Particle {
 
-    private double posX, posY, velX, velY, rad;
+    private double posX, posY, velX, velY, rad, mass, accX, accY, prevAccX, prevAccY;
 
-    public Particle(double posX, double posY, double velX, double velY, double rad) {
+    public Particle(double posX, double posY, double velX, double velY, double rad, double mass, double accX, double accY, double prevAccX, double prevAccY) {
         this.posX = posX;
         this.posY = posY;
         this.velX = velX;
         this.velY = velY;
         this.rad = rad;
+        this.mass = mass;
+        this.accX = accX;
+        this.accY = accY;
+        this.prevAccX = prevAccX;
+        this.prevAccY = prevAccY;
     }
 
     public double getPosX() {
@@ -49,4 +54,46 @@ public class Particle {
     public void setRad(double rad) {
         this.rad = rad;
     }
+
+    public double getMass() {
+        return mass;
+    }
+
+    public void setMass(double mass) {
+        this.mass = mass;
+    }
+
+    public double getAccX() {
+        return accX;
+    }
+
+    public void setAccX(double accX) {
+        this.accX = accX;
+    }
+
+    public double getAccY() {
+        return accY;
+    }
+
+    public void setAccY(double accY) {
+        this.accY = accY;
+    }
+
+    public double getPrevAccX() {
+        return prevAccX;
+    }
+
+    public void setPrevAccX(double prevAccX) {
+        this.prevAccX = prevAccX;
+    }
+
+    public double getPrevAccY() {
+        return prevAccY;
+    }
+
+    public void setPrevAccY(double prevAccY) {
+        this.prevAccY = prevAccY;
+    }
+
+
 }
