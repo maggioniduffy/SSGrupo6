@@ -1,8 +1,8 @@
 public class Particle {
 
     private double posX, posY, velX, velY, rad, mass, accX, accY, prevAccX, prevAccY;
-
-    public Particle(double posX, double posY, double velX, double velY, double rad, double mass, double accX, double accY, double prevAccX, double prevAccY) {
+    private int id;
+    public Particle(int id, double posX, double posY, double velX, double velY, double rad, double mass, double accX, double accY, double prevAccX, double prevAccY) {
         this.posX = posX;
         this.posY = posY;
         this.velX = velX;
@@ -15,6 +15,7 @@ public class Particle {
         this.prevAccY = prevAccY;
     }
 
+    public int getId() {return id;}
     public double getPosX() {
         return posX;
     }

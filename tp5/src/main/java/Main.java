@@ -8,6 +8,6 @@ public class Main {
         Parser.parse();
         SiloDischarge silo = new SiloDischarge(Parser.kn, Parser.L, Parser.W, Parser.D, Parser.dt);
         System.out.println(silo.getN());
-
+        silo.simulate();
     }
 }
