@@ -41,10 +41,10 @@ def animate():
     # iterations[-1] = "\n".join(last_iter)
     del iterations[0]
     for iter in iterations:
-        screen.fill(bg)
+        
         draw_silo(screen, L, W, D)
         iter = iter[:-1]
-        # time.sleep(0.5)
+        time.sleep(0.005)
         for line in iter.split("\n"):
             data = line.split(" ")
             # print(data)
@@ -52,7 +52,9 @@ def animate():
             posx = float(data[1]) * factor
             posy = float(data[2]) * factor
             pygame.draw.circle(screen, (255,255,255), (left - posx, top - posy), radius)
-            pygame.display.flip()
+        pygame.display.flip()
+        screen.fill(bg)
+        # time.sleep(0.05)
     time.sleep(3)
 
 animate()

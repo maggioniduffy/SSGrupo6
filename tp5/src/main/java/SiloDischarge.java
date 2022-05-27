@@ -120,7 +120,7 @@ public class SiloDischarge {
                 p.setVelX(0);
                 p.setAccX(0);
                 p.setAccY(-10.0);
-                getEachPredAcceleration(p);
+//                getEachPredAcceleration(p);
                 //ver si hay que hacer getForces y setear prevAccel
                 return;
             }
@@ -133,7 +133,7 @@ public class SiloDischarge {
     private boolean check_positions(double posX, double posY, double rad){
         for(Particle p : this.particles){
             double distance = Math.sqrt(Math.pow(posX - p.getPosX(), 2) + Math.pow(posY - p.getPosY(), 2));
-            if(rad + p.getRad() - distance > 0){
+            if (rad + p.getRad() - distance > 0) {
                 return false;
             }
         }
