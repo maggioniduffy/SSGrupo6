@@ -47,7 +47,7 @@ public class SiloDischarge {
         p.setPosY(p.getPosY() + dt*(p.getVelY() + dt*p.getAccY()));
     }
 
-    private void generate_particles(){
+    private void generate_particles() {
         int iterations = 0;
         Random randomRad = new Random();
         Random randomX = new Random();
@@ -77,6 +77,7 @@ public class SiloDischarge {
         out.createNewFile();
         FileWriter writer = new FileWriter("output.txt");
         getPredAcceleration();
+        writer.write(this.L + " " + this.W + " " + this.D + "\n");
         while(iterations < 300000) {
             for (Particle p : this.particles) {
                 accX = p.getAccX();
@@ -91,8 +92,8 @@ public class SiloDischarge {
             }
             this.kinetics.add(kinetic);
 
-            if(iterations % 30 == 0){
-                writer.write("iteration " + iterations + "\n");
+            if(iterations % 100 == 0){
+                writer.write("iteration\n");
                 for(Particle p : this.particles){
                     writer.write(p.getRad() + " " + p.getPosX() + " " + p.getPosY() + "\n");
                 }
