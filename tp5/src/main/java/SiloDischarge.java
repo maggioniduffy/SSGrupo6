@@ -25,27 +25,6 @@ public class SiloDischarge {
         this.kinetics = new ArrayList<>();
         this.particles = new ArrayList<>();
         generate_particles();
-        getPredAcceleration();
-    }
-
-
-    public void getPredAcceleration() {
-
-        for(Particle p : this.particles) {
-            getEachPredAcceleration(p);
-        }
-
-    }
-
-    public void getEachPredAcceleration(Particle p) {
-        p.setPrevAccX(p.getAccX());
-        p.setPrevAccY(p.getAccY());
-
-        getParticleForces(p);
-        p.setVelX(p.getVelX() + dt*p.getAccX());
-        p.setVelY(p.getVelY() + dt*p.getAccY());
-        p.setPosX(p.getPosX() + dt*(p.getVelX() + dt*p.getAccX()));
-        p.setPosY(p.getPosY() + dt*(p.getVelY() + dt*p.getAccY()));
     }
 
     private void generate_particles() {
@@ -71,6 +50,7 @@ public class SiloDischarge {
 
     public void simulate() throws IOException {
         int iterations = 0;
+        ArrayList<Particle> removed = new ArrayList<>();
         double kinetic = 0.0;
         double accX;
         double accY;
@@ -79,6 +59,7 @@ public class SiloDischarge {
         FileWriter writer = new FileWriter("output.txt");
         writer.write(this.L + " " + this.W + " " + this.D + "\n");
         while(iterations < 500000) {
+            removed.clear();
             for (Particle p : this.particles) {
                 accX = p.getAccX();
                 accY = p.getAccY();
@@ -87,9 +68,12 @@ public class SiloDischarge {
                 getParticleForces(p);
 
                 if(!getBeeman(p, accX, accY)){
-                    reinject_particle(p);
+                    if(!reinject_particle(p)){
+                        removed.add(p);
+                    }
                 }
             }
+            this.particles.removeAll(removed);
             this.kinetics.add(kinetic);
 
             if(iterations % 500 == 0){
@@ -104,7 +88,7 @@ public class SiloDischarge {
         writer.close();
     }
 
-    private void reinject_particle(Particle p){
+    private boolean reinject_particle(Particle p){
         int iterations = 0;
         Random randomX = new Random();
         Random randomY = new Random();
@@ -118,16 +102,17 @@ public class SiloDischarge {
                 p.setPosY(posY);
                 p.setVelY(0);
                 p.setVelX(0);
+                p.setPrevAccX(0);
+                p.setPrevAccY(0);
                 p.setAccX(0);
                 p.setAccY(-10.0);
-//                getEachPredAcceleration(p);
+                return true;
                 //ver si hay que hacer getForces y setear prevAccel
-                return;
             }
 
             iterations++;
         }
-        this.particles.remove(p);
+        return false;
     }
 
     private boolean check_positions(double posX, double posY, double rad){
