@@ -1,8 +1,9 @@
-public class Particle {
+public class Particle implements Comparable<Particle>{
 
     private double posX, posY, velX, velY, rad, mass, accX, accY, prevAccX, prevAccY;
     private int id;
     public Particle(int id, double posX, double posY, double velX, double velY, double rad, double mass, double accX, double accY, double prevAccX, double prevAccY) {
+        this.id = id;
         this.posX = posX;
         this.posY = posY;
         this.velX = velX;
@@ -97,4 +98,10 @@ public class Particle {
     }
 
 
+    @Override
+    public int compareTo(Particle particle) {
+        if(id==particle.id)
+            return 0;
+        return -1;
+    }
 }

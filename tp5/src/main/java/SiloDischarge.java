@@ -25,6 +25,7 @@ public class SiloDischarge {
         this.kinetics = new ArrayList<>();
         this.particles = new ArrayList<>();
         generate_particles();
+        getPredAcceleration();
     }
 
 
@@ -76,9 +77,8 @@ public class SiloDischarge {
         File out = new File("output.txt");
         out.createNewFile();
         FileWriter writer = new FileWriter("output.txt");
-        getPredAcceleration();
         writer.write(this.L + " " + this.W + " " + this.D + "\n");
-        while(iterations < 300000) {
+        while(iterations < 500000) {
             for (Particle p : this.particles) {
                 accX = p.getAccX();
                 accY = p.getAccY();
@@ -92,7 +92,7 @@ public class SiloDischarge {
             }
             this.kinetics.add(kinetic);
 
-            if(iterations % 100 == 0){
+            if(iterations % 500 == 0){
                 writer.write("iteration\n");
                 for(Particle p : this.particles){
                     writer.write(p.getRad() + " " + p.getPosX() + " " + p.getPosY() + "\n");
@@ -111,7 +111,7 @@ public class SiloDischarge {
         double posX;
         double posY;
         while(iterations < 50000){
-            posX = p.getRad() + (this.W - p.getRad()) * randomX.nextDouble();
+            posX = p.getRad() + (this.W - p.getRad()*2) * randomX.nextDouble();
             posY = (p.getRad() + 2*this.L/3) + ((this.L-p.getRad())-(p.getRad()+2*this.L/3)) * randomY.nextDouble();
             if(check_positions(posX, posY, p.getRad())){
                 p.setPosX(posX);
@@ -141,7 +141,10 @@ public class SiloDischarge {
     }
 
     private double superposition(Particle p1, Particle p2){
-        return p1.getRad() + p2.getRad() - Math.sqrt(Math.pow(p1.getPosX() - p2.getPosX(), 2) + Math.pow(p1.getPosY() - p2.getPosY(), 2));
+        if(p1.getId() != p2.getId()) {
+            return p1.getRad() + p2.getRad() - Math.sqrt(Math.pow(p1.getPosX() - p2.getPosX(), 2) + Math.pow(p1.getPosY() - p2.getPosY(), 2));
+        }
+        return -1;
     }
 
     private double collision_wall(String wall, Particle p){
@@ -169,7 +172,7 @@ public class SiloDischarge {
         double nextVX = p.getVelX() + (1.0/3.0) * p.getAccX() * dt + (5.0/6.0) * accX * dt - (1.0/6.0) * p.getPrevAccX() * dt;
         double nextVY = p.getVelY() + (1.0/3.0) * p.getAccY() * dt + (5.0/6.0) * accY * dt - (1.0/6.0) * p.getPrevAccY() * dt;
 
-        if(nextRY <= -L/10){
+        if(nextRY < -L/10){
             return false;
         }
 
@@ -192,23 +195,23 @@ public class SiloDischarge {
         double enx = 0.0;
         double eny = 0.0;
         for(Particle p2 : this.particles){
-            if(p2.getId() != p.getId()){
-                double superpos = superposition(p2, p);
-                if(superpos > 0){
-                    double distance_x = p2.getPosX() - p.getPosX();
-                    double distance_y = p2.getPosY() - p.getPosY();
-                    double distance = Math.sqrt(Math.pow(distance_x, 2) + Math.pow(distance_y, 2));
 
-                    enx = distance_x/distance;
-                    eny = distance_y/distance;
+            double superpos = superposition(p, p2);
+            if(superpos > 0){
+                double distance_x = p2.getPosX() - p.getPosX();
+                double distance_y = p2.getPosY() - p.getPosY();
+                double distance = Math.sqrt(Math.pow(distance_x, 2) + Math.pow(distance_y, 2));
 
-                    double fn = -kn*superpos;
-                    double ft = -kt*superpos*(p.getVelX() - p2.getVelX())*(-eny) + (p.getVelY() - p2.getVelY())*enx;
+                enx = distance_x/distance;
+                eny = distance_y/distance;
 
-                    force_x = force_x + fn*enx - ft*eny;
-                    force_y = force_y + fn*eny + ft*enx;
-                }
+                double fn = -kn*superpos;
+                double ft = -kt*superpos*((p.getVelX() - p2.getVelX())*(-eny) + (p.getVelY() - p2.getVelY())*enx);
+
+                force_x = force_x + fn*enx - ft*eny;
+                force_y = force_y + fn*eny + ft*enx;
             }
+
         }
 
         for(String wall : walls){
