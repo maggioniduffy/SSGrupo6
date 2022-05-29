@@ -133,20 +133,20 @@ public class SiloDischarge {
     }
 
     private double collision_wall(String wall, Particle p){
-        double result = -1.0;
-        if(wall.equals("UP")){
-            result = p.getRad() - Math.abs(this.L - p.getPosY());
-        } else if (wall.equals("DOWN")) {
-            if(p.getPosX() > this.W/2.0 - this.D/2.0 && p.getPosX() < this.W/2.0 + this.D/2.0)
-                result = -1.0;
-            else
-                result = p.getRad() - Math.abs(p.getPosY());
-        } else if (wall.equals("RIGHT")) {
-            result = p.getRad() - Math.abs(this.W - p.getPosX());
-        } else if (wall.equals("LEFT")) {
-            result = p.getRad() - Math.abs(p.getPosX());
+        switch(wall) {
+            case "UP":
+                return p.getRad() + p.getPosY() - this.L;
+            case "LEFT":
+                return p.getRad() - p.getPosX();
+            case "RIGHT":
+                return p.getRad() + p.getPosX() - this.W;
+            case "DOWN":
+                if((p.getPosX() > this.W/2 - this.D/2 && p.getPosX() < this.W/2.0 + this.D/2.0) || p.getPosY() < -p.getRad()*2)
+                    return -1;
+                else
+                    return p.getRad() - p.getPosY();
         }
-        return result;
+        return -1;
     }
 
     public boolean getBeeman(Particle p, double accX, double accY){
