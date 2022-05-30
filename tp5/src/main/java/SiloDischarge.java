@@ -38,10 +38,10 @@ public class SiloDischarge {
         int i = 0;
         while(iterations < 50000){
             diam = 0.02 + (0.03 - 0.02) * randomRad.nextDouble();
-            posX = diam/2 + (this.W - diam) * randomX.nextDouble();
-            posY = diam/2 + (this.L - diam) * randomY.nextDouble();
-            if(check_positions(posX, posY, diam/2)){
-                this.particles.add(new Particle(i,posX,posY,0,0, diam/2.0, Parser.mass,0,-10.0, 0,0));
+            posX = diam/2.0 + (this.W - diam) * randomX.nextDouble();
+            posY = diam/2.0 + (this.L - diam) * randomY.nextDouble();
+            if(check_positions(posX, posY, diam/2, -1)){
+                this.particles.add(new Particle(i,posX,posY,0.0,0.0, diam/2.0, Parser.mass,0.0,-10.0, 0.0,0.0));
                 i++;
             }
             iterations++;
@@ -58,7 +58,7 @@ public class SiloDischarge {
         out.createNewFile();
         FileWriter writer = new FileWriter("output.txt");
         writer.write(this.L + " " + this.W + " " + this.D + "\n");
-        while(iterations < 500000) {
+        while(iterations <= 500000) {
             removed.clear();
             for (Particle p : this.particles) {
                 accX = p.getAccX();
@@ -73,10 +73,14 @@ public class SiloDischarge {
                     }
                 }
             }
+            if(removed.size() > 0){
+                System.out.println(removed);
+            }
             this.particles.removeAll(removed);
             this.kinetics.add(kinetic);
 
-            if(iterations % 500 == 0){
+            if(iterations % 100 == 0){
+//                System.out.println(iterations);
                 writer.write("iteration\n");
                 for(Particle p : this.particles){
                     writer.write(p.getRad() + " " + p.getPosX() + " " + p.getPosY() + "\n");
@@ -96,15 +100,13 @@ public class SiloDischarge {
         double posY;
         while(iterations < 50000){
             posX = p.getRad() + (this.W - p.getRad()*2) * randomX.nextDouble();
-            posY = (p.getRad() + 2*this.L/3) + ((this.L-p.getRad())-(p.getRad()+2*this.L/3)) * randomY.nextDouble();
-            if(check_positions(posX, posY, p.getRad())){
-                p.setPosX(posX);
-                p.setPosY(posY);
-                p.setVelY(0);
-                p.setVelX(0);
-                p.setPrevAccX(0);
-                p.setPrevAccY(0);
-                p.setAccX(0);
+            posY = (p.getRad() + 4*this.L/5) + ((this.L-p.getRad())-(p.getRad()+4*this.L/5)) * randomY.nextDouble();
+            p.setPosX(posX);
+            p.setPosY(posY);
+            if(check_positions(posX, posY, p.getRad(), p.getId())){
+                p.setVelY(0.0);
+                p.setVelX(0.0);
+                p.setAccX(0.0);
                 p.setAccY(-10.0);
                 return true;
                 //ver si hay que hacer getForces y setear prevAccel
@@ -115,11 +117,13 @@ public class SiloDischarge {
         return false;
     }
 
-    private boolean check_positions(double posX, double posY, double rad){
+    private boolean check_positions(double posX, double posY, double rad, int id){
         for(Particle p : this.particles){
-            double distance = Math.sqrt(Math.pow(posX - p.getPosX(), 2) + Math.pow(posY - p.getPosY(), 2));
-            if (rad + p.getRad() - distance > 0) {
-                return false;
+            if(id != p.getId()) {
+                double distance = Math.sqrt(Math.pow(posX - p.getPosX(), 2) + Math.pow(posY - p.getPosY(), 2));
+                if (rad + p.getRad() - distance > 0) {
+                    return false;
+                }
             }
         }
         return true;
@@ -133,20 +137,20 @@ public class SiloDischarge {
     }
 
     private double collision_wall(String wall, Particle p){
-        switch(wall) {
-            case "UP":
-                return p.getRad() + p.getPosY() - this.L;
-            case "LEFT":
-                return p.getRad() - p.getPosX();
-            case "RIGHT":
-                return p.getRad() + p.getPosX() - this.W;
-            case "DOWN":
-                if((p.getPosX() > this.W/2 - this.D/2 && p.getPosX() < this.W/2.0 + this.D/2.0) || p.getPosY() < -p.getRad()*2)
-                    return -1;
-                else
-                    return p.getRad() - p.getPosY();
+        double result = -1.0;
+        if(wall.equals("UP") && p.getPosY() > 0){
+            result = p.getRad() - Math.abs(this.L - p.getPosY());
+        } else if (wall.equals("DOWN")) {
+            if((p.getPosX() > this.W/2.0 - this.D/2.0 && p.getPosX() < this.W/2.0 + this.D/2.0) || p.getPosY() < 0)
+                result = -1.0;
+            else
+                result = p.getRad() - Math.abs(p.getPosY());
+        } else if (wall.equals("RIGHT") && p.getPosY() > 0) {
+            result = p.getRad() - Math.abs(this.W - p.getPosX());
+        } else if (wall.equals("LEFT") && p.getPosY() > 0) {
+            result = p.getRad() - Math.abs(p.getPosX());
         }
-        return -1;
+        return result;
     }
 
     public boolean getBeeman(Particle p, double accX, double accY){
@@ -182,7 +186,7 @@ public class SiloDischarge {
         for(Particle p2 : this.particles){
 
             double superpos = superposition(p, p2);
-            if(superpos > 0){
+            if(superpos >= 0){
                 double distance_x = p2.getPosX() - p.getPosX();
                 double distance_y = p2.getPosY() - p.getPosY();
                 double distance = Math.sqrt(Math.pow(distance_x, 2) + Math.pow(distance_y, 2));
@@ -201,7 +205,7 @@ public class SiloDischarge {
 
         for(String wall : walls){
             double superpos = collision_wall(wall, p);
-            if(superpos > 0){
+            if(superpos >= 0){
                 if(wall.equals("UP")){
                     enx = 0.0;
                     eny = 1.0;
