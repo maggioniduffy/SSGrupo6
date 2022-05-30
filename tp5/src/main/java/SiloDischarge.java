@@ -58,7 +58,7 @@ public class SiloDischarge {
         out.createNewFile();
         FileWriter writer = new FileWriter("output.txt");
         writer.write(this.L + " " + this.W + " " + this.D + "\n");
-        while(iterations <= 500000) {
+        while(iterations <= 1000000) {
             removed.clear();
             for (Particle p : this.particles) {
                 accX = p.getAccX();
