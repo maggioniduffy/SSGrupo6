@@ -25,6 +25,7 @@ public class SiloDischarge {
         this.particles = new ArrayList<>();
         this.outParticlesArr = new ArrayList<>();
         generate_particles();
+        getPrevAcc();
     }
 
     private void generate_particles() {
@@ -46,6 +47,24 @@ public class SiloDischarge {
             }
             iterations++;
         }
+    }
+    public void getPrevAcc() {
+
+        for(Particle p : particles) {
+            getParticlePrevAcc(p);
+        }
+
+    }
+
+    public void getParticlePrevAcc(Particle p) {
+        p.setPrevAccX(p.getAccX());
+        p.setPrevAccY(p.getAccY());
+
+        getParticleForces(p);
+        p.setVelX(p.getVelX() + dt*p.getAccX());
+        p.setVelY(p.getVelY() + dt*p.getAccY());
+        p.setPosX(p.getPosX() + dt*(p.getVelX() + dt*p.getAccX()));
+        p.setPosY(p.getPosY() + dt*(p.getVelY() + dt*p.getAccY()));
     }
 
     public void simulate() throws IOException {
@@ -85,7 +104,7 @@ public class SiloDischarge {
             this.kinetics.add(kinetic);
 
 //                System.out.println(iterations);
-            if(iterations % 1000 == 0){
+            if(iterations % 100 == 0){
                 this.outParticlesArr.add(outParticles);
                 outParticles = 0;
                 writer.write("iteration\n");
@@ -118,6 +137,7 @@ public class SiloDischarge {
                 p.setVelX(0.0);
                 p.setAccX(0.0);
                 p.setAccY(-10.0);
+                getParticlePrevAcc(p);
                 return true;
                 //ver si hay que hacer getForces y setear prevAccel
             }
