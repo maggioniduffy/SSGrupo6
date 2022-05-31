@@ -1,5 +1,3 @@
-import com.sun.xml.internal.ws.wsdl.writer.document.Part;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,6 +9,7 @@ public class SiloDischarge {
 
     private ArrayList<Particle> particles;
     private ArrayList<Double> kinetics;
+    private ArrayList<Integer> outParticlesArr;
 
     public int getN() {
         return this.particles.size();
@@ -24,6 +23,7 @@ public class SiloDischarge {
         this.dt = dt;
         this.kinetics = new ArrayList<>();
         this.particles = new ArrayList<>();
+        this.outParticlesArr = new ArrayList<>();
         generate_particles();
     }
 
@@ -41,7 +41,7 @@ public class SiloDischarge {
             posX = diam/2.0 + (this.W - diam) * randomX.nextDouble();
             posY = diam/2.0 + (this.L - diam) * randomY.nextDouble();
             if(check_positions(posX, posY, diam/2, -1)){
-                this.particles.add(new Particle(i,posX,posY,0.0,0.0, diam/2.0, Parser.mass,0.0,-10.0, 0.0,0.0));
+                this.particles.add(new Particle(i,posX,posY, posY,0.0,0.0, diam/2.0, Parser.mass,0.0,-10.0, 0.0,0.0));
                 i++;
             }
             iterations++;
@@ -54,6 +54,7 @@ public class SiloDischarge {
         double kinetic = 0.0;
         double accX;
         double accY;
+        int outParticles = 0;
         File out = new File("output.txt");
         out.createNewFile();
         FileWriter writer = new FileWriter("output.txt");
@@ -67,6 +68,10 @@ public class SiloDischarge {
 
                 getParticleForces(p);
 
+                if(p.getPosY() < 0.0 && p.getPrevPosY() >= 0.0) {
+                    outParticles++;
+                    //System.out.println(outParticles);
+                }
                 if(!getBeeman(p, accX, accY)){
                     if(!reinject_particle(p)){
                         removed.add(p);
@@ -79,14 +84,18 @@ public class SiloDischarge {
             this.particles.removeAll(removed);
             this.kinetics.add(kinetic);
 
-            if(iterations % 100 == 0){
 //                System.out.println(iterations);
+            if(iterations % 1000 == 0){
+                this.outParticlesArr.add(outParticles);
+                outParticles = 0;
                 writer.write("iteration\n");
                 for(Particle p : this.particles){
                     writer.write(p.getRad() + " " + p.getPosX() + " " + p.getPosY() + "\n");
                 }
             }
+            kinetic = 0.0;
 
+            //System.out.println(this.particles.size());
             iterations++;
         }
         writer.close();
@@ -101,6 +110,7 @@ public class SiloDischarge {
         while(iterations < 50000){
             posX = p.getRad() + (this.W - p.getRad()*2) * randomX.nextDouble();
             posY = (p.getRad() + 4*this.L/5) + ((this.L-p.getRad())-(p.getRad()+4*this.L/5)) * randomY.nextDouble();
+            p.setPrevPosY(p.getPosY());
             p.setPosX(posX);
             p.setPosY(posY);
             if(check_positions(posX, posY, p.getRad(), p.getId())){
@@ -165,6 +175,7 @@ public class SiloDischarge {
             return false;
         }
 
+        p.setPrevPosY(p.getPosY());
         p.setPosX(nextRX);
         p.setPosY(nextRY);
 
@@ -234,9 +245,16 @@ public class SiloDischarge {
 
     }
 
-
     public double getKinetic(Particle particle) {
         return  (particle.getMass()*Math.pow(Math.sqrt(Math.pow(particle.getVelX(),2)+Math.pow(particle.getVelY(),2)),2))/2;
+    }
+
+    public ArrayList<Integer> getOutParticles() {
+        return this.outParticlesArr;
+    }
+
+    public ArrayList<Double> getKinetics() {
+        return this.kinetics;
     }
 
 }

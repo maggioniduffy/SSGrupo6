@@ -1,11 +1,12 @@
 public class Particle implements Comparable<Particle>{
 
-    private double posX, posY, velX, velY, rad, mass, accX, accY, prevAccX, prevAccY;
+    private double posX, posY, prevPosY, velX, velY, rad, mass, accX, accY, prevAccX, prevAccY;
     private int id;
-    public Particle(int id, double posX, double posY, double velX, double velY, double rad, double mass, double accX, double accY, double prevAccX, double prevAccY) {
+    public Particle(int id, double posX, double posY, double prevPosY, double velX, double velY, double rad, double mass, double accX, double accY, double prevAccX, double prevAccY) {
         this.id = id;
         this.posX = posX;
         this.posY = posY;
+        this.prevPosY = prevPosY;
         this.velX = velX;
         this.velY = velY;
         this.rad = rad;
@@ -17,6 +18,7 @@ public class Particle implements Comparable<Particle>{
     }
 
     public int getId() {return id;}
+
     public double getPosX() {
         return posX;
     }
@@ -31,6 +33,14 @@ public class Particle implements Comparable<Particle>{
 
     public void setPosY(double posY) {
         this.posY = posY;
+    }
+
+    public double getPrevPosY() {
+        return prevPosY;
+    }
+
+    public void setPrevPosY(double prevPosY) {
+        this.prevPosY = prevPosY;
     }
 
     public double getVelX() {
