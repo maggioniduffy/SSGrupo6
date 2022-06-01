@@ -9,7 +9,7 @@ public class SiloDischarge {
 
     private ArrayList<Particle> particles;
     private ArrayList<Double> kinetics;
-    private ArrayList<Integer> outParticlesArr;
+    private ArrayList<Double> outTimes;
 
     public int getN() {
         return this.particles.size();
@@ -23,7 +23,7 @@ public class SiloDischarge {
         this.dt = dt;
         this.kinetics = new ArrayList<>();
         this.particles = new ArrayList<>();
-        this.outParticlesArr = new ArrayList<>();
+        this.outTimes = new ArrayList<>();
         generate_particles();
         getPrevAcc();
     }
@@ -73,7 +73,6 @@ public class SiloDischarge {
         double kinetic = 0.0;
         double accX;
         double accY;
-        int outParticles = 0;
         File out = new File("output.txt");
         out.createNewFile();
         FileWriter writer = new FileWriter("output.txt");
@@ -86,9 +85,9 @@ public class SiloDischarge {
                 kinetic += getKinetic(p);
 
                 getParticleForces(p);
-
+                
                 if(p.getPosY() < 0.0 && p.getPrevPosY() >= 0.0) {
-                    outParticles++;
+                    this.outTimes.add(iterations*this.dt);
                     //System.out.println(outParticles);
                 }
                 if(!getBeeman(p, accX, accY)){
@@ -105,8 +104,6 @@ public class SiloDischarge {
 
 //                System.out.println(iterations);
             if(iterations % 100 == 0){
-                this.outParticlesArr.add(outParticles);
-                outParticles = 0;
                 writer.write("iteration\n");
                 for(Particle p : this.particles){
                     writer.write(p.getRad() + " " + p.getPosX() + " " + p.getPosY() + "\n");
@@ -269,8 +266,8 @@ public class SiloDischarge {
         return  (particle.getMass()*Math.pow(Math.sqrt(Math.pow(particle.getVelX(),2)+Math.pow(particle.getVelY(),2)),2))/2;
     }
 
-    public ArrayList<Integer> getOutParticles() {
-        return this.outParticlesArr;
+    public ArrayList<Double> getOutTimes() {
+        return this.outTimes;
     }
 
     public ArrayList<Double> getKinetics() {

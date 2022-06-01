@@ -16,21 +16,21 @@ public class Main {
         //W: 0.3, 0.4
         //Caudal: Nro. de Partículas que salieron en Dt / Dt
 
-        File out = new File("caudal015.txt");
+        File out = new File("caudal025.txt");
         out.createNewFile();
-        FileWriter writer = new FileWriter("caudal015.txt");
+        FileWriter writer = new FileWriter("caudal025.txt");
 
         writer.write("D:" + Parser.D + "\n");
-        ArrayList<Integer> outParticles = silo.getOutParticles();
-        for (Integer i : outParticles) {
-            writer.write( i + "\n");
+        ArrayList<Double> outTimes = silo.getOutTimes();
+        for(int i = 0; i < outTimes.size()-49 ; i++){
+            writer.write( (50.0/(outTimes.get(i+49)-outTimes.get(i))) + "\n");
         }
         writer.close();
 
         ArrayList<Double> kinetics = silo.getKinetics();
-        out = new File("kinetic015.txt");
+        out = new File("kinetic025.txt");
         out.createNewFile();
-        writer = new FileWriter("kinetic015.txt");
+        writer = new FileWriter("kinetic025.txt");
 
         writer.write("D:" + Parser.D + "\n");
         for (Double kinetic : kinetics) {
