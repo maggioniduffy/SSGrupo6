@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class SiloDischarge {
-    private double kn, kt, L, W, D, dt;
+    private double kn, kt, L, W, D, dt, rad_prom;
+    private int initial_particles;
 
     private ArrayList<Particle> particles;
     private ArrayList<Double> kinetics;
@@ -21,11 +22,14 @@ public class SiloDischarge {
         this.W = W;
         this.D = D;
         this.dt = dt;
+        this.rad_prom = 0;
+        this.initial_particles = 0;
         this.kinetics = new ArrayList<>();
         this.particles = new ArrayList<>();
         this.outTimes = new ArrayList<>();
         generate_particles();
         getPrevAcc();
+
     }
 
     private void generate_particles() {
@@ -44,9 +48,12 @@ public class SiloDischarge {
             if(check_positions(posX, posY, diam/2, -1)){
                 this.particles.add(new Particle(i,posX,posY, posY,0.0,0.0, diam/2.0, Parser.mass,0.0,-10.0, 0.0,0.0));
                 i++;
+                this.rad_prom += diam/2.0;
             }
             iterations++;
         }
+        this.initial_particles = this.particles.size();
+        this.rad_prom = this.rad_prom / this.particles.size();
     }
     public void getPrevAcc() {
 
@@ -274,4 +281,6 @@ public class SiloDischarge {
         return this.kinetics;
     }
 
+    public double getRad_prom() {return this.rad_prom;}
+    public int getInitial_particles() {return this.initial_particles;}
 }

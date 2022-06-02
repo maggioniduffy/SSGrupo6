@@ -11,15 +11,16 @@ public class Main {
         SiloDischarge silo = new SiloDischarge(Parser.kn, Parser.L, Parser.W, Parser.D, Parser.dt);
         System.out.println(silo.getN());
         silo.simulate();
+
         //D: 0.15, 0.18, 0.22, 0.25
         //L: 1, 1.5
         //W: 0.3, 0.4
         //Caudal: Nro. de Partículas que salieron en Dt / Dt
 
-        File out = new File("caudal025.txt");
+        File out = new File("caudal015.txt");
         out.createNewFile();
-        FileWriter writer = new FileWriter("caudal025.txt");
-
+        FileWriter writer = new FileWriter("caudal015.txt");
+        writer.write(silo.getInitial_particles() + " " + silo.getRad_prom() + "\n");
         writer.write("D:" + Parser.D + "\n");
         ArrayList<Double> outTimes = silo.getOutTimes();
         for(int i = 0; i < outTimes.size()-49 ; i++){
