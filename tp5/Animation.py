@@ -26,7 +26,7 @@ def animate():
 
     screen.fill(bg)
     
-    f = open('./output015.txt', 'r')
+    f = open('./output022.txt', 'r')
     lines = f.read()
     f.close()
     first_line = lines.split("\n")[0].split(" ")
