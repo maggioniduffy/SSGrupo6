@@ -40,15 +40,14 @@ public class Main {
         writer.close();
 */
 
-        double[] diams = {0.15, 0.18, 0.22, 0.25};
+        double[] diams = {0.1, 0.15, 0.18, 0.22};
         for(double diam : diams){
             SiloDischarge silo = new SiloDischarge(Parser.kn, 2*Parser.kn, Parser.L, Parser.W, diam, Parser.dt);
             System.out.println(silo.getN());
             silo.simulate();
 
-            //D: 0.15, 0.18, 0.22, 0.25
-            //L: 1, 1.5
-            //W: 0.3, 0.4
+            //D: 0.1, 0.15, 0.18, 0.22
+            //kt: 0.5kn, kn, 2kn, 3kn
             //Caudal: Nro. de Partículas que salieron en Dt / Dt
 
             File out = new File("caudal0" + (int)(diam*100) + ".txt");
@@ -57,8 +56,8 @@ public class Main {
             writer.write(silo.getInitial_particles() + " " + silo.getRad_prom() + "\n");
             writer.write("D:" + diam+ "\n");
             ArrayList<Double> outTimes = silo.getOutTimes();
-            for(int i = 0; i < outTimes.size()-49 ; i++){
-                writer.write( (50.0/(outTimes.get(i+49)-outTimes.get(i))) + "\n");
+            for (Double outTime : outTimes) {
+                writer.write( outTime + "\n");
             }
             writer.close();
 
