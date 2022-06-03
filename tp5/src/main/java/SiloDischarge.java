@@ -15,9 +15,9 @@ public class SiloDischarge {
     public int getN() {
         return this.particles.size();
     }
-    public SiloDischarge(double kn, double L, double W, double D, double dt) {
+    public SiloDischarge(double kn, double kt, double L, double W, double D, double dt) {
         this.kn = kn;
-        this.kt = 2*kn;
+        this.kt = kt;
         this.L = L;
         this.W = W;
         this.D = D;
