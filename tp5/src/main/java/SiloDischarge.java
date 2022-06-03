@@ -48,6 +48,7 @@ public class SiloDischarge {
             if(check_positions(posX, posY, diam/2, -1)){
                 this.particles.add(new Particle(i,posX,posY, posY,0.0,0.0, diam/2.0, Parser.mass,0.0,-10.0, 0.0,0.0));
                 i++;
+
                 this.rad_prom += diam/2.0;
             }
             iterations++;
@@ -80,9 +81,9 @@ public class SiloDischarge {
         double kinetic = 0.0;
         double accX;
         double accY;
-        File out = new File("output.txt");
+        File out = new File("output0" + (int)(this.D*100) + ".txt");
         out.createNewFile();
-        FileWriter writer = new FileWriter("output.txt");
+        FileWriter writer = new FileWriter("output0" + (int)(this.D*100) + ".txt");
         writer.write(this.L + " " + this.W + " " + this.D + "\n");
         while(iterations <= 500000) {
             removed.clear();
@@ -130,10 +131,10 @@ public class SiloDischarge {
         Random randomY = new Random();
         double posX;
         double posY;
+        p.setPrevPosY(p.getPosY());
         while(iterations < 50000){
             posX = p.getRad() + (this.W - p.getRad()*2) * randomX.nextDouble();
             posY = (p.getRad() + 4*this.L/5) + ((this.L-p.getRad())-(p.getRad()+4*this.L/5)) * randomY.nextDouble();
-            p.setPrevPosY(p.getPosY());
             p.setPosX(posX);
             p.setPosY(posY);
             if(check_positions(posX, posY, p.getRad(), p.getId())){
