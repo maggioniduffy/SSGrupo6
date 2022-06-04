@@ -40,13 +40,13 @@ public class Main {
         writer.close();
 */
 
-        double[] diams = {0.1, 0.15, 0.18, 0.22};
+        double[] diams = {0.1, 0.12, 0.15, 0.18};
         for(double diam : diams){
             SiloDischarge silo = new SiloDischarge(Parser.kn, 2*Parser.kn, Parser.L, Parser.W, diam, Parser.dt);
             System.out.println(silo.getN());
             silo.simulate();
 
-            //D: 0.1, 0.15, 0.18, 0.22
+            //D: 0.1, 0.12, 0.15, 0.18
             //kt: 0.5kn, kn, 2kn, 3kn
             //Caudal: Nro. de Partículas que salieron en Dt / Dt
 

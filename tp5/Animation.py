@@ -34,6 +34,7 @@ def animate():
     W = float(first_line[1]) * factor + 1
     D = float(first_line[2]) * factor + 1
     iterations = lines.split("iteration\n")
+    print(len(iterations))
     left = width/2 + W/2
     top = height/2 + L/2
     # last_iter = iterations[-1].split("\n")
