@@ -6,7 +6,7 @@ from math import floor
 from constants import nxC, nyC, centerX, centerY
 from graphic import draw;
 
-def gameOfLife(maxNeighs = 3, minNeighs = 2):
+def gameOfLife(a = 2, b = 3, c =3):
     t_inicial = time.time()
     f = open('./output.txt', 'w')
     if len(sys.argv) > 1:
@@ -41,16 +41,17 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
         if dist > maxDistance:
             maxDistance = dist
 
-    distances = [maxDistance]
+    distances = []
+    distances.append(maxDistance)
     stop = False
-    
-    maxDistance = 0
+
     alive_cells = p_cells
     alive_cells_ev = [alive_cells]
     go = True
 
     gens = 1
     while go:
+        maxDistance = 0
         newGameState = np.copy(gameState)
         gens += 1
         f.write('new gen\n')
@@ -68,12 +69,12 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
                     n_neigh += gameState[(x+1), (y+1)] if (x+1) < nxC and (y+1) < nyC else 0
 
                     #Regla 1
-                    if gameState[x, y] == 0 and n_neigh == maxNeighs:
+                    if gameState[x, y] == 0 and n_neigh == c:
                         newGameState[x, y] = 1
                         alive_cells += 1
                     
                     #Regla 2
-                    elif gameState[x, y] == 1 and (n_neigh < minNeighs or n_neigh > maxNeighs):
+                    elif gameState[x, y] == 1 and (n_neigh < a or n_neigh > b):
                         newGameState[x, y] = 0
                         alive_cells -= 1
 
@@ -86,36 +87,34 @@ def gameOfLife(maxNeighs = 3, minNeighs = 2):
                         maxDistance = dist
                     line = line + '1'
 
-                if gens == gen_limit or alive_cells == 0 or ((x == 0 or x == (nxC - 1)) or (y == 0 or y == (nyC - 1))) and newGameState[x, y] == 1:
+                if gens == gen_limit or alive_cells == 0 or (((x == 0 or x == (nxC - 1)) or (y == 0 or y == (nyC - 1))) and newGameState[x, y] == 1):
                     go = False
                     stop = True
             f.write(line + '\n')
-        maxDistance = 0
         gameState = np.copy(newGameState)
         alive_cells_ev.append(alive_cells)
         distances.append(maxDistance)
         
     t_final = time.time() - t_inicial
     f.close()
-    g = open('./results.txt', 'w')
-    g.write('Cantidad de celulas iniciales: ' + str(p_cells) + '\n')
-    g.write('Celulas vivas en generacion: \n')
-    for i in range(1, len(alive_cells_ev)):
+    g = open('./results2dnewb1005.txt', 'w')
+    g.write('Celdas vivas por generacion: \n')
+    for i in range(0, len(alive_cells_ev)):
         g.write(str(i) + ": " + str(alive_cells_ev[i]) + '\n')
 
-    g.write('Rango maximo en generacion: \n')
-    for i in range(1, len(distances)):
+    g.write('Distancia maxima al centro por generacion: \n')
+    for i in range(0, len(distances)):
         g.write(str(i) + ": " + str(distances[i]) + '\n')
 
     g.write('Tiempo transcurrido en segundos: ' + str(t_final / 1000))
     g.close()
-    draw(gens, alive_cells_ev, p_cells, t_final)
+    #draw(gens, alive_cells_ev, p_cells, t_final)
 
 def og_gameOfLife():
-    gameOfLife(3,2)
+    gameOfLife(2,3,3)
 
 def new_gameOfLife():
-    gameOfLife(4,3)
+    gameOfLife(2,7,2)
 
 if sys.argv[2] == '1':
     print('og')
