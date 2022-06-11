@@ -27,7 +27,6 @@ def animate():
     for g in range(1, len(gens)):
         print('G: ', g)
         lines = gens[g].split('\n')
-        time.sleep(0.1)
         y = 0
         screen.fill(bg)
         for line in lines:

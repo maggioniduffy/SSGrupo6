@@ -31,13 +31,13 @@ def gameOfLife(a = 4, b = 5, c = 5):
     maxDistance = 0
     f.write('new gen\n')
     for _ in range(0, p_cells):
-        x = randint(floor(nxC/3), floor(nxC/3)*2)
-        y = randint(floor(nyC/3), floor(nyC/3)*2)
-        z = randint(floor(nzC/3), floor(nzC/3)*2)
+        x = randint(floor(nxC/3), floor(nxC/3)*2 -1)
+        y = randint(floor(nyC/3), floor(nyC/3)*2 -1)
+        z = randint(floor(nzC/3), floor(nzC/3)*2 -1)
         while gameState[x, y, z] == 1:
-            x = randint(floor(nxC/3), floor(nxC/3)*2)
-            y = randint(floor(nyC/3), floor(nyC/3)*2)
-            z = randint(floor(nzC/3), floor(nzC/3)*2)
+            x = randint(floor(nxC/3), floor(nxC/3)*2 -1)
+            y = randint(floor(nyC/3), floor(nyC/3)*2 -1)
+            z = randint(floor(nzC/3), floor(nzC/3)*2 -1)
         gameState[x, y, z] = 1
         line = "{x},{y},{z},1".format(x=x, y=y, z=z)
         f.write(line + '\n')
@@ -69,7 +69,7 @@ def gameOfLife(a = 4, b = 5, c = 5):
                     if not stop:
                         n_neigh = gameState[x-1, y-1, z-1] if (x-1) > 0 and (y-1) > 0 and (z-1) > 0 else 0
                         n_neigh += gameState[x-1, y-1, z] if (x-1) > 0 and (y-1) > 0 else 0
-                        n_neigh += gameState[x-1, y-1, z + 1] if (x-1) > 0 and (y-1) > 0 and (z+1) < nzC else 0
+                        n_neigh += gameState[x-1, y-1, z+1] if (x-1) > 0 and (y-1) > 0 and (z+1) < nzC else 0
                         n_neigh += gameState[x, y-1, z-1] if (y-1) > 0 and (z-1) > 0 else 0
                         n_neigh += gameState[x, y-1, z] if (y-1) > 0 else 0
                         n_neigh += gameState[x, y-1, z+1] if (y-1) > 0 and (z+1) < nzC else 0

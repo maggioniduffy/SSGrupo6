@@ -2,13 +2,12 @@ from random import randint
 import time
 import numpy as np
 import sys
-from math import floor
+from math import floor, ceil
 from constants import nxC, nyC, centerX, centerY
 from graphic import draw;
 
 def gameOfLife(a = 2, b = 3, c =3):
     t_inicial = time.time()
-    f = open('./output.txt', 'w')
     if len(sys.argv) > 1:
         percentage = int(sys.argv[1])
     else:
@@ -18,7 +17,8 @@ def gameOfLife(a = 2, b = 3, c =3):
         gen_limit = sys.argv[3]
     else:
         gen_limit = 200
-        
+
+    f = open('./output.txt', 'w')
     center = np.array((centerX,centerY))
 
     factorx = nxC/5 * 4 - nxC/5
@@ -27,20 +27,36 @@ def gameOfLife(a = 2, b = 3, c =3):
     p_cells = floor(percentage * factorx * factory / 100)
 
     gameState = np.zeros((nxC, nyC))
-
     maxDistance = 0
-    for _ in range(0, p_cells):
-        x = randint(floor(nxC/5), floor(nxC/5)*4)
-        y = randint(floor(nyC/5), floor(nyC/5)*4)
+    f.write('new gen\n')
+    for i in range(0, p_cells):
+        x = randint(floor(nxC/5), floor(nxC/5)*4 -1)
+        y = randint(floor(nyC/5), floor(nyC/5)*4 -1)
         while gameState[x, y] == 1:
-            x = randint(floor(nxC/5), floor(nxC/5)*4)
-            y = randint(floor(nyC/5), floor(nyC/5)*4)
+            x = randint(floor(nxC/5), floor(nxC/5)*4 -1)
+            y = randint(floor(nyC/5), floor(nyC/5)*4 -1)
         gameState[x, y] = 1
         point = np.array((x,y))
         dist = np.linalg.norm(center-point)
         if dist > maxDistance:
             maxDistance = dist
-
+    cero = 0
+    uno = 0
+    total = ""
+    for x in range(0, nxC):
+        line = ""
+        for y in range(0, nyC):
+            if gameState[x,y] == 1:
+                uno += 1
+                line = line + '1'
+            else:
+                cero += 1
+                line = line + '0'
+        f.write(line + '\n')
+        total += line +'\n'
+    # print(total.count('1'))
+    # print(total)
+    # print("unos: " + str(uno) + " ceros: "  + str(cero))
     distances = []
     distances.append(maxDistance)
     stop = False
@@ -55,6 +71,8 @@ def gameOfLife(a = 2, b = 3, c =3):
         newGameState = np.copy(gameState)
         gens += 1
         f.write('new gen\n')
+        # print(alive_cells_ev)
+        alive_cells = 0
         for x in range(0, nxC):
             line = ""
             for y in range(0, nyC):
@@ -71,26 +89,27 @@ def gameOfLife(a = 2, b = 3, c =3):
                     #Regla 1
                     if gameState[x, y] == 0 and n_neigh == c:
                         newGameState[x, y] = 1
-                        alive_cells += 1
                     
                     #Regla 2
                     elif gameState[x, y] == 1 and (n_neigh < a or n_neigh > b):
                         newGameState[x, y] = 0
-                        alive_cells -= 1
 
                 if newGameState[x, y] == 0:
                     line = line + '0'
                 else:
+                    alive_cells += 1
                     point = np.array((x,y))
                     dist = np.linalg.norm(center-point)
                     if dist > maxDistance:
                         maxDistance = dist
                     line = line + '1'
 
-                if gens == gen_limit or alive_cells == 0 or (((x == 0 or x == (nxC - 1)) or (y == 0 or y == (nyC - 1))) and newGameState[x, y] == 1):
+                if(((x == 0 or x == (nxC - 1)) or (y == 0 or y == (nyC - 1))) and newGameState[x, y] == 1):
                     go = False
                     stop = True
             f.write(line + '\n')
+        if gens == gen_limit or alive_cells == 0:
+            go=False
         gameState = np.copy(newGameState)
         alive_cells_ev.append(alive_cells)
         distances.append(maxDistance)
