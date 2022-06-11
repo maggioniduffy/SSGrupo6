@@ -62,7 +62,7 @@ def update_points(txt, points, gens_positions):
     points, = ax.plot(new_x, new_y, new_z, 'o')
 
     iteration += 1
-    plt.pause(2)
+    plt.pause(0.5)
     # return modified artists
     return points
 
