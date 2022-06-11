@@ -4,16 +4,18 @@ from matplotlib import pyplot as plt
 import numpy as np
 import mpl_toolkits.mplot3d.axes3d as p3
 from matplotlib import animation
+from constants import centerX, centerY, centerZ
 
 f = open('./output.txt')
 data = f.read()
 f.close()
 gens = data.split('new gen\n')
+gens.remove('')
 gens_len = len(gens)
 iteration = 0
 
 fig = plt.figure()
-ax = p3.Axes3D(fig)
+ax = fig.add_subplot(projection='3d')
 gens_positions = []
 for i in range(0, gens_len):
     lines = gens[i].split('\n')
@@ -23,8 +25,6 @@ for i in range(0, gens_len):
         if cell[0] != '':
             x, y, z, state = float(cell[0]), float(cell[1]), float(cell[2]), float(cell[3])
             if state == 1:
-                if(i == 0):
-                    print(x + " " + y + " " + z)
                 gens_positions[i]['x'].append(x)
                 gens_positions[i]['y'].append(y)
                 gens_positions[i]['z'].append(z)
@@ -33,9 +33,19 @@ for i in range(0, gens_len):
 x=np.array(gens_positions[0]['x'])
 y=np.array(gens_positions[0]['y'])
 z=np.array(gens_positions[0]['z'])
+# print(x)
+dif = np.zeros(len(x))
+difX = np.zeros(len(x))
+difY = np.zeros(len(x))
+difZ = np.zeros(len(x))
+print(np.arange(100))
 
+for i in range(0, len(x)):
+    dif = np.zeros(len(x))
+    for i in range(0, len(x)):
+        dif[i] = np.linalg.norm(np.array((x[i], y[i], z[i])) - np.array((centerX, centerY, centerZ))) * 5 if dif[i] >= 0 else 99
 
-points, = ax.plot(x, y, z, 'o')
+points = ax.scatter(x, y, z, c=dif, marker='o', cmap='Reds')
 txt = fig.suptitle('')
 
 eps = 1e-16
@@ -57,9 +67,12 @@ def update_points(txt, points, gens_positions):
     new_x = gens_positions[iteration]['x']
     new_y = gens_positions[iteration]['y']
     new_z = gens_positions[iteration]['z']
-
+    dif = np.zeros(len(new_x))
+    for i in range(0, len(new_x)):
+        dif[i] = abs(np.linalg.norm(np.array((new_x[i], new_y[i], new_z[i])) - np.array((centerX, centerY, centerZ)))) * 5
+    print(dif)
     print(iteration)
-    points, = ax.plot(new_x, new_y, new_z, 'o')
+    points = ax.scatter(new_x, new_y, new_z, c=dif, marker='o', cmap='Reds')
 
     iteration += 1
     plt.pause(0.5)
