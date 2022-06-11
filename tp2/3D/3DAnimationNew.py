@@ -14,7 +14,7 @@ gens.remove('')
 gens_len = len(gens)
 iteration = 0
 
-fig = plt.figure()
+fig = plt.figure(figsize=(12, 10))
 ax = fig.add_subplot(projection='3d')
 gens_positions = []
 for i in range(0, gens_len):
@@ -38,14 +38,14 @@ dif = np.zeros(len(x))
 difX = np.zeros(len(x))
 difY = np.zeros(len(x))
 difZ = np.zeros(len(x))
-print(np.arange(100))
+# print(np.arange(100))
 
 for i in range(0, len(x)):
     dif = np.zeros(len(x))
     for i in range(0, len(x)):
-        dif[i] = np.linalg.norm(np.array((x[i], y[i], z[i])) - np.array((centerX, centerY, centerZ))) * 5 if dif[i] >= 0 else 99
+        dif[i] = np.linalg.norm(np.array((x[i], y[i], z[i])) - np.array((centerX, centerY, centerZ))) * 3
 
-points = ax.scatter(x, y, z, c=dif, marker='o', cmap='Reds')
+points = ax.scatter(x, y, z, c=dif, s=150, marker='o', cmap='Reds')
 txt = fig.suptitle('')
 
 eps = 1e-16
@@ -69,10 +69,10 @@ def update_points(txt, points, gens_positions):
     new_z = gens_positions[iteration]['z']
     dif = np.zeros(len(new_x))
     for i in range(0, len(new_x)):
-        dif[i] = abs(np.linalg.norm(np.array((new_x[i], new_y[i], new_z[i])) - np.array((centerX, centerY, centerZ)))) * 5
+        dif[i] = abs(np.linalg.norm(np.array((new_x[i], new_y[i], new_z[i])) - np.array((centerX, centerY, centerZ)))) * 3
     print(dif)
-    print(iteration)
-    points = ax.scatter(new_x, new_y, new_z, c=dif, marker='o', cmap='Reds')
+    # print(iteration)
+    points = ax.scatter(new_x, new_y, new_z, c=dif, s=150, vmin=20, vmax=50, marker='o', cmap='Reds_r')
 
     iteration += 1
     plt.pause(0.5)

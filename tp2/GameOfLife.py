@@ -135,8 +135,15 @@ def og_gameOfLife():
 def new_gameOfLife():
     gameOfLife(2,7,2)
 
+def new_2_gameOfLife():
+    gameOfLife(3,4,4)
+
 if sys.argv[2] == '1':
-    print('og')
+    print('og 233')
     og_gameOfLife()
+elif sys.argv[2] == '2':
+    print('344')
+    new_2_gameOfLife()
 else:
+    print('272')
     new_gameOfLife()
