@@ -17,7 +17,7 @@ def gameOfLife(a = 4, b = 5, c = 5):
         gen_limit = sys.argv[3]
     else:
         gen_limit = 200
-
+    f = open('./output.txt', 'w')
     center = np.array((centerX,centerY,centerZ))
 
     factorx = nxC/3 * 2 - nxC/3
@@ -29,6 +29,7 @@ def gameOfLife(a = 4, b = 5, c = 5):
     gameState = np.zeros((nxC, nyC, nzC))
 
     maxDistance = 0
+    f.write('new gen\n')
     for _ in range(0, p_cells):
         x = randint(floor(nxC/3), floor(nxC/3)*2)
         y = randint(floor(nyC/3), floor(nyC/3)*2)
@@ -38,6 +39,8 @@ def gameOfLife(a = 4, b = 5, c = 5):
             y = randint(floor(nyC/3), floor(nyC/3)*2)
             z = randint(floor(nzC/3), floor(nzC/3)*2)
         gameState[x, y, z] = 1
+        line = "{x},{y},{z},1".format(x=x, y=y, z=z)
+        f.write(line + '\n')
         point = np.array((x,y,z))
         dist = np.linalg.norm(center-point)
         if dist > maxDistance:
@@ -47,16 +50,18 @@ def gameOfLife(a = 4, b = 5, c = 5):
     stop = False
      
     alive_cells = p_cells
+    print(p_cells)
     alive_cells_ev = [alive_cells]
     go = True
 
-    f = open('./output.txt', 'w')
+
     gens = 1
     while go:
         maxDistance = 0
         newGameState = np.copy(gameState)
         f.write('new gen\n')
         gens += 1
+        alive_cells = 0
         for x in range(0, nxC):
             for y in range(0, nyC):
                 for z in range(0, nzC):
@@ -92,25 +97,25 @@ def gameOfLife(a = 4, b = 5, c = 5):
                         #Regla 1
                         if gameState[x,y,z] == 0 and n_neigh == c:
                             newGameState[x,y,z] = 1
-                            alive_cells += 1
                         
                         #Regla 2
                         elif gameState[x,y,z] == 1 and (n_neigh < a or n_neigh > b):
                             newGameState[x,y,z] = 0
-                            alive_cells -= 1
 
                     if newGameState[x,y,z] == 0:
                         line = "{x},{y},{z},0".format(x = x,y = y,z = z)
                     else:
+                        alive_cells += 1
                         point = np.array((x,y,z))
                         dist = np.linalg.norm(center-point)
                         if dist > maxDistance:
                             maxDistance = dist
                         line = "{x},{y},{z},1".format(x = x,y = y,z = z)
-            
-                    if gens == gen_limit or alive_cells == 0 or (((x == 0 or x == (nxC - 1)) or (y == 0 or y == (nyC - 1)) or (z == 0 or z == (nzC - 1))) and newGameState[x,y,z] == 1):
+                    if ((x == 0 or x == (nxC - 1)) or (y == 0 or y == (nyC - 1)) or (z == 0 or z == (nzC - 1))) and newGameState[x, y, z] == 1:
                         go = False
                     f.write(line + '\n')
+        if gens == gen_limit or alive_cells == 0:
+            go = False
         gameState = np.copy(newGameState)
         alive_cells_ev.append(alive_cells)
         distances.append(maxDistance)

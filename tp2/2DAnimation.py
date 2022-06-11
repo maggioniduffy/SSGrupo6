@@ -31,6 +31,7 @@ def animate():
         y = 0
         screen.fill(bg)
         for line in lines:
+            
             y += 1
             print(y)
             x = -1
