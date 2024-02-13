@@ -88,11 +88,13 @@ public class SiloDischarge {
         double accX;
         double accY;
         double accZ;
-        File out = new File("output0" + (int)(this.D*100) + ".txt");
+        File out = new File("output0" + (int)(this.D*100) + ".xyz");
         out.createNewFile();
-        FileWriter writer = new FileWriter("output0" + (int)(this.D*100) + ".txt");
-        writer.write(this.L + " " + this.W + " " + this.D + "\n");
-        while(iterations <= 500000) {
+        FileWriter writer = new FileWriter("output0" + (int)(this.D*100) + ".xyz");
+        // writer.write(this.L + " " + this.W + " " + this.D + "\n");
+//        writer.write(particles.size() + "\n");
+//        writer.write("id xPosition yPosition zPosition xVelocity yVelocity zVelocity radius mass time\n");
+        while(iterations <= 50000) {
             removed.clear();
             for (Particle p : this.particles) {
                 accX = p.getAccX();
@@ -120,9 +122,11 @@ public class SiloDischarge {
 
 //                System.out.println(iterations);
             if(iterations % 100 == 0){
-                writer.write("iteration\n");
+                // writer.write("iteration\n");
+                writer.write(particles.size() + "\n");
+                writer.write("id xPosition yPosition zPosition xVelocity yVelocity zVelocity radius mass time\n");
                 for(Particle p : this.particles){
-                    writer.write(p.getRad() + " " + p.getPosX() + " " + p.getPosY() + " " + p.getPosZ() + "\n");
+                    writer.write(p.getId() + " " + p.getPosX() + " " + p.getPosY() + " " + p.getPosZ() + " " + p.getVelX() + " " + p.getVelY() + " " + p.getVelZ()+ " " + p.getRad() + " " + p.getMass() + " " + this.dt * iterations + "\n");
                 }
             }
             kinetic = 0.0;
@@ -196,8 +200,8 @@ public class SiloDischarge {
                 result = -1.0;  // Particle is below the bottom of the silo
             } else {
                 double dx = p.getPosX() - this.W / 2.0;
-                double dy = p.getPosY();
-                double distanceFromCenter = Math.sqrt(dx * dx + dy * dy);
+                double dz = p.getPosZ() - this.DD / 2.0;
+                double distanceFromCenter = Math.sqrt(dx * dx + dz * dz);
                 double holeRadius = this.D / 2.0;
                 if (distanceFromCenter > holeRadius) {
                     result = p.getRad() - Math.abs(p.getPosY());
@@ -208,9 +212,9 @@ public class SiloDischarge {
         } else if (wall.equals("LEFT") && p.getPosY() > 0) {
             result = p.getRad() - Math.abs(p.getPosX());
         } else if (wall.equals("FRONT") && p.getPosY() > 0) {
-            result = p.getRad() - Math.abs(this.D / 2.0 - p.getPosZ());
+            result = p.getRad() - Math.abs(this.DD - p.getPosZ());
         } else if (wall.equals("BACK") && p.getPosY() > 0) {
-            result = p.getRad() - Math.abs(this.D / 2.0 + p.getPosZ());
+            result = p.getRad() - Math.abs(p.getPosZ());
         }
         return result;
     }
@@ -225,7 +229,7 @@ public class SiloDischarge {
         double nextVY = p.getVelY() + (1.0/3.0) * p.getAccY() * dt + (5.0/6.0) * accY * dt - (1.0/6.0) * p.getPrevAccY() * dt;
         double nextVZ = p.getVelZ() + (1.0/3.0) * p.getAccZ() * dt + (5.0/6.0) * accZ * dt - (1.0/6.0) * p.getPrevAccZ() * dt;
 
-        if(nextRY < -L/10){
+        if(nextRY < -L/10 ){
             return false;
         }
 
@@ -251,78 +255,120 @@ public class SiloDischarge {
     }
 
     public void getParticleForces(Particle p) {
-        double force_y = p.getMass() * -10.0;
+        // Inicialización de fuerzas
         double force_x = 0.0;
+        double force_y = p.getMass() * -10.0; // Considerando la gravedad
         double force_z = 0.0;
-        String walls[] = {"UP", "DOWN", "RIGHT", "LEFT", "FRONT", "BACK"};
-        double enx = 0.0;
-        double eny = 0.0;
-        double enz = 0.0;
+    
+        // Interacción entre partículas
         for (Particle p2 : this.particles) {
+            if (p != p2) { // Asegura que no comparemos la partícula consigo misma
+                double superpos = superposition(p, p2);
+                if (superpos > 0) { // Hay superposición, por lo tanto, hay interacción
+                    double dx = p2.getPosX() - p.getPosX();
+                    double dy = p2.getPosY() - p.getPosY();
+                    double dz = p2.getPosZ() - p.getPosZ();
+                    double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
     
-            double superpos = superposition(p, p2);
-            if (superpos >= 0) {
-                double distance_x = p2.getPosX() - p.getPosX();
-                double distance_y = p2.getPosY() - p.getPosY();
-                double distance_z = p2.getPosZ() - p.getPosZ();
-                double distance = Math.sqrt(Math.pow(distance_x, 2) + Math.pow(distance_y, 2) + Math.pow(distance_z, 2));
+                    // Direcciones normalizadas
+                    double enx = dx / distance;
+                    double eny = dy / distance;
+                    double enz = dz / distance;
     
-                enx = distance_x / distance;
-                eny = distance_y / distance;
-                enz = distance_z / distance;
-    
-                double fn = -kn * superpos  + (-kt * (((p.getVelX() - p2.getVelX()) * enx) + ((p.getVelY() - p2.getVelY()) * eny)
-				+ ((p.getVelZ() - p2.getVelZ()) * enz)));
-    
-                force_x = force_x + fn * enx;
-                force_y = force_y + fn * eny;
-                force_z = force_z + fn * enz;
+                    // Velocidad relativa
+                    double vRelX = p.getVelX() - p2.getVelX();
+                    double vRelY = p.getVelY() - p2.getVelY();
+                    double vRelZ = p.getVelZ() - p2.getVelZ();
+
+                    double enVrel = enx * vRelX + eny * vRelY + enz * vRelZ;
+                    double tangencialVrelX = vRelX - enVrel * enx;
+                    double tangencialVrelY = vRelY - enVrel * eny;
+                    double tangencialVrelZ = vRelZ - enVrel * enz;
+                    
+                    // Fuerza normal: proporcional a la superposición
+                    double fn = -kn * superpos - Parser.gamma * enVrel;
+                    double ft = -kt * superpos;
+                    
+                    // Fuerza normal
+                    force_x += fn * enx;
+                    force_y += fn * eny;
+                    force_z += fn * enz;
+
+                    // Fuerza tangencial
+                    double tangentialVrel = Math.sqrt(tangencialVrelX * tangencialVrelX + tangencialVrelY * tangencialVrelY + tangencialVrelZ * tangencialVrelZ);
+                    if (tangentialVrel != 0) {
+                        double tx = tangencialVrelX / tangentialVrel;
+                        double ty = tangencialVrelY / tangentialVrel;
+                        double tz = tangencialVrelZ / tangentialVrel;
+                        force_x += ft * tx;
+                        force_y += ft * ty;
+                        force_z += ft * tz;
+                    }
+                }
             }
-    
         }
     
+        // Interacción con las paredes
+        double enx = 0, eny = 0, enz = 0;
+        String[] walls = {"UP", "DOWN", "RIGHT", "LEFT", "FRONT", "BACK"};
         for (String wall : walls) {
             double superpos = collision_wall(wall, p);
-            if (superpos >= 0) {
-                if (wall.equals("UP")) {
-                    enx = 0.0;
-                    eny = 1.0;
-                    enz = 0.0;
-                } else if (wall.equals("DOWN")) {
-                    enx = 0.0;
-                    eny = -1.0;
-                    enz = 0.0;
-                } else if (wall.equals("RIGHT")) {
-                    enx = 1.0;
-                    eny = 0.0;
-                    enz = 0.0;
-                } else if (wall.equals("LEFT")) {
-                    enx = -1.0;
-                    eny = 0.0;
-                    enz = 0.0;
-                } else if (wall.equals("FRONT")) {
-                    enx = 0.0;
-                    eny = 0.0;
-                    enz = 1.0;
-                } else {
-                    enx = 0.0;
-                    eny = 0.0;
-                    enz = -1.0;
+            if (superpos > 0) {
+                switch (wall) {
+                    case "UP":
+                        eny = 1.0;
+                        break;
+                    case "DOWN":
+                        eny = -1.0;
+                        break;
+                    case "RIGHT":
+                        enx = 1.0;
+                        break;
+                    case "LEFT":
+                        enx = -1.0;
+                        break;
+                    case "FRONT":
+                        enz = 1.0;
+                        break;
+                    case "BACK":
+                        enz = -1.0;
+                        break;
                 }
-    
-                double fn = -kn * superpos  + (-kt * ((p.getVelX() * enx) + (p.getVelY() * eny)
-				+ (p.getVelZ() * enz)));
-    
-                force_x = force_x + fn * enx;
-                force_y = force_y + fn * eny;
-                force_z = force_z + fn * enz;
+                
+                double vRelX = p.getVelX();
+                double vRelY = p.getVelY();
+                double vRelZ = p.getVelZ();
+                double enVrel = enx * vRelX + eny * vRelY + enz * vRelZ;
+                double tangencialVrelX = vRelX - enVrel * enx;
+                double tangencialVrelY = vRelY - enVrel * eny;
+                double tangencialVrelZ = vRelZ - enVrel * enz;
+
+                double fn = -kn * superpos - Parser.wallgamma * enVrel;
+                double ft = -kt * superpos;
+
+                force_x += fn * enx;
+                force_y += fn * eny;
+                force_z += fn * enz;
+
+                double tangencialVrel = Math.sqrt(tangencialVrelX * tangencialVrelX + tangencialVrelY * tangencialVrelY + tangencialVrelZ * tangencialVrelZ);
+                if (tangencialVrel != 0) {
+                    double tx = tangencialVrelX / tangencialVrel;
+                    double ty = tangencialVrelY / tangencialVrel;
+                    double tz = tangencialVrelZ / tangencialVrel;
+                    force_x += ft * tx;
+                    force_y += ft * ty;
+                    force_z += ft * tz;
+                }
+
             }
         }
     
+        // Establecer aceleraciones basadas en las fuerzas acumuladas
         p.setAccX(force_x / p.getMass());
         p.setAccY(force_y / p.getMass());
         p.setAccZ(force_z / p.getMass());
     }
+    
 
     public double getKinetic(Particle particle) {
         return  (particle.getMass()*Math.pow(Math.sqrt(Math.pow(particle.getVelX(),2)+Math.pow(particle.getVelY(),2)+Math.pow(particle.getVelZ(),2)),2))/2;

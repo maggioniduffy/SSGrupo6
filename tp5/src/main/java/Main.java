@@ -40,7 +40,7 @@ public class Main {
         writer.close();
 */
 
-        double[] diams = {0.1, 0.12, 0.15, 0.18};
+        double[] diams = { 0.10, 0.22, 0.25, 0.30};
         for(double diam : diams){
             SiloDischarge silo = new SiloDischarge(Parser.kn, 2*Parser.kn, Parser.L, diam, Parser.dt);
             System.out.println(silo.getN());

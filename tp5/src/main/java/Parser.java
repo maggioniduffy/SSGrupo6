@@ -6,11 +6,11 @@ import org.json.simple.parser.*;
 
 public class Parser {
 
-    public static double mass, kn, L, D, d, dt;
+    public static double mass, kn, L, D, d, dt, gamma, wallgamma;
 
     public static void parse() throws FileNotFoundException, IOException, ParseException {
         JSONParser parser = new JSONParser();
-        JSONObject data = (JSONObject) parser.parse(new FileReader("/home/rodri/ITBA/SS/SSGrupo6/tp5/config.json"));
+        JSONObject data = (JSONObject) parser.parse(new FileReader("/home/rodri/SSGrupo6/tp5/config.json"));
 
         mass=Double.parseDouble(data.get("mass").toString());
         kn = Double.parseDouble(data.get("kn").toString());
@@ -18,5 +18,7 @@ public class Parser {
         D = Double.parseDouble(data.get("D").toString());
         d = Double.parseDouble(data.get("d").toString());
         dt = Double.parseDouble(data.get("dt").toString());
+        gamma = Double.parseDouble(data.get("gamma").toString());
+        wallgamma = Double.parseDouble(data.get("wallgamma").toString());
     }
 }

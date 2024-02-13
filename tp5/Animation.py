@@ -184,7 +184,7 @@ with open('output010.txt', 'r') as file:
         return particles_scatter
 
     # Create the animation
-    animation = FuncAnimation(fig, update, frames=len(iterations)-1) #interval=1, blit=True)
+    animation = FuncAnimation(fig, update, frames=len(iterations)-1 ,interval=1, blit=True)
 
     # Show the plot
     plt.show()
