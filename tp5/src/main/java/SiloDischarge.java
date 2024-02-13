@@ -2,10 +2,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 
 public class SiloDischarge {
-    private double kn, kt, L, W, DD, D, dt, rad_prom;
+
+    private static final int MAX_ITERATIONS=50000;
+    private double kn, kt, L, W, H, D, dt, rad_prom;
     private int initial_particles;
 
     private ArrayList<Particle> particles;
@@ -15,13 +18,13 @@ public class SiloDischarge {
     public int getN() {
         return this.particles.size();
     }
-    public SiloDischarge(double kn, double kt, double L, double D, double dt) {
+    public SiloDischarge(double kn, double kt, double L, double D, double W, double H, double dt) {
         this.kn = kn;
         this.kt = kt;
         this.L = L;
         this.D = D;
-        this.W = 3*D;
-        this.DD = 3*D;
+        this.W = W;
+        this.H = H;
         this.dt = dt;
         this.rad_prom = 0;
         this.initial_particles = 0;
@@ -44,11 +47,11 @@ public class SiloDischarge {
         double posY;
         double posZ;
         int i = 0;
-        while(iterations < 50000){
+        while(iterations < MAX_ITERATIONS){
             diam = 0.02 + (0.03 - 0.02) * randomRad.nextDouble();
             posX = diam/2.0 + (this.W - diam) * randomX.nextDouble();
             posY = diam/2.0 + (this.L - diam) * randomY.nextDouble();
-            posZ = diam/2.0 + (this.DD - diam) * randomZ.nextDouble();
+            posZ = diam/2.0 + (this.H - diam) * randomZ.nextDouble();
             if(check_positions(posX, posY, posZ, diam/2, -1)){
                 this.particles.add(new Particle(i,posX,posY, posZ, posX, posY, posZ, 0.0,0.0, 0.0, diam/2.0, Parser.mass,0.0,-10.0,0.0, 0.0,0.0,0.0));
                 i++;
@@ -88,13 +91,15 @@ public class SiloDischarge {
         double accX;
         double accY;
         double accZ;
+        Date date = new Date();
+
         File out = new File("output0" + (int)(this.D*100) + ".xyz");
         out.createNewFile();
         FileWriter writer = new FileWriter("output0" + (int)(this.D*100) + ".xyz");
         // writer.write(this.L + " " + this.W + " " + this.D + "\n");
 //        writer.write(particles.size() + "\n");
 //        writer.write("id xPosition yPosition zPosition xVelocity yVelocity zVelocity radius mass time\n");
-        while(iterations <= 50000) {
+        while(iterations <= MAX_ITERATIONS) {
             removed.clear();
             for (Particle p : this.particles) {
                 accX = p.getAccX();
@@ -128,6 +133,7 @@ public class SiloDischarge {
                 for(Particle p : this.particles){
                     writer.write(p.getId() + " " + p.getPosX() + " " + p.getPosY() + " " + p.getPosZ() + " " + p.getVelX() + " " + p.getVelY() + " " + p.getVelZ()+ " " + p.getRad() + " " + p.getMass() + " " + this.dt * iterations + "\n");
                 }
+                print_status(iterations, date);
             }
             kinetic = 0.0;
 
@@ -135,6 +141,14 @@ public class SiloDischarge {
             iterations++;
         }
         writer.close();
+    }
+
+    private void print_status(int iteration, Date date) throws IOException {
+        System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        System.out.println("Cantidad de particulas: " + this.initial_particles);
+        System.out.println("Progreso: " + iteration*100/MAX_ITERATIONS + "%");
+        System.out.println("Tiempo estimado: " + ((MAX_ITERATIONS-iteration)* (new Date().getTime() - date.getTime())/(iteration != 0 ? iteration*1000 : 1))/60 + " minutos");
+        // clear terminal
     }
 
     private boolean reinject_particle(Particle p){
@@ -151,7 +165,7 @@ public class SiloDischarge {
         while(iterations < 50000){
             posX = p.getRad() + (this.W - p.getRad()*2) * randomX.nextDouble();
             posY = (p.getRad() + 4*this.L/5) + ((this.L-p.getRad())-(p.getRad()+4*this.L/5)) * randomY.nextDouble();
-            posZ = p.getRad() + (this.DD - p.getRad()*2) * randomZ.nextDouble();
+            posZ = p.getRad() + (this.H - p.getRad()*2) * randomZ.nextDouble();
             p.setPosX(posX);
             p.setPosY(posY);
             p.setPosZ(posZ);
@@ -200,7 +214,7 @@ public class SiloDischarge {
                 result = -1.0;  // Particle is below the bottom of the silo
             } else {
                 double dx = p.getPosX() - this.W / 2.0;
-                double dz = p.getPosZ() - this.DD / 2.0;
+                double dz = p.getPosZ() - this.H / 2.0;
                 double distanceFromCenter = Math.sqrt(dx * dx + dz * dz);
                 double holeRadius = this.D / 2.0;
                 if (distanceFromCenter > holeRadius) {
@@ -212,7 +226,7 @@ public class SiloDischarge {
         } else if (wall.equals("LEFT") && p.getPosY() > 0) {
             result = p.getRad() - Math.abs(p.getPosX());
         } else if (wall.equals("FRONT") && p.getPosY() > 0) {
-            result = p.getRad() - Math.abs(this.DD - p.getPosZ());
+            result = p.getRad() - Math.abs(this.H - p.getPosZ());
         } else if (wall.equals("BACK") && p.getPosY() > 0) {
             result = p.getRad() - Math.abs(p.getPosZ());
         }
@@ -229,7 +243,7 @@ public class SiloDischarge {
         double nextVY = p.getVelY() + (1.0/3.0) * p.getAccY() * dt + (5.0/6.0) * accY * dt - (1.0/6.0) * p.getPrevAccY() * dt;
         double nextVZ = p.getVelZ() + (1.0/3.0) * p.getAccZ() * dt + (5.0/6.0) * accZ * dt - (1.0/6.0) * p.getPrevAccZ() * dt;
 
-        if(nextRY < -L/10 ){
+        if(nextRY < -(this.D * 3) ){
             return false;
         }
 
