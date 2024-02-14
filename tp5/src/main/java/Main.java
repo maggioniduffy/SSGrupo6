@@ -40,10 +40,12 @@ public class Main {
         writer.close();
 */
 
-        double[] diams = { 0.10, 0.22, 0.25, 0.30};
+        double[] diams = { 0.15, 0.18, 0.20, 0.22};
+        int iteration = 1;
+        int totalIterations = diams.length;
         for(double diam : diams){
-            SiloDischarge silo = new SiloDischarge(Parser.kn, 0.5*Parser.kn, Parser.L, Parser.D,  Parser.W, Parser.H, Parser.dt);
-            System.out.println(silo.getN());
+            SiloDischarge silo = new SiloDischarge(Parser.kn, 0.5*Parser.kn, Parser.L, diam,  Parser.W, Parser.H, Parser.dt, iteration++, totalIterations);
+//            System.out.println(silo.getN());
             silo.simulate();
 
             //D: 0.1, 0.12, 0.15, 0.18

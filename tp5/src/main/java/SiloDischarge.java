@@ -7,9 +7,9 @@ import java.util.Random;
 
 public class SiloDischarge {
 
-    private static final int MAX_ITERATIONS=50000;
+    private static final int MAX_ITERATIONS=150000;
     private double kn, kt, L, W, H, D, dt, rad_prom;
-    private int initial_particles;
+    private int initial_particles, global_iteration, total_global_iterations;
 
     private ArrayList<Particle> particles;
     private ArrayList<Double> kinetics;
@@ -18,7 +18,7 @@ public class SiloDischarge {
     public int getN() {
         return this.particles.size();
     }
-    public SiloDischarge(double kn, double kt, double L, double D, double W, double H, double dt) {
+    public SiloDischarge(double kn, double kt, double L, double D, double W, double H, double dt, int global_iteration, int total_global_iterations) {
         this.kn = kn;
         this.kt = kt;
         this.L = L;
@@ -31,6 +31,8 @@ public class SiloDischarge {
         this.kinetics = new ArrayList<>();
         this.particles = new ArrayList<>();
         this.outTimes = new ArrayList<>();
+        this.global_iteration = global_iteration;
+        this.total_global_iterations = total_global_iterations;
         generate_particles();
         getPrevAcc();
 
@@ -133,7 +135,7 @@ public class SiloDischarge {
                 for(Particle p : this.particles){
                     writer.write(p.getId() + " " + p.getPosX() + " " + p.getPosY() + " " + p.getPosZ() + " " + p.getVelX() + " " + p.getVelY() + " " + p.getVelZ()+ " " + p.getRad() + " " + p.getMass() + " " + this.dt * iterations + "\n");
                 }
-                print_status(iterations, date);
+                print_status(iterations, date, global_iteration, total_global_iterations);
             }
             kinetic = 0.0;
 
@@ -143,8 +145,9 @@ public class SiloDischarge {
         writer.close();
     }
 
-    private void print_status(int iteration, Date date) throws IOException {
+    private void print_status(int iteration, Date date, int global_iteration, int total_global_iterations) throws IOException {
         System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        System.out.println("Iteracion global: " + global_iteration + "/" + total_global_iterations + " Diametro: " + this.D);
         System.out.println("Cantidad de particulas: " + this.initial_particles);
         System.out.println("Progreso: " + iteration*100/MAX_ITERATIONS + "%");
         System.out.println("Tiempo estimado: " + ((MAX_ITERATIONS-iteration)* (new Date().getTime() - date.getTime())/(iteration != 0 ? iteration*1000 : 1))/60 + " minutos");

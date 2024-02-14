@@ -6,9 +6,9 @@ def caudales():
   #  writer.write( (50.0/(outTimes.get(i+49)-outTimes.get(i))) + "\n");
     #}
 
-    window = 40
+    window = 100
 
-    file = open('./caudal010.txt', 'r')
+    file = open('./caudal015.txt', 'r')
     data = file.read()
     file.close()
     caudales = data.split(':')[1:]
@@ -20,7 +20,7 @@ def caudales():
         if i + window - 1 < len(caudal010)-(window-1):
             caud10.append(window/(caudal010[i+window-1]-time))
 
-    file = open('./caudal012.txt', 'r')
+    file = open('./caudal018.txt', 'r')
     data = file.read()
     file.close()
     caudales = data.split(':')[1:]
@@ -35,7 +35,7 @@ def caudales():
                 caud12.append(window/(caudal012[i+window-1]-time))
                 j += 1
 
-    file = open('./caudal015.txt', 'r')
+    file = open('./caudal020.txt', 'r')
     data = file.read()
     file.close()
     caudales = data.split(':')[1:]
@@ -51,7 +51,7 @@ def caudales():
                 j += 1
 
 
-    file = open('./caudal018.txt', 'r')
+    file = open('./caudal022.txt', 'r')
     data = file.read()
     file.close()
     caudales = data.split(':')[1:]
@@ -68,11 +68,11 @@ def caudales():
 
 
     #time = np.arange(0, len(caud10))
-    time = np.linspace(0, 5, len(caud10))
-    plt.scatter(time, caud10, label='0.1')
-    plt.scatter(time, caud12, label='0.12')
-    plt.scatter(time, caud15, label='0.15')
-    plt.scatter(time, caud18, label='0.18')
+    time = np.linspace(0, 2.5, len(caud10))
+    plt.scatter(time, caud10, label='0.15')
+    plt.scatter(time, caud12, label='0.18')
+    plt.scatter(time, caud15, label='0.20')
+    plt.scatter(time, caud18, label='0.22')
     plt.xlabel('Tiempo (s)')
     plt.ylabel('Caudal (1/s)')
     plt.legend(prop={'size': 12})
