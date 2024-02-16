@@ -1,79 +1,63 @@
 import org.json.simple.parser.ParseException;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
-    public static void main(String[] args) throws IOException, ParseException {
+    public static void main(String[] args) throws IOException, ParseException, InterruptedException {
         Parser.parse();
-/*
-        SiloDischarge silo = new SiloDischarge(Parser.kn, 2*Parser.kn, Parser.L, Parser.W, Parser.D, Parser.dt);
-        System.out.println(silo.getN());
-        silo.simulate();
 
-        //D: 0.1, 0.15, 0.18, 0.22
-        //kt: 0.5kn, kn, 2kn, 3kn
-        //Caudal: Nro. de Partículas que salieron en Dt / Dt
+        double[] diams = {0.40, 0.60};
+        int totalIterations = diams.length;
 
-        File out = new File("caudal015.txt");
+        // Crea un ExecutorService con tantos hilos como núcleos disponibles en el procesador
+        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+        for (int i = 0; i < diams.length; i++) {
+            final int iteration = i + 1;
+            final double diam = diams[i];
+
+            // Envía una tarea al ExecutorService para ejecutarla en un hilo separado
+            executor.submit(() -> {
+                try {
+                    SiloDischarge silo = new SiloDischarge(Parser.kn, diam * Parser.kn, Parser.L, 0.18, Parser.W, Parser.H, Parser.dt, iteration, totalIterations);
+                    silo.simulate();
+
+                    saveResults(silo, diam);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+
+        // Espera a que todas las tareas se completen y cierra el ExecutorService
+        executor.shutdown();
+        executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+    }
+
+    private static void saveResults(SiloDischarge silo, double diam) throws IOException {
+        File out = new File("caudal0" + (int) (diam * 100) + ".txt");
         out.createNewFile();
-        FileWriter writer = new FileWriter("caudal015.txt");
-        //writer.write(silo.getInitial_particles() + " " + silo.getRad_prom() + "\n");
-        writer.write("D:" + Parser.D + "\n");
-        ArrayList<Double> outTimes = silo.getOutTimes();
-        for(int i = 0; i < outTimes.size()-49 ; i++){
-            writer.write( (50.0/(outTimes.get(i+49)-outTimes.get(i))) + "\n");
+        FileWriter writer = new FileWriter(out);
+        writer.write(silo.getInitial_particles() + " " + silo.getRad_prom() + "\n");
+        writer.write("D:" + diam + "\n");
+        for (Double outTime : silo.getOutTimes()) {
+            writer.write(outTime + "\n");
         }
         writer.close();
 
         ArrayList<Double> kinetics = silo.getKinetics();
-        File out = new File("kinetic3kn.txt");
+        out = new File("kinetic0" + (int) (diam * 100) + ".txt");
         out.createNewFile();
-        FileWriter writer = new FileWriter("kinetic3kn.txt");
-
-        writer.write("kt: 3kn" + "\n");
+        writer = new FileWriter(out);
+        writer.write("D:" + diam + "\n");
         for (Double kinetic : kinetics) {
-            writer.write( kinetic + "\n");
+            writer.write(kinetic + "\n");
         }
         writer.close();
-*/
-
-        double[] diams = { 0.15, 0.18, 0.20, 0.22};
-        int iteration = 1;
-        int totalIterations = diams.length;
-        for(double diam : diams){
-            SiloDischarge silo = new SiloDischarge(Parser.kn, 0.5*Parser.kn, Parser.L, diam,  Parser.W, Parser.H, Parser.dt, iteration++, totalIterations);
-//            System.out.println(silo.getN());
-            silo.simulate();
-
-            //D: 0.1, 0.12, 0.15, 0.18
-            //kt: 0.5kn, kn, 2kn, 3kn
-            //Caudal: Nro. de Partículas que salieron en Dt / Dt
-
-            File out = new File("caudal0" + (int)(diam*100) + ".txt");
-            out.createNewFile();
-            FileWriter writer = new FileWriter("caudal0" + (int)(diam*100) + ".txt");
-            writer.write(silo.getInitial_particles() + " " + silo.getRad_prom() + "\n");
-            writer.write("D:" + diam+ "\n");
-            ArrayList<Double> outTimes = silo.getOutTimes();
-            for (Double outTime : outTimes) {
-                writer.write( outTime + "\n");
-            }
-            writer.close();
-
-            ArrayList<Double> kinetics = silo.getKinetics();
-            out = new File("kinetic0" + (int)(diam*100) + ".txt");
-            out.createNewFile();
-            writer = new FileWriter("kinetic0" + (int)(diam*100) + ".txt");
-
-            writer.write("D:" + diam + "\n");
-            for (Double kinetic : kinetics) {
-                writer.write( kinetic + "\n");
-            }
-            writer.close();
-        }
-
     }
 }

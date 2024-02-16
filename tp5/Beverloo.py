@@ -8,7 +8,7 @@ nps = []
 rads_prom = []
 qs_prom = []
 des = []
-caudals = { 0.15: [], 0.18: [], 0.20: [], 0.22: []}
+caudals = { 0.10: [], 0.12: [], 0.15: [], 0.18: []}
 for diam in list(caudals.keys()):
     file = open('./caudal0' + str(int(diam*100)) + '.txt', 'r')
     data = file.read()
@@ -36,7 +36,7 @@ for diam in list(caudals.keys()):
     qs_prom.append(promedio)
 
 beverloos = []
-c_vals = np.linspace(1, 7, 100)
+c_vals = np.linspace(0, 4, 100)
 # print(c_vals)
 def beverloo(npart, diam, rad_prom, c):
     return npart * math.sqrt(10) * math.pow((diam - c * rad_prom), 2.5)
@@ -56,19 +56,19 @@ for c in c_vals:
 min_c = c_vals[result.index(min(result))]
 print("c minimo: " + str(min_c))
 print("error min: " + str(min(result)))
-x_vals = np.linspace(0.14, 0.23, 100)
+x_vals = np.linspace(0.10, 0.20, 100)
 for x in x_vals:
     beverloos.append(beverloo(nps[0], x, rads_prom[0], min_c))
 
-# plt.plot(x_vals, beverloos, color='blue', label='Beverloo con c=3.505')
-# plt.errorbar(list(caudals.keys()), qs_prom, des, fmt='o', color='orange', label='Caudal promedio')
-# plt.xlabel('D (m)')
-# plt.ylabel('Caudal (1/s)')
+plt.plot(x_vals, beverloos, color='blue', label='Beverloo con c=1.37')
+plt.errorbar(list(caudals.keys()), qs_prom, des, fmt='o', color='orange', label='Caudal promedio')
+plt.xlabel('D (m)')
+plt.ylabel('Caudal (1/s)')
     
-plt.plot(c_vals, result, color='red')
-plt.plot(min_c, min(result), 'o', color='blue', label='c minimo en 3.505')
-plt.xlabel('Valor cte c')
-plt.ylabel('Error cuadratico medio')
+# plt.plot(c_vals, result, color='red')
+# plt.plot(min_c, min(result), 'o', color='blue', label='c minimo en 1.37')
+# plt.xlabel('Valor cte c')
+# plt.ylabel('Error cuadratico medio')
 
 # plt.legend(['Beverloo', 'Caudal'])
 # legend show the error bars

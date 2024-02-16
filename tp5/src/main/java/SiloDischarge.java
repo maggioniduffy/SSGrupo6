@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class SiloDischarge {
 
-    private static final int MAX_ITERATIONS=150000;
+    private static final int MAX_ITERATIONS=100000;
     private double kn, kt, L, W, H, D, dt, rad_prom;
     private int initial_particles, global_iteration, total_global_iterations;
 
